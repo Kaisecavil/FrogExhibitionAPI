@@ -1,6 +1,12 @@
 ﻿using AutoMapper;
+using FrogExhibitionBLL.DTO.FrogOnExhibitionDTOs;
+using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.ViewModels.FrogOnExhibitionViewModels;
+using FrogExhibitionDAL.Interfaces;
+using FrogExhibitionDAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FrogExhibitionBLL.Services
 {
@@ -17,14 +23,14 @@ namespace FrogExhibitionBLL.Services
             _mapper = mapper;
         }
 
-        public async Task<FrogOnExhibitionDtoDetail> CreateFrogOnExhibition(FrogOnExhibitionDtoForCreate frogOnExhibition)
+        public async Task<FrogOnExhibitionDetailViewModel> CreateFrogOnExhibition(FrogOnExhibitionDtoForCreate frogOnExhibition)
         {
             try
             {
                 var mappedFrogOnExhibition = _mapper.Map<FrogOnExhibition>(frogOnExhibition);
                 var createdFrogOnExhibition = await _unitOfWork.FrogOnExhibitions.CreateAsync(mappedFrogOnExhibition);
                 _logger.LogInformation("FrogOnExhibition Created");
-                return _mapper.Map<FrogOnExhibitionDtoDetail>(createdFrogOnExhibition);
+                return _mapper.Map<FrogOnExhibitionDetailViewModel>(createdFrogOnExhibition);
             }
             catch (Exception ex)
             {
@@ -33,17 +39,17 @@ namespace FrogExhibitionBLL.Services
             };
         }
 
-        public async Task<IEnumerable<FrogOnExhibitionDtoDetail>> GetAllFrogOnExhibitions()
+        public async Task<IEnumerable<FrogOnExhibitionDetailViewModel>> GetAllFrogOnExhibitions()
         {
             if (await _unitOfWork.FrogOnExhibitions.IsEmpty())
             {
                 throw new NotFoundException("Entity not found due to emptines of db");
             }
             var result = await _unitOfWork.FrogOnExhibitions.GetAllAsync(true);
-            return _mapper.Map<IEnumerable<FrogOnExhibitionDtoDetail>>(result);
+            return _mapper.Map<IEnumerable<FrogOnExhibitionDetailViewModel>>(result);
         }
 
-        public async Task<FrogOnExhibitionDtoDetail> GetFrogOnExhibition(Guid id)
+        public async Task<FrogOnExhibitionDetailViewModel> GetFrogOnExhibition(Guid id)
         {
             if (await _unitOfWork.FrogOnExhibitions.IsEmpty())
             {
@@ -56,7 +62,7 @@ namespace FrogExhibitionBLL.Services
                 throw new NotFoundException("Entity not found");
             }
 
-            return _mapper.Map<FrogOnExhibitionDtoDetail>(frogOnExhibition);
+            return _mapper.Map<FrogOnExhibitionDetailViewModel>(frogOnExhibition);
         }
 
         public async Task UpdateFrogOnExhibition(Guid id, FrogOnExhibitionDtoForCreate frogOnExhibition)

@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FrogExhibitionBLL.DTO.VoteDtos;
+using FrogExhibitionBLL.Exceptions;
+using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.ViewModels.VoteViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,11 +23,11 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/Votes
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<VoteDtoDetail>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<VoteDetailViewModel>))]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<VoteDtoDetail>>> GetVotes()
+        public async Task<ActionResult<IEnumerable<VoteDetailViewModel>>> GetVotes()
         {
             try
             {
@@ -38,11 +42,11 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/Votes/5
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(VoteDtoDetail))]
+        [ProducesResponseType(200, Type = typeof(VoteDetailViewModel))]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<VoteDtoDetail>> GetVote(Guid id)
+        public async Task<ActionResult<VoteDetailViewModel>> GetVote(Guid id)
         {
             try
             {
@@ -91,12 +95,12 @@ namespace FrogExhibitionPL.Controllers
         // POST: api/Votes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(VoteDtoDetail))]
+        [ProducesResponseType(201, Type = typeof(VoteDetailViewModel))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(422)]
         [Authorize(Roles = "Admin,User")]
-        public async Task<ActionResult<VoteDtoDetail>> PostVote(VoteDtoForCreate vote)
+        public async Task<ActionResult<VoteDetailViewModel>> PostVote(VoteDtoForCreate vote)
         {
             try
             {

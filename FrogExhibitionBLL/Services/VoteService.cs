@@ -17,7 +17,7 @@ namespace FrogExhibitionBLL.Services
             _mapper = mapper;
         }
 
-        public async Task<VoteDtoDetail> CreateVote(VoteDtoForCreate vote)
+        public async Task<VoteDetailViewModel> CreateVote(VoteDtoForCreate vote)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace FrogExhibitionBLL.Services
                 var mappedVote = _mapper.Map<Vote>(vote);
                 var createdVote = await _unitOfWork.Votes.CreateAsync(mappedVote);
                 _logger.LogInformation("Vote Created");
-                return _mapper.Map<VoteDtoDetail>(createdVote);
+                return _mapper.Map<VoteDetailViewModel>(createdVote);
             }
             catch (Exception ex)
             {
@@ -38,17 +38,17 @@ namespace FrogExhibitionBLL.Services
             };
         }
 
-        public async Task<IEnumerable<VoteDtoDetail>> GetAllVotes()
+        public async Task<IEnumerable<VoteDetailViewModel>> GetAllVotes()
         {
             if (await _unitOfWork.Votes.IsEmpty())
             {
                 throw new NotFoundException("Entity not found due to emptines of db");
             }
             var result = await _unitOfWork.Votes.GetAllAsync(true);
-            return _mapper.Map<IEnumerable<VoteDtoDetail>>(result);
+            return _mapper.Map<IEnumerable<VoteDetailViewModel>>(result);
         }
 
-        public async Task<VoteDtoDetail> GetVote(Guid id)
+        public async Task<VoteDetailViewModel> GetVote(Guid id)
         {
             if (await _unitOfWork.Votes.IsEmpty())
             {
@@ -61,7 +61,7 @@ namespace FrogExhibitionBLL.Services
                 throw new NotFoundException("Entity not found");
             }
 
-            return _mapper.Map<VoteDtoDetail>(vote);
+            return _mapper.Map<VoteDetailViewModel>(vote);
         }
 
         public async Task UpdateVote(Guid id, VoteDtoForCreate vote)

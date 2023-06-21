@@ -1,6 +1,6 @@
 ﻿namespace FrogExhibitionBLL.DTO.ApplicatonUserDTOs
 {
-    public class ApplicationUserDtoGeneral
+    public class ApplicationUserGeneralViewModel
     {
         public string Id { get; set; }
         public string UserName { get; set; }

@@ -1,4 +1,8 @@
-﻿using FrogExhibitionDAL.Models;
+﻿using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
+using FrogExhibitionBLL.Exceptions;
+using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
+using FrogExhibitionDAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,10 +31,10 @@ namespace FrogExhibitionPL.Controllers
         // GET: api/Users
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<ApplicationUserDtoGeneral>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<ApplicationUserGeneralViewModel>))]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IEnumerable<ApplicationUserDtoGeneral>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<ApplicationUserGeneralViewModel>>> GetUsers()
         {
             try
             {
@@ -45,11 +49,11 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(ApplicationUserDtoDetail))]
+        [ProducesResponseType(200, Type = typeof(ApplicationUserDetailViewModel))]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin,User")]
-        public async Task<ActionResult<ApplicationUserDtoDetail>> GetUser(Guid id)
+        public async Task<ActionResult<ApplicationUserDetailViewModel>> GetUser(Guid id)
         {
             try
             {

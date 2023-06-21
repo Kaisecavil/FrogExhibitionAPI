@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using FrogExhibitionBLL.DTO.ExhibitionDTOs;
+using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
+using FrogExhibitionBLL.ViewModels.FrogViewModels;
+using FrogExhibitionBLL.Exceptions;
 
 namespace FrogExhibitionPL.Controllers
 {
@@ -19,9 +23,9 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/Exhibitions
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<ExhibitionDtoDetail>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<ExhibitionDetailViewModel>))]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IEnumerable<ExhibitionDtoDetail>>> GetExhibitions()
+        public async Task<ActionResult<IEnumerable<ExhibitionDetailViewModel>>> GetExhibitions()
         {
             try
             {
@@ -35,9 +39,9 @@ namespace FrogExhibitionPL.Controllers
         }
 
         [HttpGet("sort/{sortParams}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<ExhibitionDtoDetail>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<ExhibitionDetailViewModel>))]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IEnumerable<ExhibitionDtoDetail>>> GetSortedExhibitions(string sortParams = " ")
+        public async Task<ActionResult<IEnumerable<ExhibitionDetailViewModel>>> GetSortedExhibitions(string sortParams = " ")
         {
             try
             {
@@ -52,9 +56,9 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/Exhibitions/5
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(ExhibitionDtoDetail))]
+        [ProducesResponseType(200, Type = typeof(ExhibitionDetailViewModel))]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<ExhibitionDtoDetail>> GetExhibition(Guid id)
+        public async Task<ActionResult<ExhibitionDetailViewModel>> GetExhibition(Guid id)
         {
             try
             {
@@ -97,12 +101,12 @@ namespace FrogExhibitionPL.Controllers
         // POST: api/Exhibitions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(IEnumerable<ExhibitionDtoDetail>))]
+        [ProducesResponseType(201, Type = typeof(IEnumerable<ExhibitionDetailViewModel>))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ExhibitionDtoDetail>> PostExhibition(ExhibitionDtoForCreate exebition)
+        public async Task<ActionResult<ExhibitionDetailViewModel>> PostExhibition(ExhibitionDtoForCreate exebition)
         {
             try
             {
@@ -144,7 +148,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin,User")]
-        public async Task<ActionResult<IEnumerable<FrogDtoRating>>> GetRating(Guid id)
+        public async Task<ActionResult<IEnumerable<FrogRatingViewModel>>> GetRating(Guid id)
         {
             try
             {

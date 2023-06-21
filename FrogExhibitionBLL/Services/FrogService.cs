@@ -29,7 +29,7 @@ namespace FrogExhibitionBLL.Services
             _frogPhotoService = frogPhotoService;
         }
 
-        public async Task<FrogDtoDetail> CreateFrog(FrogDtoForCreate frog)
+        public async Task<FrogDetailViewModel> CreateFrog(FrogDtoForCreate frog)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace FrogExhibitionBLL.Services
                 }
                 //------
                 _logger.LogInformation("Frog Created");
-                var res = _mapper.Map<FrogDtoDetail>(createdFrog);
+                var res = _mapper.Map<FrogDetailViewModel>(createdFrog);
                 res.PhotoPaths = (await _frogPhotoService.GetFrogPhotoPathsAsync(createdFrog.Id)).ToList();
                 throw new HttpResponseException()
                 return res;
@@ -57,14 +57,14 @@ namespace FrogExhibitionBLL.Services
                 throw;
             };
         }
-        public async Task<IEnumerable<FrogDtoGeneral>> GetAllFrogs()
+        public async Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogs()
         {
             if (await _unitOfWork.Frogs.IsEmpty())
             {
                 throw new NotFoundException("Entity not found due to emptines of db");
             }
             var frogs = await _unitOfWork.Frogs.GetAllAsync(true);
-            var mappedfrogs = _mapper.Map<IEnumerable<FrogDtoGeneral>>(frogs); ///вынести в отдельный метод лучше это
+            var mappedfrogs = _mapper.Map<IEnumerable<FrogGeneralViewModel>>(frogs); ///вынести в отдельный метод лучше это
             foreach (var frog in mappedfrogs)
             {
                 frog.PhotoPaths = (await _frogPhotoService.GetFrogPhotoPathsAsync(frog.Id)).ToList();
@@ -72,7 +72,7 @@ namespace FrogExhibitionBLL.Services
             return mappedfrogs;
         }
 
-        public async Task<IEnumerable<FrogDtoGeneral>> GetAllFrogs(string sortParams)
+        public async Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogs(string sortParams)
         {
             if (await _unitOfWork.Frogs.IsEmpty())
             {
@@ -80,7 +80,7 @@ namespace FrogExhibitionBLL.Services
             }
             var frogs = (await _unitOfWork.Frogs.GetAllAsync(true)).AsQueryable();
             var sortedFrogs = _sortHelper.ApplySort(frogs, sortParams);
-            var sortedMappedfrogs = _mapper.Map<IEnumerable<FrogDtoGeneral>>(sortedFrogs);
+            var sortedMappedfrogs = _mapper.Map<IEnumerable<FrogGeneralViewModel>>(sortedFrogs);
             foreach (var frog in sortedMappedfrogs)
             {
                 frog.PhotoPaths = (await _frogPhotoService.GetFrogPhotoPathsAsync(frog.Id)).ToList();
@@ -90,7 +90,7 @@ namespace FrogExhibitionBLL.Services
         }
 
 
-        public async Task<FrogDtoDetail> GetFrog(Guid id)
+        public async Task<FrogDetailViewModel> GetFrog(Guid id)
         {
             if (await _unitOfWork.Frogs.IsEmpty())
             {
@@ -102,7 +102,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
-            var mappedFrog = _mapper.Map<FrogDtoDetail>(frog);
+            var mappedFrog = _mapper.Map<FrogDetailViewModel>(frog);
             mappedFrog.PhotoPaths = (await _frogPhotoService.GetFrogPhotoPathsAsync(mappedFrog.Id)).ToList();
             return mappedFrog;
         }

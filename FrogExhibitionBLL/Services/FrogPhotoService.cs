@@ -1,4 +1,7 @@
 ﻿using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionDAL.Interfaces;
+using FrogExhibitionDAL.Models;
+using Microsoft.Extensions.Logging;
 
 namespace FrogExhibitionBLL.Services
 {

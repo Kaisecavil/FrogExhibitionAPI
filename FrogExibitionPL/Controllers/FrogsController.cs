@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.ViewModels.FrogViewModels;
+using FrogExhibitionBLL.DTO.FrogDTOs;
+using FrogExhibitionBLL.Exceptions;
 
 namespace FrogExhibitionPL.Controllers
 {
@@ -18,9 +22,9 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/Frogs
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<FrogDtoGeneral>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<FrogGeneralViewModel>))]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IEnumerable<FrogDtoGeneral>>> GetFrogs()
+        public async Task<ActionResult<IEnumerable<FrogGeneralViewModel>>> GetFrogs()
         {
             try
             {
@@ -34,9 +38,9 @@ namespace FrogExhibitionPL.Controllers
         }
 
         [HttpGet("sort/{sortParams}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<FrogDtoGeneral>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<FrogGeneralViewModel>))]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IEnumerable<FrogDtoGeneral>>> GetSortedFrogs(string sortParams = "sex,genus desc")
+        public async Task<ActionResult<IEnumerable<FrogGeneralViewModel>>> GetSortedFrogs(string sortParams = "sex,genus desc")
         {
             try
             {
@@ -51,9 +55,9 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/Frogs/5
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(FrogDtoDetail))]
+        [ProducesResponseType(200, Type = typeof(FrogDetailViewModel))]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<FrogDtoDetail>> GetFrog(Guid id)
+        public async Task<ActionResult<FrogDetailViewModel>> GetFrog(Guid id)
         {
             try
             {
@@ -97,12 +101,12 @@ namespace FrogExhibitionPL.Controllers
         // POST: api/Frogs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(FrogDtoDetail))]
+        [ProducesResponseType(201, Type = typeof(FrogDetailViewModel))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<FrogDtoDetail>> PostFrog([FromForm]FrogDtoForCreate frog)
+        public async Task<ActionResult<FrogDetailViewModel>> PostFrog([FromForm]FrogDtoForCreate frog)
         {
             try
             {

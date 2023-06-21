@@ -1,13 +1,14 @@
 ﻿using FrogExhibitionBLL.DTO.FrogOnExhibitionDTOs;
+using FrogExhibitionBLL.ViewModels.FrogOnExhibitionViewModels;
 
 namespace FrogExhibitionBLL.Interfaces.IService
 {
     public interface IFrogOnExhibitionService
     {
-        Task<FrogOnExhibitionDtoDetail> CreateFrogOnExhibition(FrogOnExhibitionDtoForCreate frogOnExhibition);
+        Task<FrogOnExhibitionDetailViewModel> CreateFrogOnExhibition(FrogOnExhibitionDtoForCreate frogOnExhibition);
         Task DeleteFrogOnExhibition(Guid id);
-        Task<IEnumerable<FrogOnExhibitionDtoDetail>> GetAllFrogOnExhibitions();
-        Task<FrogOnExhibitionDtoDetail> GetFrogOnExhibition(Guid id);
+        Task<IEnumerable<FrogOnExhibitionDetailViewModel>> GetAllFrogOnExhibitions();
+        Task<FrogOnExhibitionDetailViewModel> GetFrogOnExhibition(Guid id);
         Task UpdateFrogOnExhibition(Guid id, FrogOnExhibitionDtoForCreate frogOnExhibition);
     }
 }

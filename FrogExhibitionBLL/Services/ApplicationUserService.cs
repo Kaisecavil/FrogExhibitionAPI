@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
 
 namespace FrogExhibitionBLL.Services
 {
@@ -30,17 +31,17 @@ namespace FrogExhibitionBLL.Services
             _httpContext = httpContext;
         }
 
-        public async Task<IEnumerable<ApplicationUserDtoDetail>> GetAllApplicationUsers()
+        public async Task<IEnumerable<ApplicationUserDetailViewModel>> GetAllApplicationUsers()
         {
             if (_userManager.Users.IsNullOrEmpty())
             {
                 throw new NotFoundException("Entity not found due to emptines of db");
             }
             var result = await _userManager.Users.ToListAsync();
-            return _mapper.Map<IEnumerable<ApplicationUserDtoDetail>>(result);
+            return _mapper.Map<IEnumerable<ApplicationUserDetailViewModel>>(result);
         }
 
-        public async Task<ApplicationUserDtoDetail> GetApplicationUser(Guid id)
+        public async Task<ApplicationUserDetailViewModel> GetApplicationUser(Guid id)
         {
             if (_userManager.Users.IsNullOrEmpty())
             {
@@ -53,7 +54,7 @@ namespace FrogExhibitionBLL.Services
                 throw new NotFoundException("Entity not found");
             }
 
-            return _mapper.Map<ApplicationUserDtoDetail>(applicationUser);
+            return _mapper.Map<ApplicationUserDetailViewModel>(applicationUser);
         }
 
         public async Task UpdateApplicationUser(Guid id, ApplicationUserDtoForUpdate applicationUser)

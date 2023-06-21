@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FrogExhibitionBLL.DTO.FrogOnExhibitionDTOs;
+using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.ViewModels.FrogOnExhibitionViewModels;
+using FrogExhibitionBLL.Exceptions;
 
 namespace FrogExhibitionPL.Controllers
 {
@@ -20,11 +23,11 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/FrogOnExhibitions
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<FrogOnExhibitionDtoDetail>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<FrogOnExhibitionDetailViewModel>))]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<FrogOnExhibitionDtoDetail>>> GetFrogOnExhibitions()
+        public async Task<ActionResult<IEnumerable<FrogOnExhibitionDetailViewModel>>> GetFrogOnExhibitions()
         {
             try
             {
@@ -39,12 +42,12 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/FrogOnExhibitions/5
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(FrogOnExhibitionDtoDetail))]
+        [ProducesResponseType(200, Type = typeof(FrogOnExhibitionDetailViewModel))]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
 
-        public async Task<ActionResult<FrogOnExhibitionDtoDetail>> GetFrogOnExhibition(Guid id)
+        public async Task<ActionResult<FrogOnExhibitionDetailViewModel>> GetFrogOnExhibition(Guid id)
         {
             try
             {
@@ -93,13 +96,13 @@ namespace FrogExhibitionPL.Controllers
         // POST: api/FrogOnExhibitions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(FrogOnExhibitionDtoDetail))]
+        [ProducesResponseType(201, Type = typeof(FrogOnExhibitionDetailViewModel))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<FrogOnExhibitionDtoDetail>> PostFrogOnExhibition(FrogOnExhibitionDtoForCreate frogOnExhibition)
+        public async Task<ActionResult<FrogOnExhibitionDetailViewModel>> PostFrogOnExhibition(FrogOnExhibitionDtoForCreate frogOnExhibition)
         {
             try
             {

@@ -13,6 +13,7 @@ using FrogExhibitionDAL.Database;
 using FrogExhibitionBLL.Helpers;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
+using FrogExhibitionBLL.DTO.VoteDtos;
 
 namespace FrogExhibitionPL
 {

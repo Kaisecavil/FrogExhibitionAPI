@@ -1,6 +1,13 @@
 ﻿using AutoMapper;
+using FrogExhibitionBLL.DTO.ExhibitionDTOs;
+using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
+using FrogExhibitionBLL.ViewModels.FrogViewModels;
+using FrogExhibitionDAL.Interfaces;
+using FrogExhibitionDAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FrogExhibitionBLL.Services
 {
@@ -9,10 +16,10 @@ namespace FrogExhibitionBLL.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<ExhibitionService> _logger;
         private readonly IMapper _mapper;
-        private readonly ISortHelper<ExhibitionDtoDetail> _sortHelper;
+        private readonly ISortHelper<ExhibitionDetailViewModel> _sortHelper;
         private readonly IFrogPhotoService _frogPhotoService;
 
-        public ExhibitionService(IUnitOfWork unitOfWork, ILogger<ExhibitionService> logger, IMapper mapper, ISortHelper<ExhibitionDtoDetail> sortHelper, IFrogPhotoService frogPhotoService)
+        public ExhibitionService(IUnitOfWork unitOfWork, ILogger<ExhibitionService> logger, IMapper mapper, ISortHelper<ExhibitionDetailViewModel> sortHelper, IFrogPhotoService frogPhotoService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -21,7 +28,7 @@ namespace FrogExhibitionBLL.Services
             _frogPhotoService = frogPhotoService;
         }
 
-        public async Task<ExhibitionDtoDetail> CreateExhibition(ExhibitionDtoForCreate exebition)
+        public async Task<ExhibitionDetailViewModel> CreateExhibition(ExhibitionDtoForCreate exebition)
         {
 
             try
@@ -29,7 +36,7 @@ namespace FrogExhibitionBLL.Services
                 var mappedExhibition = _mapper.Map<Exhibition>(exebition);
                 var createdExhibition = await _unitOfWork.Exhibitions.CreateAsync(mappedExhibition);
                 _logger.LogInformation("Exhibition Created");
-                return _mapper.Map<ExhibitionDtoDetail>(createdExhibition);
+                return _mapper.Map<ExhibitionDetailViewModel>(createdExhibition);
             }
             catch (Exception ex)
             {
@@ -39,7 +46,7 @@ namespace FrogExhibitionBLL.Services
 
         }
 
-        public async Task<IEnumerable<ExhibitionDtoDetail>> GetAllExhibitions()
+        public async Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitions()
         {
             if (await _unitOfWork.Exhibitions.IsEmpty())
             {
@@ -47,10 +54,10 @@ namespace FrogExhibitionBLL.Services
             }
 
             var result = await _unitOfWork.Exhibitions.GetAllAsync(true);
-            return _mapper.Map<IEnumerable<ExhibitionDtoDetail>>(result);
+            return _mapper.Map<IEnumerable<ExhibitionDetailViewModel>>(result);
         }
 
-        public async Task<ExhibitionDtoDetail> GetExhibition(Guid id)
+        public async Task<ExhibitionDetailViewModel> GetExhibition(Guid id)
         {
             if (await _unitOfWork.Exhibitions.IsEmpty())
             {
@@ -63,7 +70,7 @@ namespace FrogExhibitionBLL.Services
                 throw new NotFoundException("Entity not found");
             }
 
-            return _mapper.Map<ExhibitionDtoDetail>(exebition);
+            return _mapper.Map<ExhibitionDetailViewModel>(exebition);
         }
 
         public async Task UpdateExhibition(Guid id, ExhibitionDtoForCreate exebition)
@@ -108,7 +115,7 @@ namespace FrogExhibitionBLL.Services
             await _unitOfWork.Exhibitions.DeleteAsync(exebition.Id);
         }
 
-        public async Task<IEnumerable<FrogDtoRating>> GetRating(Guid id)
+        public async Task<IEnumerable<FrogRatingViewModel>> GetRating(Guid id)
         {
             var exebition = await _unitOfWork.Exhibitions.GetAsync(id);
 
@@ -124,7 +131,7 @@ namespace FrogExhibitionBLL.Services
             var order = group.OrderBy(o => o.Count).Reverse();
             var res = from o in order
                       let obj = _unitOfWork.Frogs.Get(o.key) // ne async????
-                      select new FrogDtoRating
+                      select new FrogRatingViewModel
                       {
                           Id = obj.Id,
                           VotesCount = o.Count,
@@ -144,13 +151,13 @@ namespace FrogExhibitionBLL.Services
             return res.ToList();
         }
 
-        public async Task<IEnumerable<ExhibitionDtoDetail>> GetAllExhibitions(string sortParams)
+        public async Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitions(string sortParams)
         {
             if (await _unitOfWork.Exhibitions.IsEmpty())
             {
                 throw new NotFoundException("Entity not found due to emptines of db");
             }
-            var exebitions = (_mapper.Map<IEnumerable<ExhibitionDtoDetail>>(await _unitOfWork.Exhibitions.GetAllAsync(true))).AsQueryable();
+            var exebitions = (_mapper.Map<IEnumerable<ExhibitionDetailViewModel>>(await _unitOfWork.Exhibitions.GetAllAsync(true))).AsQueryable();
             var sortedExhibitions = _sortHelper.ApplySort(exebitions, sortParams);
             return sortedExhibitions.ToList();
         }

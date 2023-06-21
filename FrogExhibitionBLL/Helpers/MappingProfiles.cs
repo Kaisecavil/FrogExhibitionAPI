@@ -12,34 +12,34 @@ namespace FrogExhibitionBLL.Helpers
     {
         public MappingProfiles()
         {
-            CreateMap<Frog, FrogDtoDetail>();
-            CreateMap<FrogDtoDetail, Frog>();
+            CreateMap<Frog, FrogDetailViewModel>();
+            CreateMap<FrogDetailViewModel, Frog>();
             CreateMap<Frog, FrogDtoForCreate>();
             CreateMap<FrogDtoForCreate, Frog>();
             CreateMap<Frog, FrogDtoForUpdate>();
             CreateMap<FrogDtoForUpdate, Frog>();
-            CreateMap<Frog, FrogDtoGeneral>();
-            CreateMap<FrogDtoGeneral, Frog>();
-            CreateMap<Frog, FrogDtoRating>();
-            CreateMap<FrogDtoRating, Frog>();
+            CreateMap<Frog, FrogGeneralViewModel>();
+            CreateMap<FrogGeneralViewModel, Frog>();
+            CreateMap<Frog, FrogRatingViewModel>();
+            CreateMap<FrogRatingViewModel, Frog>();
 
-            CreateMap<Exhibition, ExhibitionDtoDetail>();
-            CreateMap<ExhibitionDtoDetail, Exhibition>();
+            CreateMap<Exhibition, ExhibitionDetailViewModel>();
+            CreateMap<ExhibitionDetailViewModel, Exhibition>();
             CreateMap<Exhibition, ExhibitionDtoForCreate>();
             CreateMap<ExhibitionDtoForCreate, Exhibition>();
 
-            CreateMap<FrogOnExhibition, FrogOnExhibitionDtoDetail>();
-            CreateMap<FrogOnExhibitionDtoDetail, FrogOnExhibition>();
+            CreateMap<FrogOnExhibition, FrogOnExhibitionDetailViewModel>();
+            CreateMap<FrogOnExhibitionDetailViewModel, FrogOnExhibition>();
             CreateMap<FrogOnExhibition, FrogOnExhibitionDtoForCreate>();
             CreateMap<FrogOnExhibitionDtoForCreate, FrogOnExhibition>();
 
-            CreateMap<Vote, VoteDtoDetail>();
-            CreateMap<VoteDtoDetail, Vote>();
+            CreateMap<Vote, VoteDetailViewModel>();
+            CreateMap<VoteDetailViewModel, Vote>();
             CreateMap<Vote, VoteDtoForCreate>();
             CreateMap<VoteDtoForCreate, Vote>();
 
-            CreateMap<ApplicationUser, ApplicationUserDtoDetail>();
-            CreateMap<ApplicationUserDtoDetail, ApplicationUser>();
+            CreateMap<ApplicationUser, ApplicationUserDetailViewModel>();
+            CreateMap<ApplicationUserDetailViewModel, ApplicationUser>();
             CreateMap<ApplicationUser, ApplicationUserDtoForUpdate>();
             CreateMap<ApplicationUserDtoForUpdate, ApplicationUser>();
 
