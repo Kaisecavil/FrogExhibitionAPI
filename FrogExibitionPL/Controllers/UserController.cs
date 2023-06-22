@@ -33,12 +33,13 @@ namespace FrogExhibitionPL.Controllers
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ApplicationUserGeneralViewModel>))]
         [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         public async Task<ActionResult<IEnumerable<ApplicationUserGeneralViewModel>>> GetUsers()
         {
             try
             {
-                return base.Ok(await _userService.GetAllApplicationUsers());
+                return base.Ok(await _userService.GetAllApplicationUsersAsync());
             }
             catch (NotFoundException ex)
             {
@@ -47,7 +48,7 @@ namespace FrogExhibitionPL.Controllers
 
         }
 
-        // GET: api/Users/5
+        // GET: api/Users/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(ApplicationUserDetailViewModel))]
         [ProducesResponseType(401)]
@@ -57,7 +58,7 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _userService.GetApplicationUser(id));
+                return base.Ok(await _userService.GetApplicationUserAsync(id));
             }
             catch (NotFoundException ex)
             {
@@ -67,7 +68,7 @@ namespace FrogExhibitionPL.Controllers
 
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Users/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
@@ -86,7 +87,7 @@ namespace FrogExhibitionPL.Controllers
                 {
                     //ModelState.IsValid
                     //ModelState.AddModelError("")
-                    await _userService.UpdateApplicationUser(id, user);
+                    await _userService.UpdateApplicationUserAsync(id, user);
                     return base.NoContent();
                 }
                 else
@@ -110,10 +111,11 @@ namespace FrogExhibitionPL.Controllers
 
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Users/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> DeleteUser(Guid id)
@@ -124,12 +126,12 @@ namespace FrogExhibitionPL.Controllers
                 var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
                 if (currentUser.Id == id.ToString() || await _userManager.IsInRoleAsync(currentUser, "Admin"))
                 {
-                    await _userService.DeleteApplicationUser(id);
+                    await _userService.DeleteApplicationUserAsync(id);
                     return base.NoContent();
                 }
                 else
                 {
-                    return base.Unauthorized("Access denied");
+                    return base.Forbid("Access denied");
                 }
 
             }

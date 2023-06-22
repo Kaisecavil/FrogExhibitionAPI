@@ -5,9 +5,9 @@ namespace FrogExhibitionBLL.Interfaces.IService
 {
     public interface IApplicationUserService
     {
-        Task DeleteApplicationUser(Guid id);
-        Task<IEnumerable<ApplicationUserDetailViewModel>> GetAllApplicationUsers();
-        Task<ApplicationUserDetailViewModel> GetApplicationUser(Guid id);
-        Task UpdateApplicationUser(Guid id, ApplicationUserDtoForUpdate applicationUser);
+        Task DeleteApplicationUserAsync(Guid id);
+        Task<IEnumerable<ApplicationUserDetailViewModel>> GetAllApplicationUsersAsync();
+        Task<ApplicationUserDetailViewModel> GetApplicationUserAsync(Guid id);
+        Task UpdateApplicationUserAsync(Guid id, ApplicationUserDtoForUpdate applicationUser);
     }
 }

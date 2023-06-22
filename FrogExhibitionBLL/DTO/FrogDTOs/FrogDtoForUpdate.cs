@@ -1,5 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Http;
+using FrogExhibitionDAL.Constants.ModelConstants.FrogConstants;
+using FrogExhibitionDAL.Constants;
+using FrogExhibitionDAL.Enums;
 
 namespace FrogExhibitionBLL.DTO.FrogDTOs
 {
@@ -8,55 +12,54 @@ namespace FrogExhibitionBLL.DTO.FrogDTOs
         [Required]
         public Guid Id { get; set; }
         [Required]
-        [MinLength(3)]
-        [DefaultValue("Lithobates")]
+        [MinLength(GeneralConstants.MinStrLength)]
+        [DefaultValue(FrogDefaultValueConstants.FrogGenusDefaultValue)]
         public string Genus { get; set; }
 
         [Required]
-        [MinLength(3)]
-        [DefaultValue("L. catesbeianus")]
+        [MinLength(GeneralConstants.MinStrLength)]
+        [DefaultValue(FrogDefaultValueConstants.FrogSpeciesDefaultValue)]
         public string Species { get; set; }
 
         [Required]
-        [MinLength(3)]
-        [DefaultValue("Green-brown")]
+        [MinLength(GeneralConstants.MinStrLength)]
+        [DefaultValue(FrogDefaultValueConstants.FrogColorDefaultValue)]
         public string Color { get; set; }
 
         [Required]
-        [MinLength(3)]
-        [DefaultValue("North America")]
+        [MinLength(GeneralConstants.MinStrLength)]
+        [DefaultValue(FrogDefaultValueConstants.FrogHabitatDefaultValue)]
         public string Habitat { get; set; }
 
         [Required]
-        [DefaultValue(false)]
+        [DefaultValue(FrogDefaultValueConstants.FrogPosisonousDefaultValue)]
         public bool Poisonous { get; set; }
 
         [Required]
-        [ValidStrings(new string[] { "Male", "Female", "Hermaphrodite" }, ErrorMessage = "Valid options: Male, Female, Hermaphrodite")]
-        [DefaultValue("Male")]
-        public string Sex { get; set; }
+        [DefaultValue(FrogDefaultValueConstants.FrogSexDefaultValue)]
+        public FrogSex Sex { get; set; }
 
         [Required]
-        [DefaultValue(true)]
+        [DefaultValue(FrogDefaultValueConstants.FrogHouseKeepableDefaultValue)]
         public bool HouseKeepable { get; set; }
 
         [Required]
-        [Range(1, 100)]
-        [DefaultValue(15.5f)]
+        [Range(FrogConstraintConstants.MinFrogSize, FrogConstraintConstants.MaxFrogSize)]
+        [DefaultValue(FrogDefaultValueConstants.FrogSizeDefaultValue)]
         public float Size { get; set; }
 
         [Required]
-        [Range(1, 1000)]
-        [DefaultValue(350)]
+        [Range(FrogConstraintConstants.MinFrogWeight, FrogConstraintConstants.MaxFrogWeight)]
+        [DefaultValue(FrogDefaultValueConstants.FrogWeightDefaultValue)]
         public float Weight { get; set; }
 
         [Required]
-        [Range(1, Constants.MaxAge)]
-        [DefaultValue(3)]
+        [Range(FrogConstraintConstants.MinFrogAge, FrogConstraintConstants.MaxFrogAge)]
+        [DefaultValue(FrogConstraintConstants.MinFrogAge)]
         public int CurrentAge { get; set; }
         [Required]
-        [Range(1, Constants.MaxAge)]
-        [DefaultValue(10)]
+        [Range(FrogConstraintConstants.MinFrogAge, FrogConstraintConstants.MaxFrogAge)]
+        [DefaultValue(FrogDefaultValueConstants.FrogMaxAgeDefaultValue)]
         public int MaxAge { get; set; }
         public string? Diet { get; set; }
         public string? Features { get; set; }

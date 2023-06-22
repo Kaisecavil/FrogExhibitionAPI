@@ -5,10 +5,10 @@ namespace FrogExhibitionBLL.Interfaces.IService
 {
     public interface IFrogOnExhibitionService
     {
-        Task<FrogOnExhibitionDetailViewModel> CreateFrogOnExhibition(FrogOnExhibitionDtoForCreate frogOnExhibition);
-        Task DeleteFrogOnExhibition(Guid id);
-        Task<IEnumerable<FrogOnExhibitionDetailViewModel>> GetAllFrogOnExhibitions();
-        Task<FrogOnExhibitionDetailViewModel> GetFrogOnExhibition(Guid id);
-        Task UpdateFrogOnExhibition(Guid id, FrogOnExhibitionDtoForCreate frogOnExhibition);
+        Task<Guid> CreateFrogOnExhibitionAsync(FrogOnExhibitionDtoForCreate frogOnExhibition);
+        Task DeleteFrogOnExhibitionAsync(Guid id);
+        Task<IEnumerable<FrogOnExhibitionDetailViewModel>> GetAllFrogOnExhibitionsAsync();
+        Task<FrogOnExhibitionDetailViewModel> GetFrogOnExhibitionAsync(Guid id);
+        Task UpdateFrogOnExhibitionAsync(Guid id, FrogOnExhibitionDtoForCreate frogOnExhibition);
     }
 }

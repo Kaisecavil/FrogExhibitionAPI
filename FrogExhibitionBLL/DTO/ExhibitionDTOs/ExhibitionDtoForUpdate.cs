@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
+﻿using FrogExhibitionDAL.Constants.ModelConstants.ExhibitionConstants;
 using FrogExhibitionDAL.Constants;
-using FrogExhibitionDAL.Constants.ModelConstants.ExhibitionConstants;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
-namespace FrogExhibitionBLL.ViewModels.ExhibitionViewModels
+namespace FrogExhibitionBLL.DTO.ExhibitionDTOs
 {
-    public class ExhibitionDetailViewModel
+    public class ExhibitionDtoForUpdate
     {
         [Required]
         public Guid Id { get; set; }

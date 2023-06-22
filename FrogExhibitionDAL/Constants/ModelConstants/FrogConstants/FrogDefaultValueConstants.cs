@@ -1,6 +1,6 @@
 ﻿using FrogExhibitionDAL.Enums;
 
-namespace FrogExhibitionBLL.Constants.ModelConstants.FrogConstants
+namespace FrogExhibitionDAL.Constants.ModelConstants.FrogConstants
 {
     public class FrogDefaultValueConstants
     {

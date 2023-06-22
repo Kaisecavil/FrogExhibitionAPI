@@ -1,4 +1,4 @@
-﻿namespace FrogExhibitionBLL.Interfaces.IService
+﻿namespace FrogExhibitionBLL.Interfaces.IHelper
 {
     public interface ISortHelper<T>
     {

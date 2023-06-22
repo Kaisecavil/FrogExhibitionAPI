@@ -1,6 +1,7 @@
 ﻿using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
 using Microsoft.Extensions.Logging;
+using FrogExhibitionDAL.Enums;
 
 namespace FrogExhibitionDAL.Database
 {
@@ -48,7 +49,7 @@ namespace FrogExhibitionDAL.Database
                     Color = "Red",
                     Habitat = "North America",
                     Poisonous = false,
-                    Sex = "Male",
+                    Sex = FrogSex.Male,
                     HouseKeepable = true,
                     Size = 5.0f,
                     Weight = 10.0f,
@@ -64,7 +65,7 @@ namespace FrogExhibitionDAL.Database
                     Color = "Green",
                     Habitat = "Asia",
                     Poisonous = true,
-                    Sex = "Female",
+                    Sex = FrogSex.Female,
                     HouseKeepable = false,
                     Size = 4.5f,
                     Weight = 8.0f,
@@ -80,7 +81,7 @@ namespace FrogExhibitionDAL.Database
                     Color = "Purple",
                     Habitat = "Dark offices",
                     Poisonous = false,
-                    Sex = "Female",
+                    Sex = FrogSex.Female,
                     HouseKeepable = false,
                     Size = 8.5f,
                     Weight = 8.0f,
@@ -96,7 +97,7 @@ namespace FrogExhibitionDAL.Database
                     Color = "Yellow",
                     Habitat = "Africa",
                     Poisonous = true,
-                    Sex = "Hermaphrodite",
+                    Sex = FrogSex.Hermaphrodite,
                     HouseKeepable = false,
                     Size = 4.5f,
                     Weight = 8.0f,

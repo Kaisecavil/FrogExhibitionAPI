@@ -44,7 +44,7 @@ namespace FrogExhibitionBLL.Services
             return tokenString;
         }
 
-        public async Task<bool> Login(LoginUser user)
+        public async Task<bool> LoginAsync(LoginUser user)
         {
             var identityUser = await _userManager.FindByEmailAsync(user.Email);
             if (identityUser == null)
@@ -54,7 +54,7 @@ namespace FrogExhibitionBLL.Services
             return await _userManager.CheckPasswordAsync(identityUser, user.Password);
         }
 
-        public async Task<bool> RegisterUser(LoginUser user)
+        public async Task<bool> RegisterUserAsync(LoginUser user)
         {
             var existingUser = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
             if (existingUser == null)

@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
+using FrogExhibitionDAL.Models;
 using FrogExhibitionBLL.DTO.ExhibitionDTOs;
 using FrogExhibitionBLL.DTO.FrogDTOs;
 using FrogExhibitionBLL.DTO.FrogOnExhibitionDTOs;
 using FrogExhibitionBLL.DTO.VoteDtos;
 using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
-using FrogExhibitionDAL.Models;
+using FrogExhibitionBLL.ViewModels.FrogViewModels;
+using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
+using FrogExhibitionBLL.ViewModels.FrogOnExhibitionViewModels;
+using FrogExhibitionBLL.ViewModels.VoteViewModels;
+using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
 
 namespace FrogExhibitionBLL.Helpers
 {

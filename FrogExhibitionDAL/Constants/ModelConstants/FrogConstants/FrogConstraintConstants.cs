@@ -1,8 +1,7 @@
-﻿namespace FrogExhibitionBLL.Constants.ModelConstants.FrogConstants
+﻿namespace FrogExhibitionDAL.Constants.ModelConstants.FrogConstants
 {
     public class FrogConstraintConstants
     {
-        public const int MinStrLength = 3;
         public const int MinFrogAge = 1;
         public const int MaxFrogAge = 100;
         public const int MaxFrogSize = 1;

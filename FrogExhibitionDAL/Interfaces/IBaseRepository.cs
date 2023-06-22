@@ -16,7 +16,7 @@ namespace FrogExhibitionDAL.Interfaces
         public Task CreateRangeAsync(IEnumerable<DbModel> models);
         public Task UpdateAsync(DbModel model);
         public Task DeleteAsync(Guid id);
-        public Task DeleteRangeeAsync(IEnumerable<DbModel> models);
+        public void DeleteRange(IEnumerable<DbModel> models);
         public Task<bool> EntityExists(Guid id);
         public Task<bool> IsEmpty();
 

@@ -2,8 +2,10 @@
 
 namespace FrogExhibitionBLL.DTO.VoteDtos
 {
-    public class VoteDtoForCreate
+    public class VoteDtoForUpdate
     {
+        [Required]
+        public Guid Id { get; set; }
         [Required]
         public string ApplicationUserId { get; set; }
         [Required]

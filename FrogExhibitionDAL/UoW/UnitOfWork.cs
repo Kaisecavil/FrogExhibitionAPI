@@ -65,9 +65,14 @@ namespace FrogExhibitionDAL.UoW
             }
         }
 
-        public void Save()
+        public int Save()
         {
-            _db.SaveChanges();
+            return _db.SaveChanges();
+        }
+
+        public async Task<int> SaveAsync()
+        {
+            return await _db.SaveChangesAsync();
         }
 
         private bool disposed = false;

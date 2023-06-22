@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
-using FrogExhibitionBLL.Interfaces.IService;
 using System.Linq.Dynamic.Core;
+using FrogExhibitionBLL.Interfaces.IHelper;
 
 namespace FrogExhibitionBLL.Helpers
 {

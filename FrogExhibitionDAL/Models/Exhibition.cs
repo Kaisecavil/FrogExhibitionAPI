@@ -1,14 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FrogExhibitionDAL.Models.Base;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using FrogExhibitionDAL.Constants;
 using FrogExhibitionDAL.Constants.ModelConstants.ExhibitionConstants;
 
-namespace FrogExhibitionBLL.ViewModels.ExhibitionViewModels
+namespace FrogExhibitionDAL.Models
 {
-    public class ExhibitionDetailViewModel
+    public class Exhibition : BaseModel
     {
-        [Required]
-        public Guid Id { get; set; }
         [Required]
         [MinLength(GeneralConstants.MinStrLength)]
         [DefaultValue(ExhibitionDefaultValueConstants.NameDefaultValue)]
@@ -31,5 +30,8 @@ namespace FrogExhibitionBLL.ViewModels.ExhibitionViewModels
         [MinLength(GeneralConstants.MinStrLength)]
         [DefaultValue(ExhibitionDefaultValueConstants.HouseDefaultValue)]
         public string House { get; set; }
+
+        public virtual List<Frog> Frogs { get; set; } = new();
+        public virtual List<FrogOnExhibition> FrogsOnExhibitions { get; set; } = new();
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using FrogExhibitionDAL.Enums;
-using FrogExhibitionPL.AppConsts.FrogConstants;
+using FrogExhibitionDAL.Constants.ModelConstants.FrogConstants;
+using FrogExhibitionDAL.Constants;
 
 namespace FrogExhibitionBLL.ViewModels.FrogViewModels
 {
@@ -9,22 +10,22 @@ namespace FrogExhibitionBLL.ViewModels.FrogViewModels
     {
         public Guid Id { get; set; }
         [Required]
-        [MinLength(FrogConstraintConstants.MinStrLength)]
-        [DefaultValue(FrogDefaultValueConstants)]
+        [MinLength(GeneralConstants.MinStrLength)]
+        [DefaultValue(FrogDefaultValueConstants.FrogGenusDefaultValue)]
         public string Genus { get; set; }
 
         [Required]
-        [MinLength(FrogConstraintConstants.MinStrLength)]
+        [MinLength(GeneralConstants.MinStrLength)]
         [DefaultValue(FrogDefaultValueConstants.FrogSpeciesDefaultValue)]
         public string Species { get; set; }
 
         [Required]
-        [MinLength(FrogConstraintConstants.MinStrLength)]
+        [MinLength(GeneralConstants.MinStrLength)]
         [DefaultValue(FrogDefaultValueConstants.FrogColorDefaultValue)]
         public string Color { get; set; }
 
         [Required]
-        [MinLength(FrogConstraintConstants.MinStrLength)]
+        [MinLength(GeneralConstants.MinStrLength)]
         [DefaultValue(FrogDefaultValueConstants.FrogHabitatDefaultValue)]
         public string Habitat { get; set; }
 
@@ -33,7 +34,6 @@ namespace FrogExhibitionBLL.ViewModels.FrogViewModels
         public bool Poisonous { get; set; }
 
         [Required]
-        //[ValidStrings(new string[] { "Male", "Female", "Hermaphrodite" }, ErrorMessage = "Valid options: Male, Female, Hermaphrodite")]
         [DefaultValue(FrogDefaultValueConstants.FrogSexDefaultValue)]
         public FrogSex Sex { get; set; }
 
@@ -53,7 +53,7 @@ namespace FrogExhibitionBLL.ViewModels.FrogViewModels
 
         [Required]
         [Range(FrogConstraintConstants.MinFrogAge, FrogConstraintConstants.MaxFrogAge)]
-        [DefaultValue(FrogConstraintConstants.MinStrLength)]
+        [DefaultValue(FrogConstraintConstants.MinFrogAge)]
         public int CurrentAge { get; set; }
         [Required]
         [Range(FrogConstraintConstants.MinFrogAge, FrogConstraintConstants.MaxFrogAge)]

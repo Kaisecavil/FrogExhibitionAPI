@@ -31,7 +31,7 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _frogOnExhibitionService.GetAllFrogOnExhibitions());
+                return base.Ok(await _frogOnExhibitionService.GetAllFrogOnExhibitionsAsync());
             }
             catch (NotFoundException ex)
             {
@@ -40,10 +40,11 @@ namespace FrogExhibitionPL.Controllers
 
         }
 
-        // GET: api/FrogOnExhibitions/5
+        // GET: api/FrogOnExhibitions/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(FrogOnExhibitionDetailViewModel))]
         [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
 
@@ -51,7 +52,7 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _frogOnExhibitionService.GetFrogOnExhibition(id));
+                return base.Ok(await _frogOnExhibitionService.GetFrogOnExhibitionAsync(id));
             }
             catch (NotFoundException ex)
             {
@@ -61,12 +62,13 @@ namespace FrogExhibitionPL.Controllers
 
         }
 
-        // PUT: api/FrogOnExhibitions/5
+        // PUT: api/FrogOnExhibitions/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
         [Authorize(Roles = "Admin")]
@@ -76,7 +78,7 @@ namespace FrogExhibitionPL.Controllers
             {
                 //ModelState.IsValid
                 //ModelState.AddModelError("")
-                await _frogOnExhibitionService.UpdateFrogOnExhibition(id, frogOnExhibition);
+                await _frogOnExhibitionService.UpdateFrogOnExhibitionAsync(id, frogOnExhibition);
                 return base.NoContent();
             }
             catch (NotFoundException ex)
@@ -106,8 +108,8 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                var createdFrogOnExhibition = await _frogOnExhibitionService.CreateFrogOnExhibition(frogOnExhibition);
-                return base.CreatedAtAction("GetFrogOnExhibition", new { id = createdFrogOnExhibition.Id }, createdFrogOnExhibition);
+                var createdFrogOnExhibitionId = await _frogOnExhibitionService.CreateFrogOnExhibitionAsync(frogOnExhibition);
+                return base.CreatedAtAction("GetFrogOnExhibition", createdFrogOnExhibitionId);
             }
             catch (BadRequestException ex)
             {
@@ -119,17 +121,18 @@ namespace FrogExhibitionPL.Controllers
             }
         }
 
-        // DELETE: api/FrogOnExhibitions/5
+        // DELETE: api/FrogOnExhibitions/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteFrogOnExhibition(Guid id)
         {
             try
             {
-                await _frogOnExhibitionService.DeleteFrogOnExhibition(id);
+                await _frogOnExhibitionService.DeleteFrogOnExhibitionAsync(id);
                 return base.NoContent();
             }
             catch (NotFoundException ex)

@@ -10,6 +10,7 @@ namespace FrogExhibitionDAL.Interfaces
         IBaseRepository<Vote> Votes { get; }
         IBaseRepository<FrogPhoto> FrogPhotos { get; }
 
-        void Save();
+        int Save();
+        Task<int> SaveAsync();
     }
 }

@@ -5,12 +5,11 @@ namespace FrogExhibitionBLL.Interfaces.IService
 {
     public interface IFrogService
     {
-        public Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogs();
-        public Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogs(string sortParams);
-        public Task<FrogDetailViewModel> GetFrog(Guid id);
-        public Task<FrogDetailViewModel> CreateFrog(FrogDtoForCreate frog);
-        public Task DeleteFrog(Guid id);
-        //?public Task UpdateFrog(Guid id, FrogDtoForUpdate frog);
-        public Task UpdateFrog(FrogDtoForUpdate frog);
+        public Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogsAsync();
+        public Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogsAsync(string sortParams);
+        public Task<FrogDetailViewModel> GetFrogAsync(Guid id);
+        public Task<Guid> CreateFrogAsync(FrogDtoForCreate frog);
+        public Task<bool> DeleteFrogAsync(Guid id);
+        public Task<bool> UpdateFrogAsync(FrogDtoForUpdate frog);
     }
 }

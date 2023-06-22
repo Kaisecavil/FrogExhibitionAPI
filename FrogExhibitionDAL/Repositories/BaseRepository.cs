@@ -33,8 +33,8 @@ namespace FrogExhibitionDAL.Repositories
         public IEnumerable<DbModel> GetAll(bool asNoTraking = false)
         {
             return asNoTraking ?
-                await _context.Set<DbModel>().ToList() :
-                await _context.Set<DbModel>().AsNoTracking().ToList();
+                _context.Set<DbModel>().ToList() :
+                _context.Set<DbModel>().AsNoTracking().ToList();
         }
 
         public void Update(DbModel model)
@@ -63,8 +63,8 @@ namespace FrogExhibitionDAL.Repositories
         public async Task<DbModel> GetAsync(Guid id, bool asNoTraking = false)
         {    
             return asNoTraking?
-                await _context.Set<DbModel>()?.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id) :
-                await _context.Set<DbModel>()?.FirstOrDefaultAsync(m => m.Id == id);
+                await _context.Set<DbModel>().AsNoTracking().FirstOrDefaultAsync(m => m.Id == id) :
+                await _context.Set<DbModel>().FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task CreateAsync(DbModel model)
@@ -107,7 +107,7 @@ namespace FrogExhibitionDAL.Repositories
         {
             await _context.Set<DbModel>().AddRangeAsync(models);
         }
-        public async Task DeleteRangeAsync(IEnumerable<DbModel> models)
+        public void DeleteRange(IEnumerable<DbModel> models)
         {
             _context.Set<DbModel>().RemoveRange(models);
         }

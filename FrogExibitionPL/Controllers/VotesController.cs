@@ -25,13 +25,14 @@ namespace FrogExhibitionPL.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<VoteDetailViewModel>))]
         [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<VoteDetailViewModel>>> GetVotes()
         {
             try
             {
-                return base.Ok(await _voteService.GetAllVotes());
+                return base.Ok(await _voteService.GetAllVotesAsync());
             }
             catch (NotFoundException ex)
             {
@@ -40,17 +41,18 @@ namespace FrogExhibitionPL.Controllers
 
         }
 
-        // GET: api/Votes/5
+        // GET: api/Votes/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(VoteDetailViewModel))]
         [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<VoteDetailViewModel>> GetVote(Guid id)
         {
             try
             {
-                return base.Ok(await _voteService.GetVote(id));
+                return base.Ok(await _voteService.GetVoteAsync(id));
             }
             catch (NotFoundException ex)
             {
@@ -66,6 +68,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
         [Authorize(Roles = "Admin")]
@@ -75,7 +78,7 @@ namespace FrogExhibitionPL.Controllers
             {
                 //ModelState.IsValid
                 //ModelState.AddModelError("")
-                await _voteService.UpdateVote(id, vote);
+                await _voteService.UpdateVoteAsync(id, vote);
                 return base.NoContent();
             }
             catch (NotFoundException ex)
@@ -104,8 +107,8 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                var createdVote = await _voteService.CreateVote(vote);
-                return base.CreatedAtAction("GetVote", new { id = createdVote.Id }, createdVote);
+                var createdVoteId = await _voteService.CreateVoteAsync(vote);
+                return base.CreatedAtAction("GetVote", createdVoteId);
             }
             catch (BadRequestException ex)
             {
@@ -117,17 +120,18 @@ namespace FrogExhibitionPL.Controllers
             }
         }
 
-        // DELETE: api/Votes/5
+        // DELETE: api/Votes/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVote(Guid id)
         {
             try
             {
-                await _voteService.DeleteVote(id);
+                await _voteService.DeleteVoteAsync(id);
                 return base.NoContent();
             }
             catch (NotFoundException ex)

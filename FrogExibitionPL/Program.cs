@@ -14,6 +14,7 @@ using FrogExhibitionBLL.Helpers;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
 using FrogExhibitionBLL.DTO.VoteDtos;
+using FrogExhibitionBLL.Interfaces.IHelper;
 
 namespace FrogExhibitionPL
 {
@@ -48,9 +49,9 @@ namespace FrogExhibitionPL
             builder.Services.AddScoped<IVoteService, VoteService>();
             builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
             builder.Services.AddScoped<IFrogPhotoService, FrogPhotoService>();
-            builder.Services.AddScoped<IPhotoService, PhotoService>();
             builder.Services.AddScoped<IUserProvider, UserProvider>();
 
+            builder.Services.AddSingleton<IFileHelper, FileHelper>();
             builder.Services.AddSingleton<ISortHelper<Frog>, SortHelper<Frog>>();
             builder.Services.AddSingleton<ISortHelper<ExhibitionDetailViewModel>, SortHelper<ExhibitionDetailViewModel>>();
 
@@ -142,8 +143,8 @@ namespace FrogExhibitionPL
 
                     var adminUser = new LoginUser() { Email = "Admin@mail.com", Password = "P@ssw0rd" };
                     var regularUser = new LoginUser() { Email = "User@mail.com", Password = "P@ssw0rd" };
-                    await authService.RegisterUser(adminUser);
-                    await authService.RegisterUser(regularUser);
+                    await authService.RegisterUserAsync(adminUser);
+                    await authService.RegisterUserAsync(regularUser);
 
 
                     await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email), "Admin");
@@ -167,7 +168,7 @@ namespace FrogExhibitionPL
                                 };
                                 try
                                 {
-                                    await voteService.CreateVote(temp);
+                                    await voteService.CreateVoteAsync(temp);
                                     voteCount++;
                                 }
                                 catch (Exception)

@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using FrogExhibitionBLL.DTO.FrogDTOs;
 using FrogExhibitionBLL.Exceptions;
+using FrogExhibitionBLL.Interfaces.IHelper;
 using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.ViewModels.FrogViewModels;
 using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Web.Http;
 
 namespace FrogExhibitionBLL.Services
 {
@@ -16,40 +17,39 @@ namespace FrogExhibitionBLL.Services
         private readonly ILogger<FrogService> _logger;
         private readonly IMapper _mapper;
         private readonly ISortHelper<Frog> _sortHelper;
-        private readonly IPhotoService _photoService;
         private readonly IFrogPhotoService _frogPhotoService;
+        private readonly IFileHelper _fileHelper;
 
-        public FrogService(IUnitOfWork unitOfWork, ILogger<FrogService> logger, IMapper mapper, ISortHelper<Frog> sortHelper, IPhotoService photoService, IFrogPhotoService frogPhotoService)
-        { 
+        public FrogService(IUnitOfWork unitOfWork,
+            ILogger<FrogService> logger,
+            IMapper mapper,
+            ISortHelper<Frog> sortHelper,
+            IFrogPhotoService frogPhotoService,
+            IFileHelper fileHelper)
+        {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
             _sortHelper = sortHelper;
-            _photoService = photoService;
             _frogPhotoService = frogPhotoService;
+            _fileHelper = fileHelper;
         }
 
-        public async Task<FrogDetailViewModel> CreateFrog(FrogDtoForCreate frog)
+        public async Task<Guid> CreateFrogAsync(FrogDtoForCreate frog)
         {
             try
             {
                 Frog mappedFrog = _mapper.Map<Frog>(frog);
-                Frog createdFrog = await _unitOfWork.Frogs.CreateAsync(mappedFrog);
-                // вызов сервисов для создания картинки в wwwroot и сохранения имени картинки в БД
+                await _unitOfWork.Frogs.CreateAsync(mappedFrog);
                 if(frog.Photos!= null)
                 {
                     foreach (var photo in frog.Photos)
                     {
-                        var photopath = await _photoService.SavePhotoAsync(photo); // wwwrooot save
-                        var frogPhoto = _frogPhotoService.CreateFrogPhotoAsync(new FrogPhoto { PhotoPath = photopath, FrogId = createdFrog.Id });
+                        var photopath = await _fileHelper.SavePhotoAsync(photo);
+                        var frogPhoto = _frogPhotoService.CreateFrogPhotoAsync(new FrogPhoto { PhotoPath = photopath, FrogId = mappedFrog.Id });
                     }
                 }
-                //------
-                _logger.LogInformation("Frog Created");
-                var res = _mapper.Map<FrogDetailViewModel>(createdFrog);
-                res.PhotoPaths = (await _frogPhotoService.GetFrogPhotoPathsAsync(createdFrog.Id)).ToList();
-                throw new HttpResponseException()
-                return res;
+                return await _unitOfWork.SaveAsync() == 1 ? mappedFrog.Id : mappedFrog.Id; //Guid.Empty
             }
             catch (Exception ex)
             {
@@ -57,12 +57,8 @@ namespace FrogExhibitionBLL.Services
                 throw;
             };
         }
-        public async Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogs()
+        public async Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogsAsync()
         {
-            if (await _unitOfWork.Frogs.IsEmpty())
-            {
-                throw new NotFoundException("Entity not found due to emptines of db");
-            }
             var frogs = await _unitOfWork.Frogs.GetAllAsync(true);
             var mappedfrogs = _mapper.Map<IEnumerable<FrogGeneralViewModel>>(frogs); ///вынести в отдельный метод лучше это
             foreach (var frog in mappedfrogs)
@@ -72,12 +68,8 @@ namespace FrogExhibitionBLL.Services
             return mappedfrogs;
         }
 
-        public async Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogs(string sortParams)
+        public async Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogsAsync(string sortParams)
         {
-            if (await _unitOfWork.Frogs.IsEmpty())
-            {
-                throw new NotFoundException("Entity not found due to emptines of db");
-            }
             var frogs = (await _unitOfWork.Frogs.GetAllAsync(true)).AsQueryable();
             var sortedFrogs = _sortHelper.ApplySort(frogs, sortParams);
             var sortedMappedfrogs = _mapper.Map<IEnumerable<FrogGeneralViewModel>>(sortedFrogs);
@@ -89,15 +81,9 @@ namespace FrogExhibitionBLL.Services
             
         }
 
-
-        public async Task<FrogDetailViewModel> GetFrog(Guid id)
+        public async Task<FrogDetailViewModel> GetFrogAsync(Guid id)
         {
-            if (await _unitOfWork.Frogs.IsEmpty())
-            {
-                throw new NotFoundException("Entity not found due to emptines of db");
-            }
             var frog = await _unitOfWork.Frogs.GetAsync(id, true);
-
             if (frog == null)
             {
                 throw new NotFoundException("Entity not found");
@@ -107,40 +93,7 @@ namespace FrogExhibitionBLL.Services
             return mappedFrog;
         }
 
-        //public async Task UpdateFrog(Guid id, FrogDtoForUpdate frog)
-        //{
-        //    try
-        //    {
-        //        if (!await _unitOfWork.Frogs.EntityExists(id))
-        //        {
-        //            throw new NotFoundException("Entity not found");
-        //        }
-        //        Frog mappedFrog = _mapper.Map<Frog>(frog);
-        //        mappedFrog.Id = id;
-        //        await _unitOfWork.Frogs.UpdateAsync(mappedFrog);
-        //        // вызов сервисов для создания картинки в wwwroot и сохранения имени картинки в БД
-        //        foreach (var photo in frog.Photos)
-        //        {
-        //            var photopath = await _photoService.SavePhotoAsync(photo); // wwwrooot save
-        //            await _frogPhotoService.DeleteFrogPhotosAsync(id);
-        //            var frogPhoto = _frogPhotoService.CreateFrogPhotoAsync(new FrogPhoto { PhotoPath = photopath, FrogId = id });
-        //        }
-        //        //------
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!await _unitOfWork.Frogs.EntityExists(id))
-        //        {
-        //            throw new NotFoundException("Entity not found due to possible concurrency");
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-        //}
-
-        public async Task UpdateFrog(FrogDtoForUpdate frog) // костыли?
+        public async Task<bool> UpdateFrogAsync(FrogDtoForUpdate frog) 
         {
             try
             {
@@ -151,17 +104,16 @@ namespace FrogExhibitionBLL.Services
                 Frog mappedFrog = _mapper.Map<Frog>(frog);
                 mappedFrog.Id = frog.Id;
                 await _unitOfWork.Frogs.UpdateAsync(mappedFrog);
-                // вызов сервисов для создания картинки в wwwroot и сохранения имени картинки в БД
                 await _frogPhotoService.DeleteFrogPhotosAsync(frog.Id);
                 if(frog.Photos != null)
                 {
                     foreach (var photo in frog.Photos)
                     {
-                        var photopath = await _photoService.SavePhotoAsync(photo); // wwwrooot save
+                        var photopath = await _fileHelper.SavePhotoAsync(photo);
                         var frogPhoto = _frogPhotoService.CreateFrogPhotoAsync(new FrogPhoto { PhotoPath = photopath, FrogId = frog.Id });
                     }
                 }
-                //------
+                return await _unitOfWork.SaveAsync() == 1;
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -176,12 +128,8 @@ namespace FrogExhibitionBLL.Services
             }
         }
 
-        public async Task DeleteFrog(Guid id)
+        public async Task<bool> DeleteFrogAsync(Guid id)
         {
-            if (await _unitOfWork.Frogs.IsEmpty())
-            {
-                throw new NotFoundException("Entity not found due to emptines of db");
-            }
             var frog = await _unitOfWork.Frogs.GetAsync(id);
 
             if (frog == null)
@@ -190,6 +138,8 @@ namespace FrogExhibitionBLL.Services
             }
 
             await _unitOfWork.Frogs.DeleteAsync(frog.Id);
+
+            return await _unitOfWork.SaveAsync() == 1;
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FrogExhibitionBLL.Services
@@ -19,20 +20,7 @@ namespace FrogExhibitionBLL.Services
         public async Task<IEnumerable<string>> GetFrogPhotoPathsAsync(Guid frogId)
         {
             var photoPaths = (await _unitOfWork.FrogPhotos.GetAllAsync()).AsQueryable().Where(p => p.FrogId == frogId).Select(p => p.PhotoPath);
-            return photoPaths.ToList();
-        }
-
-        public async Task<FrogPhoto> CreateFrogPhotoAsync(FrogPhoto frogPhoto)
-        {
-            try
-            {
-                return await _unitOfWork.FrogPhotos.CreateAsync(frogPhoto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical(ex.Message);
-                throw;
-            };
+            return await photoPaths.ToListAsync();
         }
 
         public IEnumerable<string> GetFrogPhotoPaths(Guid frogId)
@@ -41,15 +29,27 @@ namespace FrogExhibitionBLL.Services
             return photoPaths.ToList();
         }
 
-        public async Task DeleteFrogPhotosAsync(Guid frogId)
+        public async Task<bool> CreateFrogPhotoAsync(FrogPhoto frogPhoto)
+        {
+            try
+            {
+                await _unitOfWork.FrogPhotos.CreateAsync(frogPhoto);
+                return await _unitOfWork.SaveAsync() == 1;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex.Message);
+                throw;
+            };
+        }
+
+        public async Task<bool> DeleteFrogPhotosAsync(Guid frogId)
         {
             try
             {
                 var frogPhotos = (await _unitOfWork.FrogPhotos.GetAllAsync()).Where(p => p.FrogId == frogId);
-                foreach (var item in frogPhotos)
-                {
-                    await _unitOfWork.FrogPhotos.DeleteAsync(item.Id);
-                }
+                _unitOfWork.FrogPhotos.DeleteRange(frogPhotos);
+                return await _unitOfWork.SaveAsync() == frogPhotos.Count();
             }
             catch(Exception ex)
             {

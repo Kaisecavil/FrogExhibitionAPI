@@ -25,7 +25,7 @@ namespace FrogExhibitionPL.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            if(await _authService.Login(user))
+            if(await _authService.LoginAsync(user))
             {
                 var appUser = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
                 var roles = await _userManager.GetRolesAsync(appUser);
@@ -42,7 +42,7 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                if (await _authService.RegisterUser(user))
+                if (await _authService.RegisterUserAsync(user))
                 {
                     return Ok("Successful registration");
                 }

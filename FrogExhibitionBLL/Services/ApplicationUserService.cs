@@ -31,7 +31,7 @@ namespace FrogExhibitionBLL.Services
             _httpContext = httpContext;
         }
 
-        public async Task<IEnumerable<ApplicationUserDetailViewModel>> GetAllApplicationUsers()
+        public async Task<IEnumerable<ApplicationUserDetailViewModel>> GetAllApplicationUsersAsync()
         {
             if (_userManager.Users.IsNullOrEmpty())
             {
@@ -41,7 +41,7 @@ namespace FrogExhibitionBLL.Services
             return _mapper.Map<IEnumerable<ApplicationUserDetailViewModel>>(result);
         }
 
-        public async Task<ApplicationUserDetailViewModel> GetApplicationUser(Guid id)
+        public async Task<ApplicationUserDetailViewModel> GetApplicationUserAsync(Guid id)
         {
             if (_userManager.Users.IsNullOrEmpty())
             {
@@ -57,7 +57,7 @@ namespace FrogExhibitionBLL.Services
             return _mapper.Map<ApplicationUserDetailViewModel>(applicationUser);
         }
 
-        public async Task UpdateApplicationUser(Guid id, ApplicationUserDtoForUpdate applicationUser)
+        public async Task UpdateApplicationUserAsync(Guid id, ApplicationUserDtoForUpdate applicationUser)
         {
             try
             {
@@ -70,6 +70,7 @@ namespace FrogExhibitionBLL.Services
                 user.UserName = applicationUser.UserName;
                 user.Email = applicationUser.Email;
                 var result = await _userManager.UpdateAsync(user);
+                await _unitOfWork.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -89,7 +90,7 @@ namespace FrogExhibitionBLL.Services
             };
         }
 
-        public async Task DeleteApplicationUser(Guid id)
+        public async Task DeleteApplicationUserAsync(Guid id)
         {
 
             if (_userManager.Users.IsNullOrEmpty())
@@ -104,6 +105,7 @@ namespace FrogExhibitionBLL.Services
             }
 
             await _userManager.DeleteAsync(applicationUser);
+            await _unitOfWork.SaveAsync();
         }
     }
 }
