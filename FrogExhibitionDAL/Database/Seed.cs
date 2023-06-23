@@ -109,47 +109,20 @@ namespace FrogExhibitionDAL.Database
                 // Add more frogs if needed
             };
 
+            await _unitOfWork.Exhibitions.CreateRangeAsync(exhibitions);
+            await _unitOfWork.Frogs.CreateRangeAsync(frogs);
 
-
-            foreach (var exhibition in exhibitions)
-            {
-                _unitOfWork.Exhibitions.Create(exhibition);
-            }
-
-            foreach (var frog in frogs)
-            {
-                _unitOfWork.Frogs.Create(frog);
-            }
-
-            _unitOfWork.Save();
-
-            var exe = _unitOfWork.Exhibitions.GetAll();
-            var frgs = _unitOfWork.Frogs.GetAll();
-            foreach (var exhibition in exe)
-            {
-                foreach (var frog in frgs)
+            var frogsOnExhibitions = new List<FrogOnExhibition>();
+            frogs
+                .ForEach(f => exhibitions
+                .ForEach(e => frogsOnExhibitions
+                .Add(new FrogOnExhibition
                 {
-                    var temp = new FrogOnExhibition()
-                    {
-                        FrogId = frog.Id,
-                        ExhibitionId = exhibition.Id
-                    };
-
-                    try
-                    {
-                        _unitOfWork.FrogOnExhibitions.Create(temp);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("Db update exception");
-                        continue;
-                    }
-                }
-            }
-
-            _unitOfWork.Save();
-
-
+                    FrogId = f.Id,
+                    ExhibitionId = e.Id
+                })));
+            await _unitOfWork.FrogOnExhibitions.CreateRangeAsync(frogsOnExhibitions);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

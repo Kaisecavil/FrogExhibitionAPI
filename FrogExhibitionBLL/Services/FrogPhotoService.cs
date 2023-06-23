@@ -1,7 +1,6 @@
 ﻿using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FrogExhibitionBLL.Services
@@ -20,7 +19,7 @@ namespace FrogExhibitionBLL.Services
         public async Task<IEnumerable<string>> GetFrogPhotoPathsAsync(Guid frogId)
         {
             var photoPaths = (await _unitOfWork.FrogPhotos.GetAllAsync()).AsQueryable().Where(p => p.FrogId == frogId).Select(p => p.PhotoPath);
-            return await photoPaths.ToListAsync();
+            return photoPaths.ToList();
         }
 
         public IEnumerable<string> GetFrogPhotoPaths(Guid frogId)

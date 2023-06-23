@@ -1,5 +1,7 @@
-﻿using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
+﻿using FrogExhibitionBLL.Constants;
+using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
 using FrogExhibitionBLL.Exceptions;
+using FrogExhibitionBLL.Interfaces.IProvider;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
 using FrogExhibitionDAL.Models;
@@ -20,7 +22,10 @@ namespace FrogExhibitionPL.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserProvider _userProvider;
 
-        public UsersController(ILogger<UsersController> logger, IApplicationUserService userService, UserManager<ApplicationUser> userManager, IUserProvider userProvider)
+        public UsersController(ILogger<UsersController> logger,
+            IApplicationUserService userService,
+            UserManager<ApplicationUser> userManager,
+            IUserProvider userProvider)
         {
             _logger = logger;
             _userService = userService;
@@ -30,7 +35,7 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/Users
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ApplicationUserGeneralViewModel>))]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
@@ -53,7 +58,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(200, Type = typeof(ApplicationUserDetailViewModel))]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = RoleConstants.UserRole)]
         public async Task<ActionResult<ApplicationUserDetailViewModel>> GetUser(Guid id)
         {
             try
@@ -70,31 +75,29 @@ namespace FrogExhibitionPL.Controllers
 
         // PUT: api/Users/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> PutUser(Guid id, ApplicationUserDtoForUpdate user)
+        [Authorize(Roles = RoleConstants.UserRole)]
+        public async Task<IActionResult> PutUser(ApplicationUserDtoForUpdate user)
         {
             try
             {
                 var currentUserEmail = _userProvider.GetUserEmail();
                 var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
-                if (currentUser.Id == id.ToString() || await _userManager.IsInRoleAsync(currentUser,"Admin"))
+                if (currentUser.Id == user.Id.ToString() || await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole))
                 {
-                    //ModelState.IsValid
-                    //ModelState.AddModelError("")
-                    await _userService.UpdateApplicationUserAsync(id, user);
+                    await _userService.UpdateApplicationUserAsync(user);
                     return base.NoContent();
                 }
                 else
                 {
-                    return base.Unauthorized("Access denied");
-                }
-                
+                    return base.Forbid("Access denied");
+                } 
             }
             catch (NotFoundException ex)
             {
@@ -117,14 +120,14 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin, User")]
+        [Authorize(Roles = RoleConstants.UserRole)]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             try
             {
                 var currentUserEmail = _userProvider.GetUserEmail();
                 var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
-                if (currentUser.Id == id.ToString() || await _userManager.IsInRoleAsync(currentUser, "Admin"))
+                if (currentUser.Id == id.ToString() || await _userManager.IsInRoleAsync(currentUser,  RoleConstants.AdminRole))
                 {
                     await _userService.DeleteApplicationUserAsync(id);
                     return base.NoContent();

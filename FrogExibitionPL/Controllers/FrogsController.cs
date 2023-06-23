@@ -4,6 +4,7 @@ using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.FrogViewModels;
 using FrogExhibitionBLL.DTO.FrogDTOs;
 using FrogExhibitionBLL.Exceptions;
+using FrogExhibitionBLL.Constants;
 
 namespace FrogExhibitionPL.Controllers
 {
@@ -14,7 +15,8 @@ namespace FrogExhibitionPL.Controllers
         private readonly ILogger<FrogsController> _logger;
         private readonly IFrogService _frogService;
 
-        public FrogsController(ILogger<FrogsController> logger, IFrogService frogService)
+        public FrogsController(ILogger<FrogsController> logger,
+            IFrogService frogService)
         {
             _logger = logger;
             _frogService = frogService;
@@ -59,7 +61,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
         public async Task<IActionResult> PutFrog([FromForm]FrogDtoForUpdate frog) 
         {
             try
@@ -89,13 +91,13 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
         public async Task<IActionResult> PostFrog([FromForm]FrogDtoForCreate frog)
         {
             try
             {
                 var createdFrogId = await _frogService.CreateFrogAsync(frog);
-                return base.CreatedAtAction("GetFrog", createdFrogId);
+                return base.CreatedAtAction("GetFrog", new { id = createdFrogId }, createdFrogId);
             }
             catch (BadRequestException ex)
             {
@@ -109,7 +111,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
         public async Task<IActionResult> DeleteFrog(Guid id)
         {
             try

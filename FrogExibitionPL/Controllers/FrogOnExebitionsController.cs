@@ -5,6 +5,7 @@ using FrogExhibitionBLL.DTO.FrogOnExhibitionDTOs;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.FrogOnExhibitionViewModels;
 using FrogExhibitionBLL.Exceptions;
+using FrogExhibitionBLL.Constants;
 
 namespace FrogExhibitionPL.Controllers
 {
@@ -15,7 +16,8 @@ namespace FrogExhibitionPL.Controllers
         private readonly ILogger<FrogOnExhibitionsController> _logger;
         private readonly IFrogOnExhibitionService _frogOnExhibitionService;
 
-        public FrogOnExhibitionsController(ILogger<FrogOnExhibitionsController> logger, IFrogOnExhibitionService frogOnExhibitionService)
+        public FrogOnExhibitionsController(ILogger<FrogOnExhibitionsController> logger,
+            IFrogOnExhibitionService frogOnExhibitionService)
         {
             _logger = logger;
             _frogOnExhibitionService = frogOnExhibitionService;
@@ -26,7 +28,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<FrogOnExhibitionDetailViewModel>))]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
         public async Task<ActionResult<IEnumerable<FrogOnExhibitionDetailViewModel>>> GetFrogOnExhibitions()
         {
             try
@@ -46,7 +48,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
 
         public async Task<ActionResult<FrogOnExhibitionDetailViewModel>> GetFrogOnExhibition(Guid id)
         {
@@ -64,21 +66,19 @@ namespace FrogExhibitionPL.Controllers
 
         // PUT: api/FrogOnExhibitions/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PutFrogOnExhibition(Guid id, FrogOnExhibitionDtoForCreate frogOnExhibition)
+        [Authorize(Roles =  RoleConstants.AdminRole)]
+        public async Task<IActionResult> PutFrogOnExhibition(FrogOnExhibitionDtoForUpdate frogOnExhibition)
         {
             try
             {
-                //ModelState.IsValid
-                //ModelState.AddModelError("")
-                await _frogOnExhibitionService.UpdateFrogOnExhibitionAsync(id, frogOnExhibition);
+                await _frogOnExhibitionService.UpdateFrogOnExhibitionAsync(frogOnExhibition);
                 return base.NoContent();
             }
             catch (NotFoundException ex)
@@ -103,13 +103,13 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<FrogOnExhibitionDetailViewModel>> PostFrogOnExhibition(FrogOnExhibitionDtoForCreate frogOnExhibition)
+        [Authorize(Roles =  RoleConstants.AdminRole)]
+        public async Task<IActionResult> PostFrogOnExhibition(FrogOnExhibitionDtoForCreate frogOnExhibition)
         {
             try
             {
                 var createdFrogOnExhibitionId = await _frogOnExhibitionService.CreateFrogOnExhibitionAsync(frogOnExhibition);
-                return base.CreatedAtAction("GetFrogOnExhibition", createdFrogOnExhibitionId);
+                return base.CreatedAtAction("GetFrogOnExhibition", new { createdFrogOnExhibitionId }, createdFrogOnExhibitionId);
             }
             catch (BadRequestException ex)
             {
@@ -127,7 +127,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
         public async Task<IActionResult> DeleteFrogOnExhibition(Guid id)
         {
             try

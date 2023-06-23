@@ -29,7 +29,7 @@ namespace FrogExhibitionBLL.Services
             IEnumerable<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                roles.Contains("Admin")? new Claim(ClaimTypes.Role, "Admin") : new Claim(ClaimTypes.Role, "User")
+                roles.Contains( RoleConstants.AdminRole)? new Claim(ClaimTypes.Role,  RoleConstants.AdminRole) : new Claim(ClaimTypes.Role,  RoleConstants.UserRole)
             };
             
             SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));

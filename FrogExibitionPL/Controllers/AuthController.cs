@@ -13,7 +13,8 @@ namespace FrogExhibitionPL.Controllers
         private readonly IAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AuthController(IAuthService authService, UserManager<ApplicationUser> userManager)
+        public AuthController(IAuthService authService,
+            UserManager<ApplicationUser> userManager)
         {
             _authService = authService;
             _userManager = userManager;

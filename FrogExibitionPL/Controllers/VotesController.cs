@@ -1,4 +1,5 @@
-﻿using FrogExhibitionBLL.DTO.VoteDtos;
+﻿using FrogExhibitionBLL.Constants;
+using FrogExhibitionBLL.DTO.VoteDtos;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.VoteViewModels;
@@ -15,7 +16,9 @@ namespace FrogExhibitionPL.Controllers
         private readonly ILogger<VotesController> _logger;
         private readonly IVoteService _voteService;
 
-        public VotesController(ILogger<VotesController> logger, IVoteService voteService)
+        public VotesController(
+            ILogger<VotesController> logger,
+            IVoteService voteService)
         {
             _logger = logger;
             _voteService = voteService;
@@ -27,7 +30,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
         public async Task<ActionResult<IEnumerable<VoteDetailViewModel>>> GetVotes()
         {
             try
@@ -47,7 +50,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
         public async Task<ActionResult<VoteDetailViewModel>> GetVote(Guid id)
         {
             try
@@ -64,21 +67,19 @@ namespace FrogExhibitionPL.Controllers
 
         // PUT: api/Votes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PutVote(Guid id, VoteDtoForCreate vote)
+        [Authorize(Roles =  RoleConstants.AdminRole)]
+        public async Task<IActionResult> PutVote(VoteDtoForUpdate vote)
         {
             try
             {
-                //ModelState.IsValid
-                //ModelState.AddModelError("")
-                await _voteService.UpdateVoteAsync(id, vote);
+                await _voteService.UpdateVoteAsync(vote);
                 return base.NoContent();
             }
             catch (NotFoundException ex)
@@ -102,13 +103,13 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = RoleConstants.UserRole)]
         public async Task<ActionResult<VoteDetailViewModel>> PostVote(VoteDtoForCreate vote)
         {
             try
             {
                 var createdVoteId = await _voteService.CreateVoteAsync(vote);
-                return base.CreatedAtAction("GetVote", createdVoteId);
+                return base.CreatedAtAction("GetVote", new { id = createdVoteId }, createdVoteId);
             }
             catch (BadRequestException ex)
             {
@@ -126,7 +127,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
         public async Task<IActionResult> DeleteVote(Guid id)
         {
             try

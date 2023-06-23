@@ -1,4 +1,4 @@
-﻿namespace FrogExhibitionBLL.Interfaces.IService
+﻿namespace FrogExhibitionBLL.Interfaces.IProvider
 {
     public interface IUserProvider
     {

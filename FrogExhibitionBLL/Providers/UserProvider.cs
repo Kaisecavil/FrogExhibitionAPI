@@ -1,8 +1,8 @@
-﻿using FrogExhibitionBLL.Interfaces.IService;
+﻿using FrogExhibitionBLL.Interfaces.IProvider;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace FrogExhibitionBLL.Services
+namespace FrogExhibitionBLL.Providers
 {
     public class UserProvider : IUserProvider
     {

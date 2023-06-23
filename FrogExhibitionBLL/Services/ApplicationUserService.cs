@@ -22,7 +22,11 @@ namespace FrogExhibitionBLL.Services
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContext;
 
-        public ApplicationUserService(IUnitOfWork unitOfWork, ILogger<ApplicationUserService> logger, IMapper mapper, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContext)
+        public ApplicationUserService(IUnitOfWork unitOfWork,
+            ILogger<ApplicationUserService> logger,
+            IMapper mapper,
+            UserManager<ApplicationUser> userManager,
+            IHttpContextAccessor httpContext)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -33,35 +37,25 @@ namespace FrogExhibitionBLL.Services
 
         public async Task<IEnumerable<ApplicationUserDetailViewModel>> GetAllApplicationUsersAsync()
         {
-            if (_userManager.Users.IsNullOrEmpty())
-            {
-                throw new NotFoundException("Entity not found due to emptines of db");
-            }
             var result = await _userManager.Users.ToListAsync();
             return _mapper.Map<IEnumerable<ApplicationUserDetailViewModel>>(result);
         }
 
         public async Task<ApplicationUserDetailViewModel> GetApplicationUserAsync(Guid id)
         {
-            if (_userManager.Users.IsNullOrEmpty())
-            {
-                throw new NotFoundException("Entity not found due to emptines of db");
-            }
-            var applicationUser = await _userManager.Users.Where(u => u.Id == id.ToString()).FirstOrDefaultAsync();
-
+            var applicationUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
             if (applicationUser == null)
             {
                 throw new NotFoundException("Entity not found");
             }
-
             return _mapper.Map<ApplicationUserDetailViewModel>(applicationUser);
         }
 
-        public async Task UpdateApplicationUserAsync(Guid id, ApplicationUserDtoForUpdate applicationUser)
+        public async Task UpdateApplicationUserAsync(ApplicationUserDtoForUpdate applicationUser)
         {
             try
             {
-                var user = await _userManager.Users.Where(u => u.Id == id.ToString()).FirstOrDefaultAsync();
+                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
                 if (user == null)
                 {
                     throw new NotFoundException("Entity not found");
@@ -74,7 +68,7 @@ namespace FrogExhibitionBLL.Services
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _userManager.Users.AnyAsync(u => u.Id == id.ToString()))
+                if (!await _userManager.Users.AnyAsync(u => u.Id == applicationUser.Id))
                 {
                     throw new NotFoundException("Entity not found due to possible concurrency");
                 }
@@ -92,18 +86,11 @@ namespace FrogExhibitionBLL.Services
 
         public async Task DeleteApplicationUserAsync(Guid id)
         {
-
-            if (_userManager.Users.IsNullOrEmpty())
-            {
-                throw new NotFoundException("Entity not found due to emptines of db");
-            }
-            var applicationUser = await _userManager.Users.Where(u => u.Id == id.ToString()).FirstOrDefaultAsync();
-
+            var applicationUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
             if (applicationUser == null)
             {
                 throw new NotFoundException("Entity not found");
             }
-
             await _userManager.DeleteAsync(applicationUser);
             await _unitOfWork.SaveAsync();
         }

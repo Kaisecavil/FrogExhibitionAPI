@@ -49,7 +49,8 @@ namespace FrogExhibitionBLL.Services
                         var frogPhoto = _frogPhotoService.CreateFrogPhotoAsync(new FrogPhoto { PhotoPath = photopath, FrogId = mappedFrog.Id });
                     }
                 }
-                return await _unitOfWork.SaveAsync() == 1 ? mappedFrog.Id : mappedFrog.Id; //Guid.Empty
+                await _unitOfWork.SaveAsync();
+                return mappedFrog.Id; //Guid.Empty
             }
             catch (Exception ex)
             {
@@ -63,7 +64,7 @@ namespace FrogExhibitionBLL.Services
             var mappedfrogs = _mapper.Map<IEnumerable<FrogGeneralViewModel>>(frogs); ///вынести в отдельный метод лучше это
             foreach (var frog in mappedfrogs)
             {
-                frog.PhotoPaths = (await _frogPhotoService.GetFrogPhotoPathsAsync(frog.Id)).ToList();
+                frog.PhotoPaths = (await _frogPhotoService.GetFrogPhotoPathsAsync(frog.Id)).ToList(); // ? lazy loading mb?
             }
             return mappedfrogs;
         }
@@ -97,12 +98,11 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                if (!await _unitOfWork.Frogs.EntityExists(frog.Id))
+                if (!await _unitOfWork.Frogs.EntityExistsAsync(frog.Id))
                 {
                     throw new NotFoundException("Entity not found");
                 }
                 Frog mappedFrog = _mapper.Map<Frog>(frog);
-                mappedFrog.Id = frog.Id;
                 await _unitOfWork.Frogs.UpdateAsync(mappedFrog);
                 await _frogPhotoService.DeleteFrogPhotosAsync(frog.Id);
                 if(frog.Photos != null)
@@ -117,7 +117,7 @@ namespace FrogExhibitionBLL.Services
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _unitOfWork.Frogs.EntityExists(frog.Id))
+                if (!await _unitOfWork.Frogs.EntityExistsAsync(frog.Id))
                 {
                     throw new NotFoundException("Entity not found due to possible concurrency");
                 }
@@ -131,14 +131,11 @@ namespace FrogExhibitionBLL.Services
         public async Task<bool> DeleteFrogAsync(Guid id)
         {
             var frog = await _unitOfWork.Frogs.GetAsync(id);
-
             if (frog == null)
             {
                 throw new NotFoundException("Entity not found");
             }
-
             await _unitOfWork.Frogs.DeleteAsync(frog.Id);
-
             return await _unitOfWork.SaveAsync() == 1;
         }
 

@@ -9,6 +9,6 @@ namespace FrogExhibitionBLL.Interfaces.IService
         Task DeleteVoteAsync(Guid id);
         Task<IEnumerable<VoteDetailViewModel>> GetAllVotesAsync();
         Task<VoteDetailViewModel> GetVoteAsync(Guid id);
-        Task UpdateVoteAsync(Guid id, VoteDtoForCreate vote);
+        Task UpdateVoteAsync(VoteDtoForUpdate vote);
     }
 }

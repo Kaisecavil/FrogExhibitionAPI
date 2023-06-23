@@ -1,9 +1,6 @@
 ﻿using FrogExhibitionBLL.Interfaces.IHelper;
-using FrogExhibitionBLL.Services;
-using FrogExhibitionDAL.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace FrogExhibitionBLL.Helpers
 {

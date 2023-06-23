@@ -5,25 +5,38 @@ namespace FrogExhibitionDAL.ValidationAttributes
 {
     public class CurrentAgeFrogAttribute : ValidationAttribute
     {
+        /// <summary>
+        /// Attribute checks that max age isn't lesser than current age  
+        /// </summary>
+        /// <param name="value">Frog object to validate</param>
+        /// <returns></returns>
         public override bool IsValid(object value)
         {
             if (value == null)
             {
                 return true;
             }
-            Frog f = value as Frog;
-            try
+            if(value is Frog)
             {
-                if (f.MaxAge < f.CurrentAge)
+                Frog frog = value as Frog;
+                try
                 {
-                    return false;
+                    if (frog.MaxAge < frog.CurrentAge)
+                    {
+                        return false;
+                    }
                 }
+                catch (NullReferenceException ex)
+                {
+                    return false; // можно ли так или нужно выкидывать наверх? 
+                }
+                return true;
             }
-            catch(NullReferenceException ex) 
+            else
             {
-                return false; // можно ли так или нужно выкидывать наверх? 
+                return false;
             }
-            return true;
+            
         }
     }
 }

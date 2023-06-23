@@ -5,6 +5,7 @@ using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
 using FrogExhibitionBLL.ViewModels.FrogViewModels;
 using FrogExhibitionBLL.Exceptions;
+using FrogExhibitionBLL.Constants;
 
 namespace FrogExhibitionPL.Controllers
 {
@@ -15,7 +16,8 @@ namespace FrogExhibitionPL.Controllers
         private readonly ILogger<ExhibitionsController> _logger;
         private readonly IExhibitionService _exebitionService;
 
-        public ExhibitionsController(ILogger<ExhibitionsController> logger, IExhibitionService exebitionService)
+        public ExhibitionsController(ILogger<ExhibitionsController> logger,
+            IExhibitionService exebitionService)
         {
             _logger = logger;
             _exebitionService = exebitionService;
@@ -74,19 +76,18 @@ namespace FrogExhibitionPL.Controllers
 
         // PUT: api/Exhibitions/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PutExhibition(Guid id, ExhibitionDtoForCreate exebition)
+        [Authorize(Roles =  RoleConstants.AdminRole)]
+        public async Task<IActionResult> PutExhibition(ExhibitionDtoForUpdate exebition)
         {
             try
             {
-                //ModelState.IsValid
-                await _exebitionService.UpdateExhibitionAsync(id, exebition);
+                await _exebitionService.UpdateExhibitionAsync(exebition);
                 return base.NoContent();
             }
             catch (NotFoundException ex)
@@ -102,17 +103,17 @@ namespace FrogExhibitionPL.Controllers
         // POST: api/Exhibitions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(IEnumerable<ExhibitionDetailViewModel>))]
+        [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> PostExhibition(ExhibitionDtoForCreate exebition)
+        [Authorize(Roles =  RoleConstants.AdminRole)]
+        public async Task<IActionResult> PostExhibition(ExhibitionDtoForCreate exebition)
         {
             try
             {
                 var createdExhibitionId = await _exebitionService.CreateExhibitionAsync(exebition);
-                return base.CreatedAtAction("GetExhibition", createdExhibitionId);
+                return base.CreatedAtAction("GetExhibition", new { id = createdExhibitionId }, createdExhibitionId);
             }
             catch (BadRequestException ex)
             {
@@ -126,7 +127,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles =  RoleConstants.AdminRole)]
         public async Task<IActionResult> DeleteExhibition(Guid id)
         {
             try
@@ -145,7 +146,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = RoleConstants.UserRole)]
         public async Task<ActionResult<IEnumerable<FrogRatingViewModel>>> GetRating(Guid id)
         {
             try

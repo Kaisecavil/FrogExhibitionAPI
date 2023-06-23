@@ -56,22 +56,24 @@ namespace FrogExhibitionBLL.Services
             return _mapper.Map<FrogOnExhibitionDetailViewModel>(frogOnExhibition);
         }
 
-        public async Task UpdateFrogOnExhibitionAsync(Guid id, FrogOnExhibitionDtoForCreate frogOnExhibition)
+        public async Task UpdateFrogOnExhibitionAsync(FrogOnExhibitionDtoForUpdate frogOnExhibition)
         {
             try
             {
-                if (!await _unitOfWork.FrogOnExhibitions.EntityExists(id))
+                if (await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(frogOnExhibition.Id))
+                {
+                    var mappedFrogOnExhibition = _mapper.Map<FrogOnExhibition>(frogOnExhibition);
+                    await _unitOfWork.FrogOnExhibitions.UpdateAsync(mappedFrogOnExhibition);
+                    await _unitOfWork.SaveAsync();
+                }
+                else 
                 {
                     throw new NotFoundException("Entity not found");
                 }
-                var mappedFrogOnExhibition = _mapper.Map<FrogOnExhibition>(frogOnExhibition);
-                mappedFrogOnExhibition.Id = id;
-                await _unitOfWork.FrogOnExhibitions.UpdateAsync(mappedFrogOnExhibition);
-                await _unitOfWork.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _unitOfWork.FrogOnExhibitions.EntityExists(id))
+                if (!await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(frogOnExhibition.Id))
                 {
                     throw new NotFoundException("Entity not found due to possible concurrency");
                 }

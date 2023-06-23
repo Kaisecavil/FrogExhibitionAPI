@@ -9,6 +9,6 @@ namespace FrogExhibitionBLL.Interfaces.IService
         Task DeleteFrogOnExhibitionAsync(Guid id);
         Task<IEnumerable<FrogOnExhibitionDetailViewModel>> GetAllFrogOnExhibitionsAsync();
         Task<FrogOnExhibitionDetailViewModel> GetFrogOnExhibitionAsync(Guid id);
-        Task UpdateFrogOnExhibitionAsync(Guid id, FrogOnExhibitionDtoForCreate frogOnExhibition);
+        Task UpdateFrogOnExhibitionAsync(FrogOnExhibitionDtoForUpdate frogOnExhibition);
     }
 }

@@ -8,6 +8,6 @@ namespace FrogExhibitionBLL.Interfaces.IService
         Task DeleteApplicationUserAsync(Guid id);
         Task<IEnumerable<ApplicationUserDetailViewModel>> GetAllApplicationUsersAsync();
         Task<ApplicationUserDetailViewModel> GetApplicationUserAsync(Guid id);
-        Task UpdateApplicationUserAsync(Guid id, ApplicationUserDtoForUpdate applicationUser);
+        Task UpdateApplicationUserAsync(ApplicationUserDtoForUpdate applicationUser);
     }
 }

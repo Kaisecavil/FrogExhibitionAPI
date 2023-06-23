@@ -15,6 +15,9 @@ using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
 using FrogExhibitionBLL.DTO.VoteDtos;
 using FrogExhibitionBLL.Interfaces.IHelper;
+using FrogExhibitionBLL.Constants;
+using FrogExhibitionBLL.Interfaces.IProvider;
+using FrogExhibitionBLL.Providers;
 
 namespace FrogExhibitionPL
 {
@@ -114,8 +117,6 @@ namespace FrogExhibitionPL
                 });
             });
 
-            
-
             var app = builder.Build();
 
             if (args.Length == 1 && args[0].ToLower() == "seeddata")
@@ -132,7 +133,7 @@ namespace FrogExhibitionPL
                     var voteService = scope.ServiceProvider.GetRequiredService<IVoteService>();
                     var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    var roles = new[] { "Admin", "User" };
+                    var roles = new[] {  RoleConstants.AdminRole,  RoleConstants.UserRole };
                     foreach (var role in roles)
                     {
                         if (!await roleManager.RoleExistsAsync(role))
@@ -147,37 +148,52 @@ namespace FrogExhibitionPL
                     await authService.RegisterUserAsync(regularUser);
 
 
-                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email), "Admin");
-                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(regularUser.Email), "User");
+                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email),  RoleConstants.AdminRole);
+                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email),  RoleConstants.UserRole);
+                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(regularUser.Email),  RoleConstants.UserRole);
                     var service = scope.ServiceProvider.GetService<Seed>();
                     service.SeedApplicationContextAsync();
 
-                    var frogsOnExhibitions = unitOfWork.FrogOnExhibitions.GetAll();
+                    var frogsOnExhibitions = await unitOfWork.FrogOnExhibitions.GetAllAsync();
                     var users = userManager.Users.ToList();
-                    foreach (var user in users)
-                    {
-                        var voteCount = 0;
-                        foreach (var frogOnExhibition in frogsOnExhibitions)
-                        { 
-                            if (voteCount<3)
-                            {
-                                var temp = new VoteDtoForCreate()
-                                {
-                                    ApplicationUserId = user.Id,
-                                    FrogOnExhibitionId = frogOnExhibition.Id
-                                };
-                                try
-                                {
-                                    await voteService.CreateVoteAsync(temp);
-                                    voteCount++;
-                                }
-                                catch (Exception)
-                                {
-                                    continue;
-                                }
-                            }
-                        }
-                    }
+                    var votes = new List<Vote>();
+                    users
+                        .ForEach(u => frogsOnExhibitions.Take(3).ToList()
+                        .ForEach(frgOnEx => votes.Add(new Vote()
+                        {
+                            ApplicationUserId = u.Id,
+                            FrogOnExhibitionId = frgOnEx.Id
+                        })));
+                    await unitOfWork.Votes.CreateRangeAsync(votes);
+                    await unitOfWork.SaveAsync();
+
+
+                    ////Adding votes with vote service - alternative 
+                    //foreach (var user in users)
+                    //{
+                    //    var voteCount = 0;
+                    //    foreach (var frogOnExhibition in frogsOnExhibitions)
+                    //    {
+                    //        if (voteCount < 3)
+                    //        {
+                    //            var temp = new VoteDtoForCreate()
+                    //            {
+                    //                ApplicationUserId = user.Id,
+                    //                FrogOnExhibitionId = frogOnExhibition.Id
+                    //            };
+                    //            try
+                    //            {
+                    //                await voteService.CreateVote(temp);
+                    //                voteCount++;
+                    //            }
+                    //            catch (Exception)
+                    //            {
+                    //                continue;
+                    //            }
+                    //        }
+                    //    }
+                    //}
+
                 }
             }
 

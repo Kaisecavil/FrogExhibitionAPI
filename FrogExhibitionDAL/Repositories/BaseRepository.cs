@@ -39,12 +39,6 @@ namespace FrogExhibitionDAL.Repositories
 
         public void Update(DbModel model)
         {
-            //var toUpdate = _context.Set<DbModel>().FirstOrDefault(m => m.Id == model.Id);
-            //if (toUpdate != null)
-            //{
-            //    toUpdate = model;
-            //}
-            //_context.Update(toUpdate);
             _context.Entry(model).State = EntityState.Modified;
         }
 
@@ -75,16 +69,6 @@ namespace FrogExhibitionDAL.Repositories
         public async Task UpdateAsync(DbModel model)
         {
             _context.Entry(model).State = EntityState.Modified;
-            //var toUpdate = await GetAsync(model.Id, true);
-            //if (toUpdate != null)
-            //{
-            //    toUpdate = model;
-            //    _context.Update(toUpdate);
-            //    await _context.SaveChangesAsync();
-            //    return toUpdate;
-            //}
-            //return null;
-
         }
 
         public async Task DeleteAsync(Guid id)
@@ -93,12 +77,12 @@ namespace FrogExhibitionDAL.Repositories
             _context.Set<DbModel>().Remove(toDelete);
         }
 
-        public async Task<bool> EntityExists(Guid id)
+        public async Task<bool> EntityExistsAsync(Guid id)
         {
             return await _context.Set<DbModel>().AsNoTracking().AnyAsync(e => e.Id == id);
         }
 
-        public async Task<bool> IsEmpty()
+        public async Task<bool> IsEmptyAsync()
         {
             return !await _context.Set<DbModel>().AsNoTracking().AnyAsync();
         }

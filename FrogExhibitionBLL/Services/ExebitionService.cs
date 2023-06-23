@@ -31,7 +31,6 @@ namespace FrogExhibitionBLL.Services
 
         public async Task<Guid> CreateExhibitionAsync(ExhibitionDtoForCreate exebition)
         {
-
             try
             {
                 var mappedExhibition = _mapper.Map<Exhibition>(exebition);
@@ -50,48 +49,38 @@ namespace FrogExhibitionBLL.Services
 
         public async Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitionsAsync()
         {
-            if (await _unitOfWork.Exhibitions.IsEmpty())
-            {
-                throw new NotFoundException("Entity not found due to emptines of db");
-            }
-
             var result = await _unitOfWork.Exhibitions.GetAllAsync(true);
             return _mapper.Map<IEnumerable<ExhibitionDetailViewModel>>(result);
         }
 
         public async Task<ExhibitionDetailViewModel> GetExhibitionAsync(Guid id)
         {
-            if (await _unitOfWork.Exhibitions.IsEmpty())
-            {
-                throw new NotFoundException("Entity not found due to emptines of db");
-            }
             var exebition = await _unitOfWork.Exhibitions.GetAsync(id, true);
-
             if (exebition == null)
             {
                 throw new NotFoundException("Entity not found");
             }
-
             return _mapper.Map<ExhibitionDetailViewModel>(exebition);
         }
 
-        public async Task UpdateExhibitionAsync(Guid id, ExhibitionDtoForCreate exebition)
+        public async Task UpdateExhibitionAsync(ExhibitionDtoForUpdate exebition)
         {
-
             try
             {
-                if (!await _unitOfWork.Exhibitions.EntityExists(id))
+                if (await _unitOfWork.Exhibitions.EntityExistsAsync(exebition.Id))
+                {
+                    var mappedExhibition = _mapper.Map<Exhibition>(exebition);
+                    await _unitOfWork.Exhibitions.UpdateAsync(mappedExhibition);
+                    await _unitOfWork.SaveAsync();
+                }
+                else
                 {
                     throw new NotFoundException("Entity not found");
                 }
-                var mappedExhibition = _mapper.Map<Exhibition>(exebition);
-                mappedExhibition.Id = id;
-                await _unitOfWork.Exhibitions.UpdateAsync(mappedExhibition);
-                await _unitOfWork.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _unitOfWork.Exhibitions.EntityExists(id))
+                if (!await _unitOfWork.Exhibitions.EntityExistsAsync(exebition.Id))
                 {
                     throw new NotFoundException("Entity not found due to possible concurrency");
                 }
@@ -147,13 +136,13 @@ namespace FrogExhibitionBLL.Services
             return res.ToList();
         }
 
-        public async Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitionsAsync(string sortParams)
+        public async Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitionsAsync(string sortParams) //q?
         {
-            if (await _unitOfWork.Exhibitions.IsEmpty())
-            {
-                throw new NotFoundException("Entity not found due to emptines of db");
-            }
-            var exebitions = (_mapper.Map<IEnumerable<ExhibitionDetailViewModel>>(await _unitOfWork.Exhibitions.GetAllAsync(true))).AsQueryable();
+            var exebitions = 
+                _mapper.Map<IEnumerable<ExhibitionDetailViewModel>>
+                (
+                    await _unitOfWork.Exhibitions.GetAllAsync(true)
+                ).AsQueryable();
             var sortedExhibitions = _sortHelper.ApplySort(exebitions, sortParams);
             return sortedExhibitions.ToList();
         }
