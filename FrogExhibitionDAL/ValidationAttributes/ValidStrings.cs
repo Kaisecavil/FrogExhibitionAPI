@@ -11,7 +11,11 @@ namespace FrogExhibitionDAL.ValidationAttributes
         {
             _strings= strings;
         }
-
+        /// <summary>
+        /// Attribute checks that strings contain value 
+        /// </summary>
+        /// <param name="value">string value</param>
+        /// <returns></returns>
         public override bool IsValid(object value)
         {
             if (value != null)

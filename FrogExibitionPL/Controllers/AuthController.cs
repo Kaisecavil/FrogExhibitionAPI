@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FrogExhibitionDAL.Models;
 using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.Exceptions;
 
 namespace FrogExhibitionPL.Controllers
 {
@@ -20,20 +21,31 @@ namespace FrogExhibitionPL.Controllers
             _userManager = userManager;
         }
         [HttpPost("Login")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> Login(LoginUser user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid Model");
             }
-            if(await _authService.LoginAsync(user))
+            try
             {
-                var appUser = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
-                var roles = await _userManager.GetRolesAsync(appUser);
-                var tokenString = _authService.GenerateTokenString(user,roles);
-                return Ok(tokenString);
+                return Ok(await _authService.LoginAsync(user));
             }
-            return BadRequest("Wrong username or password");
+            catch(BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            ////legacy
+            //if(await _authService.LoginAsync(user))
+            //{
+            //    var appUser = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
+            //    var roles = await _userManager.GetRolesAsync(appUser);
+            //    var tokenString = _authService.GenerateTokenString(user,roles);
+            //    return Ok(tokenString);
+            //}
+            //return BadRequest("Wrong username or password");
         }
 
         [HttpPost("Register")]

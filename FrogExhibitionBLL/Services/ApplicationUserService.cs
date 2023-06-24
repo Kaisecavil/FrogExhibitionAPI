@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
 
 namespace FrogExhibitionBLL.Services

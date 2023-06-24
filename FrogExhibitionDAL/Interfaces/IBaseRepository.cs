@@ -5,6 +5,7 @@ namespace FrogExhibitionDAL.Interfaces
     public interface IBaseRepository<DbModel> where DbModel : BaseModel
     {
         public IEnumerable<DbModel> GetAll(bool asNoTraking = false);
+        public IQueryable<DbModel> GetAllQueryable(bool asNoTraking = false);
         public DbModel Get(Guid id);
         public void Create(DbModel model);
         public void CreateRange(IEnumerable<DbModel> model);

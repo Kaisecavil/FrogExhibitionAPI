@@ -18,13 +18,13 @@ namespace FrogExhibitionBLL.Services
 
         public async Task<IEnumerable<string>> GetFrogPhotoPathsAsync(Guid frogId)
         {
-            var photoPaths = (await _unitOfWork.FrogPhotos.GetAllAsync()).AsQueryable().Where(p => p.FrogId == frogId).Select(p => p.PhotoPath);
+            var photoPaths = (await _unitOfWork.FrogPhotos.GetAllAsync(true)).AsQueryable().Where(p => p.FrogId == frogId).Select(p => p.PhotoPath);
             return photoPaths.ToList();
         }
 
         public IEnumerable<string> GetFrogPhotoPaths(Guid frogId)
         {
-            var photoPaths = _unitOfWork.FrogPhotos.GetAll().AsQueryable().Where(p => p.FrogId == frogId).Select(p => p.PhotoPath);
+            var photoPaths = _unitOfWork.FrogPhotos.GetAllQueryable(true).Where(p => p.FrogId == frogId).Select(p => p.PhotoPath);
             return photoPaths.ToList();
         }
 

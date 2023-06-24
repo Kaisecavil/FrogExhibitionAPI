@@ -33,8 +33,20 @@ namespace FrogExhibitionDAL.Repositories
         public IEnumerable<DbModel> GetAll(bool asNoTraking = false)
         {
             return asNoTraking ?
-                _context.Set<DbModel>().ToList() :
-                _context.Set<DbModel>().AsNoTracking().ToList();
+                _context.Set<DbModel>().AsNoTracking().ToList() :
+                _context.Set<DbModel>().ToList();
+        }
+
+        //public IQueryable<DbModel> GetAllQueryable(bool asNoTraking = false)
+        //{
+        //    return asNoTraking ?
+        //       _context.Set<DbModel>().AsNoTracking() :
+        //       _context.Set<DbModel>();
+        //}
+
+        public IQueryable<DbModel> GetAllQueryable(bool asNoTraking = false)
+        {
+            return _context.Set<DbModel>();
         }
 
         public void Update(DbModel model)
@@ -49,9 +61,9 @@ namespace FrogExhibitionDAL.Repositories
 
         public async Task<IEnumerable<DbModel>> GetAllAsync(bool asNoTraking = false)
         {
-            return asNoTraking?
-                await _context.Set<DbModel>().ToListAsync() :
-                await _context.Set<DbModel>().AsNoTracking().ToListAsync();
+            return asNoTraking ?
+                await _context.Set<DbModel>().AsNoTracking().ToListAsync() :
+                await _context.Set<DbModel>().ToListAsync() ;
         }
 
         public async Task<DbModel> GetAsync(Guid id, bool asNoTraking = false)

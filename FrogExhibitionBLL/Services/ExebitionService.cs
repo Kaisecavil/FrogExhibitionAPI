@@ -17,10 +17,10 @@ namespace FrogExhibitionBLL.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<ExhibitionService> _logger;
         private readonly IMapper _mapper;
-        private readonly ISortHelper<ExhibitionDetailViewModel> _sortHelper;
+        private readonly ISortHelper<Exhibition> _sortHelper;
         private readonly IFrogPhotoService _frogPhotoService;
 
-        public ExhibitionService(IUnitOfWork unitOfWork, ILogger<ExhibitionService> logger, IMapper mapper, ISortHelper<ExhibitionDetailViewModel> sortHelper, IFrogPhotoService frogPhotoService)
+        public ExhibitionService(IUnitOfWork unitOfWork, ILogger<ExhibitionService> logger, IMapper mapper, ISortHelper<Exhibition> sortHelper, IFrogPhotoService frogPhotoService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -110,41 +110,73 @@ namespace FrogExhibitionBLL.Services
                 throw new NotFoundException("Entity not found");
             }
             var frogsOnExhibition = exebition.FrogsOnExhibitions;
-            var votes = await _unitOfWork.Votes.GetAllAsync();
-            var nesVotes = votes.Join(frogsOnExhibition, v => v.FrogOnExhibitionId, f => f.Id, (v, f) => new { FrogOnExhibition = f, Vote = v });
-            var group = nesVotes.GroupBy(o => o.FrogOnExhibition.FrogId).Select(o => (new { key = o.Key, Count = o.Count() }));
-            var order = group.OrderBy(o => o.Count).Reverse();
-            var res = from o in order
-                      let obj = _unitOfWork.Frogs.Get(o.key) // ne async????
-                      select new FrogRatingViewModel
-                      {
-                          Id = obj.Id,
-                          VotesCount = o.Count,
-                          Color = obj.Color,
-                          HouseKeepable = obj.HouseKeepable,
-                          CurrentAge = obj.CurrentAge,
-                          MaxAge = obj.MaxAge,
-                          PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(obj.Id).ToList(),
-                          Genus = obj.Genus,
-                          Habitat = obj.Habitat,
-                          Weight = obj.Weight,
-                          Sex = obj.Sex,
-                          Poisonous = obj.Poisonous,
-                          Size = obj.Size,
-                          Species = obj.Species
-                      };
+            var res = frogsOnExhibition.Select(foe => new FrogRatingViewModel
+            {
+                Id = foe.Frog.Id,
+                VotesCount = foe.Votes.Count,
+                Color = foe.Frog.Color,
+                HouseKeepable = foe.Frog.HouseKeepable,
+                CurrentAge = foe.Frog.CurrentAge,
+                MaxAge = foe.Frog.MaxAge,
+                PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(foe.Frog.Id).ToList(),
+                Genus = foe.Frog.Genus,
+                Habitat = foe.Frog.Habitat,
+                Weight = foe.Frog.Weight,
+                Sex = foe.Frog.Sex,
+                Poisonous = foe.Frog.Poisonous,
+                Size = foe.Frog.Size,
+                Species = foe.Frog.Species
+            });
             return res.ToList();
+
+            ////Legacy
+            //var exebition = await _unitOfWork.Exhibitions.GetAsync(id);
+            //if (exebition == null)
+            //{
+            //    throw new NotFoundException("Entity not found");
+            //}
+            //var frogsOnExhibition = exebition.FrogsOnExhibitions;
+            //var votes = new List<Vote>();
+            //frogsOnExhibition.ForEach(f => votes.AddRange(f.Votes));
+            //var order = votes.Join(frogsOnExhibition, v => v.FrogOnExhibitionId,
+            //    f => f.Id, (v, f) => new
+            //    {
+            //        FrogOnExhibition = f,
+            //        Vote = v
+            //    })
+            //    .GroupBy(o => o.FrogOnExhibition.FrogId)
+            //    .Select(o => (new
+            //    {
+            //        key = o.Key,
+            //        Count = o.Count()
+            //    }))
+            //    .OrderBy(o => o.Count).Reverse()
+            //    .Select(o => new { frog = _unitOfWork.Frogs.Get(o.key), count = o.Count })
+            //    .Select(o => new FrogRatingViewModel
+            //    {
+            //        Id = o.frog.Id,
+            //        VotesCount = o.count,
+            //        Color = o.frog.Color,
+            //        HouseKeepable = o.frog.HouseKeepable,
+            //        CurrentAge = o.frog.CurrentAge,
+            //        MaxAge = o.frog.MaxAge,
+            //        PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(o.frog.Id).ToList(),
+            //        Genus = o.frog.Genus,
+            //        Habitat = o.frog.Habitat,
+            //        Weight = o.frog.Weight,
+            //        Sex = o.frog.Sex,
+            //        Poisonous = o.frog.Poisonous,
+            //        Size = o.frog.Size,
+            //        Species = o.frog.Species
+            //    });
+            //return order.ToList();
         }
 
-        public async Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitionsAsync(string sortParams) //q?
+        public async Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitionsAsync(string sortParams)
         {
-            var exebitions = 
-                _mapper.Map<IEnumerable<ExhibitionDetailViewModel>>
-                (
-                    await _unitOfWork.Exhibitions.GetAllAsync(true)
-                ).AsQueryable();
-            var sortedExhibitions = _sortHelper.ApplySort(exebitions, sortParams);
-            return sortedExhibitions.ToList();
+            var exebitions = _unitOfWork.Exhibitions.GetAllQueryable(true);
+            var sortedExhibitions = await _sortHelper.ApplySort(exebitions, sortParams).ToListAsync();
+            return _mapper.Map<IEnumerable<ExhibitionDetailViewModel>>(sortedExhibitions);
         }
     }
 }

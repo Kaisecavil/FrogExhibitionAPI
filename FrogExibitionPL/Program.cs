@@ -12,8 +12,6 @@ using FrogExhibitionDAL.UoW;
 using FrogExhibitionDAL.Database;
 using FrogExhibitionBLL.Helpers;
 using FrogExhibitionBLL.Interfaces.IService;
-using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
-using FrogExhibitionBLL.DTO.VoteDtos;
 using FrogExhibitionBLL.Interfaces.IHelper;
 using FrogExhibitionBLL.Constants;
 using FrogExhibitionBLL.Interfaces.IProvider;
@@ -28,8 +26,6 @@ namespace FrogExhibitionPL
             var builder = WebApplication.CreateBuilder(args);
             
             // Add services to the container.
-            
-
             builder.Services.AddDbContext<ApplicationContext>(
                 o => o.UseLazyLoadingProxies()
                     .UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
@@ -56,7 +52,7 @@ namespace FrogExhibitionPL
 
             builder.Services.AddSingleton<IFileHelper, FileHelper>();
             builder.Services.AddSingleton<ISortHelper<Frog>, SortHelper<Frog>>();
-            builder.Services.AddSingleton<ISortHelper<ExhibitionDetailViewModel>, SortHelper<ExhibitionDetailViewModel>>();
+            builder.Services.AddSingleton<ISortHelper<Exhibition>, SortHelper<Exhibition>>();
 
 
 
@@ -166,34 +162,6 @@ namespace FrogExhibitionPL
                         })));
                     await unitOfWork.Votes.CreateRangeAsync(votes);
                     await unitOfWork.SaveAsync();
-
-
-                    ////Adding votes with vote service - alternative 
-                    //foreach (var user in users)
-                    //{
-                    //    var voteCount = 0;
-                    //    foreach (var frogOnExhibition in frogsOnExhibitions)
-                    //    {
-                    //        if (voteCount < 3)
-                    //        {
-                    //            var temp = new VoteDtoForCreate()
-                    //            {
-                    //                ApplicationUserId = user.Id,
-                    //                FrogOnExhibitionId = frogOnExhibition.Id
-                    //            };
-                    //            try
-                    //            {
-                    //                await voteService.CreateVote(temp);
-                    //                voteCount++;
-                    //            }
-                    //            catch (Exception)
-                    //            {
-                    //                continue;
-                    //            }
-                    //        }
-                    //    }
-                    //}
-
                 }
             }
 

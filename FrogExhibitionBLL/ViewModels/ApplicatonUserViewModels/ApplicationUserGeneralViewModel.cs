@@ -1,4 +1,4 @@
-﻿namespace FrogExhibitionBLL.DTO.ApplicatonUserDTOs
+﻿namespace FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels
 {
     public class ApplicationUserGeneralViewModel
     {

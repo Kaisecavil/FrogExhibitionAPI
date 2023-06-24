@@ -1,4 +1,6 @@
-﻿using FrogExhibitionBLL.Interfaces.IService;
+﻿using FrogExhibitionBLL.Constants;
+using FrogExhibitionBLL.Exceptions;
+using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionDAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,13 +27,15 @@ namespace FrogExhibitionBLL.Services
 
         public string GenerateTokenString(LoginUser user, IEnumerable<string> roles)
         {
-           
+
             IEnumerable<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                roles.Contains( RoleConstants.AdminRole)? new Claim(ClaimTypes.Role,  RoleConstants.AdminRole) : new Claim(ClaimTypes.Role,  RoleConstants.UserRole)
+                roles.Contains(RoleConstants.AdminRole)?
+                new Claim(ClaimTypes.Role,  RoleConstants.AdminRole) : new Claim("isAdmin","No"),
+                new Claim(ClaimTypes.Role,  RoleConstants.UserRole)
             };
-            
+            claims.Append(new Claim(ClaimTypes.Role, RoleConstants.UserRole));
             SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
             SigningCredentials signingCred = new SigningCredentials(securityKey,SecurityAlgorithms.HmacSha512Signature);
             SecurityToken securityToken = new JwtSecurityToken(
@@ -44,15 +48,32 @@ namespace FrogExhibitionBLL.Services
             return tokenString;
         }
 
-        public async Task<bool> LoginAsync(LoginUser user)
+        //public async Task<bool> LoginAsync(LoginUser user)
+        //{
+        //    var identityUser = await _userManager.FindByEmailAsync(user.Email);
+        //    if (identityUser == null)
+        //    {
+        //        return false;
+        //    }
+        //    return await _userManager.CheckPasswordAsync(identityUser, user.Password);
+        //}
+
+        public async Task<string> LoginAsync(LoginUser user)
         {
-            var identityUser = await _userManager.FindByEmailAsync(user.Email);
-            if (identityUser == null)
+            var appUser = await _userManager.FindByEmailAsync(user.Email);
+            if (appUser == null)
             {
-                return false;
+                throw new BadRequestException("Wrong username or password");
             }
-            return await _userManager.CheckPasswordAsync(identityUser, user.Password);
+            if(await _userManager.CheckPasswordAsync(appUser, user.Password))
+            {
+                var roles = await _userManager.GetRolesAsync(appUser);
+                return GenerateTokenString(user, roles);
+            }
+            throw new BadRequestException("Wrong username or password");
         }
+
+        
 
         public async Task<bool> RegisterUserAsync(LoginUser user)
         {
