@@ -11,7 +11,7 @@ namespace FrogExhibitionDAL.Constants.ModelConstants.FrogConstants
         public const bool FrogPosisonousDefaultValue = false;
         public const FrogSex FrogSexDefaultValue = FrogSex.Male;
         public const bool FrogHouseKeepableDefaultValue = true;
-        public const float FrogSizeDefaultValue = 15.5f;
+        public const float FrogSizeDefaultValue = 15f;
         public const float FrogWeightDefaultValue = 30;
         public const int FrogCurrentAgeDefaultValue = 3;
         public const int FrogMaxAgeDefaultValue = 10;

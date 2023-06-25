@@ -35,7 +35,7 @@ namespace FrogExhibitionBLL.DTO.FrogDTOs
 
         [Required]
         [DefaultValue(FrogDefaultValueConstants.FrogSexDefaultValue)]
-        public FrogSex Sex { get; set; }
+        public FrogSex? Sex { get; set; }
 
         [Required]
         [DefaultValue(FrogDefaultValueConstants.FrogHouseKeepableDefaultValue)]
@@ -53,7 +53,7 @@ namespace FrogExhibitionBLL.DTO.FrogDTOs
 
         [Required]
         [Range(FrogConstraintConstants.MinFrogAge, FrogConstraintConstants.MaxFrogAge)]
-        [DefaultValue(FrogConstraintConstants.MinFrogAge)]
+        [DefaultValue(FrogDefaultValueConstants.FrogCurrentAgeDefaultValue)]
         public int CurrentAge { get; set; }
         [Required]
         [Range(FrogConstraintConstants.MinFrogAge, FrogConstraintConstants.MaxFrogAge)]

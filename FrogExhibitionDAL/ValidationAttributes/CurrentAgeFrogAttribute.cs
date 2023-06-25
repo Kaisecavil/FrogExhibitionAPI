@@ -21,16 +21,19 @@ namespace FrogExhibitionDAL.ValidationAttributes
                 Frog frog = value as Frog;
                 try
                 {
-                    if (frog.MaxAge < frog.CurrentAge)
+                    if (frog.CurrentAge <= frog.MaxAge)
+                    {
+                        return true;
+                    }
+                    else
                     {
                         return false;
                     }
                 }
                 catch (NullReferenceException ex)
                 {
-                    return false; // можно ли так или нужно выкидывать наверх? 
+                    return false;
                 }
-                return true;
             }
             else
             {
