@@ -1,5 +1,6 @@
 ﻿using FrogExhibitionDAL.Database;
 using FrogExhibitionDAL.Interfaces;
+using FrogExhibitionDAL.Interfaces.IRepository;
 using FrogExhibitionDAL.Models;
 using FrogExhibitionDAL.Repositories;
 

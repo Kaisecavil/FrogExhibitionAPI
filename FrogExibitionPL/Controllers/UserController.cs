@@ -17,20 +17,12 @@ namespace FrogExhibitionPL.Controllers
     [Authorize]
     public class UsersController : ControllerBase
     {
-        private readonly ILogger<UsersController> _logger;
         private readonly IApplicationUserService _userService;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUserProvider _userProvider;
 
-        public UsersController(ILogger<UsersController> logger,
-            IApplicationUserService userService,
-            UserManager<ApplicationUser> userManager,
-            IUserProvider userProvider)
+        public UsersController(IApplicationUserService userService)
         {
-            _logger = logger;
             _userService = userService;
-            _userManager = userManager;
-            _userProvider = userProvider;
+
         }
 
         // GET: api/Users
@@ -87,17 +79,12 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                var currentUserEmail = _userProvider.GetUserEmail();
-                var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
-                if (currentUser.Id == user.Id.ToString() || await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole))
-                {
-                    await _userService.UpdateApplicationUserAsync(user);
-                    return base.NoContent();
-                }
-                else
-                {
-                    return base.Forbid("Access denied");
-                } 
+                await _userService.UpdateApplicationUserAsync(user);
+                return base.NoContent();
+            }
+            catch (ForbidException ex)
+            {
+                return base.Forbid(ex.Message);
             }
             catch (NotFoundException ex)
             {
@@ -125,18 +112,12 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                var currentUserEmail = _userProvider.GetUserEmail();
-                var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
-                if (currentUser.Id == id.ToString() || await _userManager.IsInRoleAsync(currentUser,  RoleConstants.AdminRole))
-                {
-                    await _userService.DeleteApplicationUserAsync(id);
-                    return base.NoContent();
-                }
-                else
-                {
-                    return base.Forbid("Access denied");
-                }
-
+                await _userService.DeleteApplicationUserAsync(id);
+                return base.NoContent();
+            }
+            catch (ForbidException ex)
+            {
+                return base.Forbid(ex.Message);
             }
             catch (NotFoundException ex)
             {

@@ -43,7 +43,7 @@ namespace FrogExhibitionPL.Controllers
         [HttpGet("sort/{sortParams}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ExhibitionDetailViewModel>))]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IEnumerable<ExhibitionDetailViewModel>>> GetSortedExhibitions(string sortParams = " ")
+        public async Task<ActionResult<IEnumerable<ExhibitionDetailViewModel>>> GetSortedExhibitions(string sortParams = "name desc,country")
         {
             try
             {

@@ -8,12 +8,9 @@ namespace FrogExhibitionDAL.Database
     public class Seed
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<Seed> _logger;
-        public Seed(IUnitOfWork unitOfWork,
-            ILogger<Seed> logger)
+        public Seed(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _logger = logger;
         }
         public async Task SeedApplicationContextAsync()
         {

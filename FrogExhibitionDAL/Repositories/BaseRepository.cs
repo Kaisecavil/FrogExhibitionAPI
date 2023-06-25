@@ -1,5 +1,5 @@
 ﻿using FrogExhibitionDAL.Database;
-using FrogExhibitionDAL.Interfaces;
+using FrogExhibitionDAL.Interfaces.IRepository;
 using FrogExhibitionDAL.Models.Base;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,16 +37,11 @@ namespace FrogExhibitionDAL.Repositories
                 _context.Set<DbModel>().ToList();
         }
 
-        //public IQueryable<DbModel> GetAllQueryable(bool asNoTraking = false)
-        //{
-        //    return asNoTraking ?
-        //       _context.Set<DbModel>().AsNoTracking() :
-        //       _context.Set<DbModel>();
-        //}
-
         public IQueryable<DbModel> GetAllQueryable(bool asNoTraking = false)
         {
-            return _context.Set<DbModel>();
+            return asNoTraking ?
+               _context.Set<DbModel>().AsNoTracking() :
+               _context.Set<DbModel>();
         }
 
         public void Update(DbModel model)

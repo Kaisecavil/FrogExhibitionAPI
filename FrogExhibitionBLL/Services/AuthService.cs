@@ -1,4 +1,5 @@
 ﻿using FrogExhibitionBLL.Constants;
+using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionDAL.Models;
@@ -25,7 +26,7 @@ namespace FrogExhibitionBLL.Services
             _roleManager = roleManager;
         }
 
-        public string GenerateTokenString(LoginUser user, IEnumerable<string> roles)
+        public string GenerateTokenString(ApplicationUserDtoForLogin user, IEnumerable<string> roles)
         {
 
             IEnumerable<Claim> claims = new List<Claim>
@@ -48,17 +49,7 @@ namespace FrogExhibitionBLL.Services
             return tokenString;
         }
 
-        //public async Task<bool> LoginAsync(LoginUser user)
-        //{
-        //    var identityUser = await _userManager.FindByEmailAsync(user.Email);
-        //    if (identityUser == null)
-        //    {
-        //        return false;
-        //    }
-        //    return await _userManager.CheckPasswordAsync(identityUser, user.Password);
-        //}
-
-        public async Task<string> LoginAsync(LoginUser user)
+        public async Task<string> LoginAsync(ApplicationUserDtoForLogin user)
         {
             var appUser = await _userManager.FindByEmailAsync(user.Email);
             if (appUser == null)
@@ -75,7 +66,7 @@ namespace FrogExhibitionBLL.Services
 
         
 
-        public async Task<bool> RegisterUserAsync(LoginUser user)
+        public async Task<bool> RegisterUserAsync(ApplicationUserDtoForLogin user)
         {
             var existingUser = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
             if (existingUser == null)

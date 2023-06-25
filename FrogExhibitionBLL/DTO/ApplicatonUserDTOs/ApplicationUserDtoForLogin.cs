@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace FrogExhibitionDAL.Models
+namespace FrogExhibitionBLL.DTO.ApplicatonUserDTOs
 {
-    public class LoginUser
+    public class ApplicationUserDtoForLogin
     {
         [Required]
         [DefaultValue("Admin@mail.com")]

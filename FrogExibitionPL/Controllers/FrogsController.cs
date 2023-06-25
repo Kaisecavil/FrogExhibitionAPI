@@ -66,13 +66,8 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    await _frogService.UpdateFrogAsync(frog);
-                    return base.NoContent();
-                }
-                //ModelState.AddModelError("")
-                return base.BadRequest("Invalid model state");
+                await _frogService.UpdateFrogAsync(frog);
+                return base.NoContent();
             }
             catch (NotFoundException ex)
             {

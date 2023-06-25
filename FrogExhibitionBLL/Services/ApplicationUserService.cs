@@ -4,11 +4,12 @@ using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
 using FrogExhibitionBLL.Exceptions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
+using FrogExhibitionBLL.Constants;
+using FrogExhibitionBLL.Interfaces.IProvider;
 
 namespace FrogExhibitionBLL.Services
 {
@@ -19,19 +20,19 @@ namespace FrogExhibitionBLL.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ApplicationUserService> _logger;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContext;
+        private readonly IUserProvider _userProvider;
 
         public ApplicationUserService(IUnitOfWork unitOfWork,
             ILogger<ApplicationUserService> logger,
             IMapper mapper,
             UserManager<ApplicationUser> userManager,
-            IHttpContextAccessor httpContext)
+            IUserProvider userProvider)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
             _userManager = userManager;
-            _httpContext = httpContext;
+            _userProvider = userProvider;
         }
 
         public async Task<IEnumerable<ApplicationUserDetailViewModel>> GetAllApplicationUsersAsync()
@@ -52,46 +53,68 @@ namespace FrogExhibitionBLL.Services
 
         public async Task UpdateApplicationUserAsync(ApplicationUserDtoForUpdate applicationUser)
         {
-            try
+            var currentUserEmail = _userProvider.GetUserEmail();
+            var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
+            if (currentUser.Id == applicationUser.Id.ToString() ||
+                await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole))
             {
-                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
-                if (user == null)
+                try
                 {
-                    throw new NotFoundException("Entity not found");
+                    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
+                    if (user == null)
+                    {
+                        throw new NotFoundException("Entity not found");
+                    }
+                    user.PhoneNumber = applicationUser.PhoneNumber;
+                    user.UserName = applicationUser.UserName;
+                    user.Email = applicationUser.Email;
+                    var result = await _userManager.UpdateAsync(user);
+                    await _unitOfWork.SaveAsync();
                 }
-                user.PhoneNumber = applicationUser.PhoneNumber;
-                user.UserName = applicationUser.UserName;
-                user.Email = applicationUser.Email;
-                var result = await _userManager.UpdateAsync(user);
-                await _unitOfWork.SaveAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _userManager.Users.AnyAsync(u => u.Id == applicationUser.Id))
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw new NotFoundException("Entity not found due to possible concurrency");
+                    if (!await _userManager.Users.AnyAsync(u => u.Id == applicationUser.Id))
+                    {
+                        throw new NotFoundException("Entity not found due to possible concurrency");
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message, applicationUser);
                     throw;
-                }
+                };
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex.Message, applicationUser);
-                throw;
-            };
+                throw new ForbidException("Access denied");
+            }
+            
         }
 
         public async Task DeleteApplicationUserAsync(Guid id)
         {
-            var applicationUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
-            if (applicationUser == null)
+            var currentUserEmail = _userProvider.GetUserEmail();
+            var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
+            if (currentUser.Id == id.ToString() ||
+                await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole))
             {
-                throw new NotFoundException("Entity not found");
+                var applicationUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
+                if (applicationUser == null)
+                {
+                    throw new NotFoundException("Entity not found");
+                }
+                await _userManager.DeleteAsync(applicationUser);
+                await _unitOfWork.SaveAsync();
             }
-            await _userManager.DeleteAsync(applicationUser);
-            await _unitOfWork.SaveAsync();
+            else
+            {
+                throw new ForbidException("Access denied");
+            }
+            
         }
     }
 }

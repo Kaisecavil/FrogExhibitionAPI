@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Http;
 using FrogExhibitionDAL.Constants.ModelConstants.FrogConstants;
 using FrogExhibitionDAL.Constants;
 using FrogExhibitionDAL.Enums;
+using FrogExhibitionDAL.ValidationAttributes;
 
 namespace FrogExhibitionBLL.DTO.FrogDTOs
 {
+    [CurrentAgeFrog(ErrorMessage = "Current age can't be greater than max age")]
     public class FrogDtoForUpdate
     {
         [Required]

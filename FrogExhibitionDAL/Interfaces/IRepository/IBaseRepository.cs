@@ -1,6 +1,6 @@
 ﻿using FrogExhibitionDAL.Models.Base;
 
-namespace FrogExhibitionDAL.Interfaces
+namespace FrogExhibitionDAL.Interfaces.IRepository
 {
     public interface IBaseRepository<DbModel> where DbModel : BaseModel
     {

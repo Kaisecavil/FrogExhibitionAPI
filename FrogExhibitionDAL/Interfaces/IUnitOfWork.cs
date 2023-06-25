@@ -1,4 +1,5 @@
-﻿using FrogExhibitionDAL.Models;
+﻿using FrogExhibitionDAL.Interfaces.IRepository;
+using FrogExhibitionDAL.Models;
 
 namespace FrogExhibitionDAL.Interfaces
 {

@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using FrogExhibitionDAL.Constants.ModelConstants.FrogConstants;
-using FrogExhibitionDAL.Enums;
 using FrogExhibitionDAL.Constants;
 
 namespace FrogExhibitionBLL.ViewModels.FrogViewModels
@@ -35,7 +34,7 @@ namespace FrogExhibitionBLL.ViewModels.FrogViewModels
 
         [Required]
         [DefaultValue(FrogDefaultValueConstants.FrogSexDefaultValue)]
-        public FrogSex Sex { get; set; }
+        public string Sex { get; set; }
 
         [Required]
         [DefaultValue(FrogDefaultValueConstants.FrogHouseKeepableDefaultValue)]

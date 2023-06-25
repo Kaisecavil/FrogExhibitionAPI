@@ -2,11 +2,12 @@
 using System.ComponentModel;
 using FrogExhibitionDAL.Constants.ModelConstants.FrogConstants;
 using FrogExhibitionDAL.Constants;
-using FrogExhibitionDAL.Enums;
 using Microsoft.AspNetCore.Http;
+using FrogExhibitionDAL.ValidationAttributes;
 
 namespace FrogExhibitionBLL.DTO.FrogDTOs
 {
+    [CurrentAgeFrog(ErrorMessage = "Current age can't be greater than max age")]
     public class FrogDtoForCreate
     {
         [Required]
@@ -31,34 +32,34 @@ namespace FrogExhibitionBLL.DTO.FrogDTOs
 
         [Required]
         [DefaultValue(FrogDefaultValueConstants.FrogPosisonousDefaultValue)]
-        public bool Poisonous { get; set; }
+        public bool? Poisonous { get; set; }
 
         [Required]
-        [DefaultValue(FrogDefaultValueConstants.FrogSexDefaultValue)]
-        public FrogSex? Sex { get; set; }
+        [DefaultValue(FrogDefaultValueConstants.FrogSexStringDefaultValue)]
+        public string Sex { get; set; }
 
         [Required]
         [DefaultValue(FrogDefaultValueConstants.FrogHouseKeepableDefaultValue)]
-        public bool HouseKeepable { get; set; }
+        public bool? HouseKeepable { get; set; }
 
         [Required]
         [Range(FrogConstraintConstants.MinFrogSize, FrogConstraintConstants.MaxFrogSize)]
         [DefaultValue(FrogDefaultValueConstants.FrogSizeDefaultValue)]
-        public float Size { get; set; }
+        public float? Size { get; set; }
 
         [Required]
         [Range(FrogConstraintConstants.MinFrogWeight, FrogConstraintConstants.MaxFrogWeight)]
         [DefaultValue(FrogDefaultValueConstants.FrogWeightDefaultValue)]
-        public float Weight { get; set; }
+        public float? Weight { get; set; }
 
         [Required]
         [Range(FrogConstraintConstants.MinFrogAge, FrogConstraintConstants.MaxFrogAge)]
         [DefaultValue(FrogDefaultValueConstants.FrogCurrentAgeDefaultValue)]
-        public int CurrentAge { get; set; }
+        public int? CurrentAge { get; set; }
         [Required]
         [Range(FrogConstraintConstants.MinFrogAge, FrogConstraintConstants.MaxFrogAge)]
         [DefaultValue(FrogDefaultValueConstants.FrogMaxAgeDefaultValue)]
-        public int MaxAge { get; set; }
+        public int? MaxAge { get; set; }
         public string? Diet { get; set; }
         public string? Features { get; set; }
         public List<IFormFile>? Photos { get; set; }

@@ -128,48 +128,6 @@ namespace FrogExhibitionBLL.Services
                 Species = foe.Frog.Species
             });
             return res.ToList();
-
-            ////Legacy
-            //var exebition = await _unitOfWork.Exhibitions.GetAsync(id);
-            //if (exebition == null)
-            //{
-            //    throw new NotFoundException("Entity not found");
-            //}
-            //var frogsOnExhibition = exebition.FrogsOnExhibitions;
-            //var votes = new List<Vote>();
-            //frogsOnExhibition.ForEach(f => votes.AddRange(f.Votes));
-            //var order = votes.Join(frogsOnExhibition, v => v.FrogOnExhibitionId,
-            //    f => f.Id, (v, f) => new
-            //    {
-            //        FrogOnExhibition = f,
-            //        Vote = v
-            //    })
-            //    .GroupBy(o => o.FrogOnExhibition.FrogId)
-            //    .Select(o => (new
-            //    {
-            //        key = o.Key,
-            //        Count = o.Count()
-            //    }))
-            //    .OrderBy(o => o.Count).Reverse()
-            //    .Select(o => new { frog = _unitOfWork.Frogs.Get(o.key), count = o.Count })
-            //    .Select(o => new FrogRatingViewModel
-            //    {
-            //        Id = o.frog.Id,
-            //        VotesCount = o.count,
-            //        Color = o.frog.Color,
-            //        HouseKeepable = o.frog.HouseKeepable,
-            //        CurrentAge = o.frog.CurrentAge,
-            //        MaxAge = o.frog.MaxAge,
-            //        PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(o.frog.Id).ToList(),
-            //        Genus = o.frog.Genus,
-            //        Habitat = o.frog.Habitat,
-            //        Weight = o.frog.Weight,
-            //        Sex = o.frog.Sex,
-            //        Poisonous = o.frog.Poisonous,
-            //        Size = o.frog.Size,
-            //        Species = o.frog.Species
-            //    });
-            //return order.ToList();
         }
 
         public async Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitionsAsync(string sortParams)

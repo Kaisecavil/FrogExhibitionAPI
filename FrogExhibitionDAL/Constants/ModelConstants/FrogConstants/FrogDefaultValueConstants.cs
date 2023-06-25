@@ -10,6 +10,7 @@ namespace FrogExhibitionDAL.Constants.ModelConstants.FrogConstants
         public const string FrogHabitatDefaultValue = "North America";
         public const bool FrogPosisonousDefaultValue = false;
         public const FrogSex FrogSexDefaultValue = FrogSex.Male;
+        public const string FrogSexStringDefaultValue = "Male";
         public const bool FrogHouseKeepableDefaultValue = true;
         public const float FrogSizeDefaultValue = 15f;
         public const float FrogWeightDefaultValue = 30;

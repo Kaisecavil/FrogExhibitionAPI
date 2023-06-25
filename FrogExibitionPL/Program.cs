@@ -16,6 +16,7 @@ using FrogExhibitionBLL.Interfaces.IHelper;
 using FrogExhibitionBLL.Constants;
 using FrogExhibitionBLL.Interfaces.IProvider;
 using FrogExhibitionBLL.Providers;
+using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
 
 namespace FrogExhibitionPL
 {
@@ -38,9 +39,6 @@ namespace FrogExhibitionPL
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
 
-            
-
-
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IFrogService, FrogService>();
             builder.Services.AddScoped<IExhibitionService, ExhibitionService>();
@@ -53,8 +51,6 @@ namespace FrogExhibitionPL
             builder.Services.AddSingleton<IFileHelper, FileHelper>();
             builder.Services.AddSingleton<ISortHelper<Frog>, SortHelper<Frog>>();
             builder.Services.AddSingleton<ISortHelper<Exhibition>, SortHelper<Exhibition>>();
-
-
 
             builder.Services.AddAuthentication(options =>
             {
@@ -76,8 +72,6 @@ namespace FrogExhibitionPL
             );
 
             builder.Services.AddTransient<IAuthService, AuthService>();
-
-
 
             builder.Services.AddControllers();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -138,8 +132,8 @@ namespace FrogExhibitionPL
                         }
                     }
 
-                    var adminUser = new LoginUser() { Email = "Admin@mail.com", Password = "P@ssw0rd" };
-                    var regularUser = new LoginUser() { Email = "User@mail.com", Password = "P@ssw0rd" };
+                    var adminUser = new ApplicationUserDtoForLogin() { Email = "Admin@mail.com", Password = "P@ssw0rd" };
+                    var regularUser = new ApplicationUserDtoForLogin() { Email = "User@mail.com", Password = "P@ssw0rd" };
                     await authService.RegisterUserAsync(adminUser);
                     await authService.RegisterUserAsync(regularUser);
 

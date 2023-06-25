@@ -9,7 +9,7 @@ namespace FrogExhibitionBLL.Interfaces.IService
         public Task<IEnumerable<FrogGeneralViewModel>> GetAllFrogsAsync(string sortParams);
         public Task<FrogDetailViewModel> GetFrogAsync(Guid id);
         public Task<Guid> CreateFrogAsync(FrogDtoForCreate frog);
-        public Task<bool> DeleteFrogAsync(Guid id);
-        public Task<bool> UpdateFrogAsync(FrogDtoForUpdate frog);
+        public Task DeleteFrogAsync(Guid id);
+        public Task UpdateFrogAsync(FrogDtoForUpdate frog);
     }
 }
