@@ -13,13 +13,10 @@ namespace FrogExhibitionPL.Controllers
     [ApiController]
     public class ExhibitionsController : ControllerBase
     {
-        private readonly ILogger<ExhibitionsController> _logger;
         private readonly IExhibitionService _exebitionService;
 
-        public ExhibitionsController(ILogger<ExhibitionsController> logger,
-            IExhibitionService exebitionService)
+        public ExhibitionsController(IExhibitionService exebitionService)
         {
-            _logger = logger;
             _exebitionService = exebitionService;
         }
 

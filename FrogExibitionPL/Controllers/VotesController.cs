@@ -13,14 +13,10 @@ namespace FrogExhibitionPL.Controllers
     [ApiController]
     public class VotesController : ControllerBase
     {
-        private readonly ILogger<VotesController> _logger;
         private readonly IVoteService _voteService;
 
-        public VotesController(
-            ILogger<VotesController> logger,
-            IVoteService voteService)
+        public VotesController(IVoteService voteService)
         {
-            _logger = logger;
             _voteService = voteService;
         }
 

@@ -13,13 +13,10 @@ namespace FrogExhibitionPL.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AuthController(IAuthService authService,
-            UserManager<ApplicationUser> userManager)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
-            _userManager = userManager;
         }
         [HttpPost("Login")]
         [ProducesResponseType(200)]

@@ -10,7 +10,8 @@ namespace FrogExhibitionBLL.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<FrogPhotoService> _logger;
 
-        public FrogPhotoService(IUnitOfWork unitOfWork, ILogger<FrogPhotoService> logger)
+        public FrogPhotoService(IUnitOfWork unitOfWork,
+            ILogger<FrogPhotoService> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;

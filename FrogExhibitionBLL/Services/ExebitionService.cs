@@ -20,7 +20,11 @@ namespace FrogExhibitionBLL.Services
         private readonly ISortHelper<Exhibition> _sortHelper;
         private readonly IFrogPhotoService _frogPhotoService;
 
-        public ExhibitionService(IUnitOfWork unitOfWork, ILogger<ExhibitionService> logger, IMapper mapper, ISortHelper<Exhibition> sortHelper, IFrogPhotoService frogPhotoService)
+        public ExhibitionService(IUnitOfWork unitOfWork,
+            ILogger<ExhibitionService> logger,
+            IMapper mapper,
+            ISortHelper<Exhibition> sortHelper,
+            IFrogPhotoService frogPhotoService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;

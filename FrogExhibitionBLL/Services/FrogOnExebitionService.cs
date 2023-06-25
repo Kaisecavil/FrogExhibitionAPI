@@ -16,7 +16,9 @@ namespace FrogExhibitionBLL.Services
         private readonly ILogger<FrogOnExhibitionService> _logger;
         private readonly IMapper _mapper;
 
-        public FrogOnExhibitionService(IUnitOfWork unitOfWork, ILogger<FrogOnExhibitionService> logger, IMapper mapper)
+        public FrogOnExhibitionService(IUnitOfWork unitOfWork,
+            ILogger<FrogOnExhibitionService> logger,
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;

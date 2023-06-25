@@ -12,13 +12,10 @@ namespace FrogExhibitionPL.Controllers
     [ApiController]
     public class FrogsController : ControllerBase
     {
-        private readonly ILogger<FrogsController> _logger;
         private readonly IFrogService _frogService;
 
-        public FrogsController(ILogger<FrogsController> logger,
-            IFrogService frogService)
+        public FrogsController(IFrogService frogService)
         {
-            _logger = logger;
             _frogService = frogService;
         }
 

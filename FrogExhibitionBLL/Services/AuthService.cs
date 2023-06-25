@@ -16,10 +16,10 @@ namespace FrogExhibitionBLL.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _config;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration config, RoleManager<IdentityRole> roleManager)
+        public AuthService(UserManager<ApplicationUser> userManager,
+            IConfiguration config)
         {
             _userManager = userManager;
             _config = config;
