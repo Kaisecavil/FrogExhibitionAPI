@@ -23,7 +23,6 @@ namespace FrogExhibitionBLL.Services
         {
             _userManager = userManager;
             _config = config;
-            _roleManager = roleManager;
         }
 
         public string GenerateTokenString(ApplicationUserDtoForLogin user, IEnumerable<string> roles)

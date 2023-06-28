@@ -27,7 +27,6 @@ namespace FrogExhibitionDAL.Repositories
         {
             var toDelete = _context.Set<DbModel>().FirstOrDefault(m => m.Id == id);
             _context.Set<DbModel>().Remove(toDelete);
-            _context.SaveChanges();
         }
 
         public IEnumerable<DbModel> GetAll(bool asNoTraking = false)

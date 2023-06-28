@@ -12,34 +12,12 @@ namespace FrogExhibitionDAL.ValidationAttributes
         /// <returns></returns>
         public override bool IsValid(object value)
         {
-            if (value == null)
+            return value switch
             {
-                return true;
-            }
-            if(value is Frog)
-            {
-                Frog frog = value as Frog;
-                try
-                {
-                    if (frog.CurrentAge <= frog.MaxAge)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                catch (NullReferenceException ex)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-            
+                null => true,
+                Frog frog => frog?.CurrentAge != null && frog.CurrentAge <= frog.MaxAge,
+                _ => false
+            };
         }
     }
 }
