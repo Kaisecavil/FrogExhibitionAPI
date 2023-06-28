@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FrogExhibitionBLL.DTO.VoteDtos;
 using FrogExhibitionBLL.Exceptions;
+using FrogExhibitionBLL.Interfaces.IProvider;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.VoteViewModels;
 using FrogExhibitionDAL.Interfaces;
@@ -15,23 +16,27 @@ namespace FrogExhibitionBLL.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<VoteService> _logger;
         private readonly IMapper _mapper;
+        private readonly IUserProvider _userProvider;
 
         public VoteService(IUnitOfWork unitOfWork,
             ILogger<VoteService> logger,
-            IMapper mapper)
+            IMapper mapper,
+            IUserProvider userProvider)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _userProvider = userProvider;
         }
 
         public async Task<Guid> CreateVoteAsync(VoteDtoForCreate vote)
         {
             try
             {
+                var currentUserId = await _userProvider.GetUserIdAsync();
                 var userVotesOnExhibitionCount = _unitOfWork.Votes
-                    .GetAll()
-                    .Where(v => v.ApplicationUserId == vote.ApplicationUserId 
+                    .GetAllQueryable()
+                    .Where(v => v.ApplicationUserId == currentUserId 
                     && v.FrogOnExhibitionId == vote.FrogOnExhibitionId)
                     .Count();
                 if (userVotesOnExhibitionCount >= 3)
@@ -41,6 +46,7 @@ namespace FrogExhibitionBLL.Services
                 try
                 {
                     var mappedVote = _mapper.Map<Vote>(vote);
+                    mappedVote.ApplicationUserId = currentUserId;
                     await _unitOfWork.Votes.CreateAsync(mappedVote);
                     _logger.LogInformation("Vote Created");
                     await _unitOfWork.SaveAsync();
@@ -80,9 +86,9 @@ namespace FrogExhibitionBLL.Services
             {
                 if (await _unitOfWork.Votes.EntityExistsAsync(vote.Id))
                 {
-                    var userVotesOnExhibitionCount = (await _unitOfWork.Votes
-                        .GetAllAsync())
-                        .Where(v => v.ApplicationUserId == vote.ApplicationUserId 
+                    var currentUserId = await _userProvider.GetUserIdAsync();
+                    var userVotesOnExhibitionCount = _unitOfWork.Votes.GetAllQueryable()
+                        .Where(v => v.ApplicationUserId == currentUserId 
                         && v.FrogOnExhibitionId == vote.FrogOnExhibitionId)
                         .Count();
                     if (userVotesOnExhibitionCount >= 3)
@@ -90,6 +96,7 @@ namespace FrogExhibitionBLL.Services
                         throw new DbUpdateException("This user has cast all of his available votes on this exebiton");
                     }
                     var mappedVote = _mapper.Map<Vote>(vote);
+                    mappedVote.ApplicationUserId = currentUserId;
                     await _unitOfWork.Votes.UpdateAsync(mappedVote);
                     await _unitOfWork.SaveAsync();
                 }

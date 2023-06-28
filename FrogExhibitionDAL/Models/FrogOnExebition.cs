@@ -12,5 +12,6 @@ namespace FrogExhibitionDAL.Models
         public virtual Exhibition Exhibition { get; set; } = null!;
         public virtual Frog Frog { get; set; } = null!;
         public virtual List<Vote> Votes { get; } = new();
+        public virtual List<Comment> Comments { get; } = new();
     }
 }

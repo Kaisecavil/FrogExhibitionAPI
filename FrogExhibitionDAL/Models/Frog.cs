@@ -66,6 +66,7 @@ namespace FrogExhibitionDAL.Models
         public virtual List<Exhibition> Exhibitions { get; } = new();
         public virtual List<FrogOnExhibition> FrogsOnExhibitions { get; } = new();
         public virtual List<FrogPhoto> FrogPhotos { get; } = new();
+        public virtual List<FrogStarRating> FrogStarRatings { get; } = new();
 
     }
 }

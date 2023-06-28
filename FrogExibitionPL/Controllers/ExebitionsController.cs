@@ -22,9 +22,9 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/Exhibitions
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<ExhibitionDetailViewModel>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<ExhibitionGeneralViewModel>))]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IEnumerable<ExhibitionDetailViewModel>>> GetExhibitions()
+        public async Task<ActionResult<IEnumerable<ExhibitionGeneralViewModel>>> GetExhibitions()
         {
             try
             {
@@ -38,9 +38,9 @@ namespace FrogExhibitionPL.Controllers
         }
 
         [HttpGet("sort/{sortParams}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<ExhibitionDetailViewModel>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<ExhibitionGeneralViewModel>))]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IEnumerable<ExhibitionDetailViewModel>>> GetSortedExhibitions(string sortParams = "name desc,country")
+        public async Task<ActionResult<IEnumerable<ExhibitionGeneralViewModel>>> GetSortedExhibitions(string sortParams = "name desc,country")
         {
             try
             {

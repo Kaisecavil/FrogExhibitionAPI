@@ -1,6 +1,5 @@
 ﻿using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
-using Microsoft.Extensions.Logging;
 using FrogExhibitionDAL.Enums;
 
 namespace FrogExhibitionDAL.Database

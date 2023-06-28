@@ -1,12 +1,9 @@
 ﻿using FrogExhibitionBLL.Constants;
 using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
 using FrogExhibitionBLL.Exceptions;
-using FrogExhibitionBLL.Interfaces.IProvider;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
-using FrogExhibitionDAL.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

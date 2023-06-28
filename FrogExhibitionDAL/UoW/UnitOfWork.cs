@@ -14,6 +14,8 @@ namespace FrogExhibitionDAL.UoW
         private IBaseRepository<FrogOnExhibition> _frogOnExhibitionRepository;
         private IBaseRepository<Vote> _voteRepository;
         private IBaseRepository<FrogPhoto> _frogPhotoRepository;
+        private IBaseRepository<Comment> _commentRepository;
+        private IBaseRepository<FrogStarRating> _frogStarRatingRepository;
 
         public UnitOfWork(ApplicationContext db)
         {
@@ -63,6 +65,26 @@ namespace FrogExhibitionDAL.UoW
                 if (_frogPhotoRepository == null)
                     _frogPhotoRepository = new BaseRepository<FrogPhoto>(_db);
                 return _frogPhotoRepository;
+            }
+        }
+
+        public IBaseRepository<Comment> Comments
+        {
+            get
+            {
+                if (_commentRepository == null)
+                    _commentRepository = new BaseRepository<Comment>(_db);
+                return _commentRepository;
+            }
+        }
+
+        public IBaseRepository<FrogStarRating> FrogStarRatings
+        {
+            get
+            {
+                if(_frogStarRatingRepository == null)
+                    _frogStarRatingRepository = new BaseRepository<FrogStarRating>(_db);
+                return _frogStarRatingRepository;
             }
         }
 

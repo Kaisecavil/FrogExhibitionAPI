@@ -3,6 +3,7 @@ using FrogExhibitionBLL.DTO.ExhibitionDTOs;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IHelper;
 using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.ViewModels.CommentViewModels;
 using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
 using FrogExhibitionBLL.ViewModels.FrogViewModels;
 using FrogExhibitionDAL.Interfaces;
@@ -51,20 +52,24 @@ namespace FrogExhibitionBLL.Services
 
         }
 
-        public async Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitionsAsync()
+        public async Task<IEnumerable<ExhibitionGeneralViewModel>> GetAllExhibitionsAsync()
         {
             var result = await _unitOfWork.Exhibitions.GetAllAsync(true);
-            return _mapper.Map<IEnumerable<ExhibitionDetailViewModel>>(result);
+            return _mapper.Map<IEnumerable<ExhibitionGeneralViewModel>>(result);
         }
 
         public async Task<ExhibitionDetailViewModel> GetExhibitionAsync(Guid id)
         {
-            var exebition = await _unitOfWork.Exhibitions.GetAsync(id, true);
+            var exebition = await _unitOfWork.Exhibitions.GetAsync(id);
             if (exebition == null)
             {
                 throw new NotFoundException("Entity not found");
             }
-            return _mapper.Map<ExhibitionDetailViewModel>(exebition);
+            var mappedExhibition = _mapper.Map<ExhibitionDetailViewModel>(exebition);
+            mappedExhibition.Frogs = _mapper.Map<List<FrogGeneralViewModel>>(exebition.Frogs);
+            mappedExhibition.Frogs
+                .ForEach(f => f.Comments = _mapper.Map<List<CommentGeneralViewModel>>(exebition.FrogsOnExhibitions.First(foe => foe.FrogId == f.Id).Comments)); 
+            return mappedExhibition;
         }
 
         public async Task UpdateExhibitionAsync(ExhibitionDtoForUpdate exebition)
@@ -126,7 +131,7 @@ namespace FrogExhibitionBLL.Services
                 Genus = foe.Frog.Genus,
                 Habitat = foe.Frog.Habitat,
                 Weight = foe.Frog.Weight,
-                Sex = foe.Frog.Sex,
+                Sex = foe.Frog.Sex.ToString(),
                 Poisonous = foe.Frog.Poisonous,
                 Size = foe.Frog.Size,
                 Species = foe.Frog.Species
@@ -134,11 +139,11 @@ namespace FrogExhibitionBLL.Services
             return res.ToList();
         }
 
-        public async Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitionsAsync(string sortParams)
+        public async Task<IEnumerable<ExhibitionGeneralViewModel>> GetAllExhibitionsAsync(string sortParams)
         {
             var exebitions = _unitOfWork.Exhibitions.GetAllQueryable(true);
             var sortedExhibitions = await _sortHelper.ApplySort(exebitions, sortParams).ToListAsync();
-            return _mapper.Map<IEnumerable<ExhibitionDetailViewModel>>(sortedExhibitions);
+            return _mapper.Map<IEnumerable<ExhibitionGeneralViewModel>>(sortedExhibitions);
         }
     }
 }

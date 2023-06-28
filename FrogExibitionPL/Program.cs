@@ -25,7 +25,7 @@ namespace FrogExhibitionPL
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
+
             // Add services to the container.
             builder.Services.AddDbContext<ApplicationContext>(
                 o => o.UseLazyLoadingProxies()
@@ -42,10 +42,12 @@ namespace FrogExhibitionPL
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IFrogService, FrogService>();
             builder.Services.AddScoped<IExhibitionService, ExhibitionService>();
-            builder.Services.AddScoped<IFrogOnExhibitionService,FrogOnExhibitionService>();
+            builder.Services.AddScoped<IFrogOnExhibitionService, FrogOnExhibitionService>();
             builder.Services.AddScoped<IVoteService, VoteService>();
             builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
             builder.Services.AddScoped<IFrogPhotoService, FrogPhotoService>();
+            builder.Services.AddScoped<IFrogStarRatingService, FrogStarRatingService>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
             builder.Services.AddScoped<IUserProvider, UserProvider>();
 
             builder.Services.AddSingleton<IFileHelper, FileHelper>();
@@ -56,7 +58,8 @@ namespace FrogExhibitionPL
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => {
+            }).AddJwtBearer(options =>
+            {
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateActor = true,
@@ -79,7 +82,8 @@ namespace FrogExhibitionPL
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(option => {
+            builder.Services.AddSwaggerGen(option =>
+            {
                 // ...
                 option.SchemaFilter<SchemaFilter>();
                 option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -123,7 +127,7 @@ namespace FrogExhibitionPL
                     var voteService = scope.ServiceProvider.GetRequiredService<IVoteService>();
                     var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    var roles = new[] {  RoleConstants.AdminRole,  RoleConstants.UserRole };
+                    var roles = new[] { RoleConstants.AdminRole, RoleConstants.UserRole };
                     foreach (var role in roles)
                     {
                         if (!await roleManager.RoleExistsAsync(role))
@@ -138,13 +142,15 @@ namespace FrogExhibitionPL
                     await authService.RegisterUserAsync(regularUser);
 
 
-                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email),  RoleConstants.AdminRole);
-                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email),  RoleConstants.UserRole);
-                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(regularUser.Email),  RoleConstants.UserRole);
+                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email), RoleConstants.AdminRole);
+                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email), RoleConstants.UserRole);
+                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(regularUser.Email), RoleConstants.UserRole);
                     var service = scope.ServiceProvider.GetService<Seed>();
                     service.SeedApplicationContextAsync();
 
                     var frogsOnExhibitions = await unitOfWork.FrogOnExhibitions.GetAllAsync();
+                    var frogs = await unitOfWork.Frogs.GetAllAsync();
+                    var rand = new Random();
                     var users = userManager.Users.ToList();
                     var votes = new List<Vote>();
                     users
@@ -155,6 +161,32 @@ namespace FrogExhibitionPL
                             FrogOnExhibitionId = frgOnEx.Id
                         })));
                     await unitOfWork.Votes.CreateRangeAsync(votes);
+                   
+
+                    var comments = new List<Comment>();
+                    users
+                        .ForEach(u => frogsOnExhibitions.ToList()
+                        .ForEach(frgOnEx => comments.Add(new Comment()
+                        {
+                            ApplicationUserId = u.Id,
+                            FrogOnExhibitionId = frgOnEx.Id,
+                            Text = $"imho this frog is top{rand.Next(10)} in the world",
+                            CreationDate = DateTime.Now
+                        })));
+
+                    await unitOfWork.Comments.CreateRangeAsync(comments);
+
+                    var frogStarRatings = new List<FrogStarRating>();
+                    users
+                        .ForEach(u => frogs.ToList()
+                        .ForEach(f => frogStarRatings.Add(new FrogStarRating()
+                        {
+                            ApplicationUserId = u.Id,
+                            FrogId = f.Id,
+                            Rating = rand.Next(5),
+                            Comment = rand.Next(1000).ToString()
+                        })));
+                    await unitOfWork.FrogStarRatings.CreateRangeAsync(frogStarRatings);
                     await unitOfWork.SaveAsync();
                 }
             }

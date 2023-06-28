@@ -10,6 +10,10 @@ using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
 using FrogExhibitionBLL.ViewModels.FrogOnExhibitionViewModels;
 using FrogExhibitionBLL.ViewModels.VoteViewModels;
 using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
+using FrogExhibitionBLL.ViewModels.FrogStarRatingViewModels;
+using FrogExhibitionBLL.DTO.FrogStarRatingDTOs;
+using FrogExhibitionBLL.ViewModels.CommentViewModels;
+using FrogExhibitionBLL.DTO.CommentsDTOs;
 
 namespace FrogExhibitionBLL.Helpers
 {
@@ -35,6 +39,7 @@ namespace FrogExhibitionBLL.Helpers
                     opt => opt.MapFrom(src => src.Sex.ToString())
                 );
 
+            CreateMap<Exhibition, ExhibitionGeneralViewModel>();
             CreateMap<Exhibition, ExhibitionDetailViewModel>();
             CreateMap<ExhibitionDtoForUpdate, Exhibition>();
             CreateMap<ExhibitionDtoForCreate, Exhibition>();
@@ -53,7 +58,13 @@ namespace FrogExhibitionBLL.Helpers
             CreateMap<ApplicationUser, ApplicationUserGeneralViewModel>();
             CreateMap<ApplicationUserDtoForUpdate, ApplicationUser>();
 
+            CreateMap<FrogStarRating, FrogStarRatingGeneralViewModel>();
+            CreateMap<FrogStarRatingDtoForUpdate, FrogStarRating>();
+            CreateMap<FrogStarRatingDtoForCreate, FrogStarRating>();
 
+            CreateMap<Comment, CommentGeneralViewModel>();
+            CreateMap<CommentDtoForUpdate, Comment>();
+            CreateMap<CommentDtoForCreate, Comment>();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
-using FrogExhibitionDAL.Models;
 
 namespace FrogExhibitionBLL.Interfaces.IService
 {

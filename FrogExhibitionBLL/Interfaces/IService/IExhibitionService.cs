@@ -8,10 +8,10 @@ namespace FrogExhibitionBLL.Interfaces.IService
     {
         Task<Guid> CreateExhibitionAsync(ExhibitionDtoForCreate exebition);
         Task DeleteExhibitionAsync(Guid id);
-        Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitionsAsync();
+        Task<IEnumerable<ExhibitionGeneralViewModel>> GetAllExhibitionsAsync();
         Task<ExhibitionDetailViewModel> GetExhibitionAsync(Guid id);
         Task UpdateExhibitionAsync(ExhibitionDtoForUpdate exebition);
         Task<IEnumerable<FrogRatingViewModel>> GetRatingAsync(Guid id);
-        Task<IEnumerable<ExhibitionDetailViewModel>> GetAllExhibitionsAsync(string sortParams);
+        Task<IEnumerable<ExhibitionGeneralViewModel>> GetAllExhibitionsAsync(string sortParams);
     }
 }

@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FrogExhibitionDAL.Models;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
