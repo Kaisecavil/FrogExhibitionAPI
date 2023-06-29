@@ -123,6 +123,7 @@ namespace FrogExhibitionBLL.Services
             {
                 Id = foe.Frog.Id,
                 VotesCount = foe.Votes.Count,
+                VotesSum = foe.Votes.Sum(v => (int)v.ApplicationUser.KnowledgeLevel),
                 Color = foe.Frog.Color,
                 HouseKeepable = foe.Frog.HouseKeepable,
                 CurrentAge = foe.Frog.CurrentAge,

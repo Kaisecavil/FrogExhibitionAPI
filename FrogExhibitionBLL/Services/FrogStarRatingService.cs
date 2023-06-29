@@ -33,6 +33,12 @@ namespace FrogExhibitionBLL.Services
             try
             {
                 var currentUserId = await _userProvider.GetUserIdAsync();
+                if(_unitOfWork.FrogStarRatings.GetAllQueryable(true)
+                    .Any(fsr => fsr.FrogId == frogStarRating.FrogId &&
+                         fsr.ApplicationUserId == currentUserId))
+                {
+                    throw new DbUpdateException("User can leave only one star rating per one frog");
+                }
                 var mappedFrogStarRating = _mapper.Map<FrogStarRating>(frogStarRating);
                 mappedFrogStarRating.ApplicationUserId = currentUserId;
                 await _unitOfWork.FrogStarRatings.UpdateAsync(mappedFrogStarRating);

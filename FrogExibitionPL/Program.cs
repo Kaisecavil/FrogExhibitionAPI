@@ -127,7 +127,11 @@ namespace FrogExhibitionPL
                     var voteService = scope.ServiceProvider.GetRequiredService<IVoteService>();
                     var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    var roles = new[] { RoleConstants.AdminRole, RoleConstants.UserRole };
+                    var roles = new[] { 
+                        RoleConstants.AdminRole,
+                        RoleConstants.UserRole,
+                        RoleConstants.UserAdminRole
+                    };
                     foreach (var role in roles)
                     {
                         if (!await roleManager.RoleExistsAsync(role))
@@ -137,14 +141,19 @@ namespace FrogExhibitionPL
                     }
 
                     var adminUser = new ApplicationUserDtoForLogin() { Email = "Admin@mail.com", Password = "P@ssw0rd" };
-                    var regularUser = new ApplicationUserDtoForLogin() { Email = "User@mail.com", Password = "P@ssw0rd" };
+                    var userAdminUser = new ApplicationUserDtoForLogin() { Email = "UserAdmin@mail.com", Password = "P@ssw0rd" };
+                    var userUser = new ApplicationUserDtoForLogin() { Email = "User@mail.com", Password = "P@ssw0rd" };
                     await authService.RegisterUserAsync(adminUser);
-                    await authService.RegisterUserAsync(regularUser);
+                    await authService.RegisterUserAsync(userAdminUser);
+                    await authService.RegisterUserAsync(userUser);
 
 
                     await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email), RoleConstants.AdminRole);
+                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email), RoleConstants.UserAdminRole);
                     await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email), RoleConstants.UserRole);
-                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(regularUser.Email), RoleConstants.UserRole);
+                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(userAdminUser.Email), RoleConstants.UserAdminRole);
+                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(userAdminUser.Email), RoleConstants.UserRole);
+                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(userUser.Email), RoleConstants.UserRole);
                     var service = scope.ServiceProvider.GetService<Seed>();
                     service.SeedApplicationContextAsync();
 

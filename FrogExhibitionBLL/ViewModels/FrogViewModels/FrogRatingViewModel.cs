@@ -43,5 +43,6 @@ namespace FrogExhibitionBLL.ViewModels.FrogViewModels
         public List<string> PhotoPaths { get; set; }
 
         public int VotesCount { get; set; }
+        public int VotesSum { get; set; }
     }
 }

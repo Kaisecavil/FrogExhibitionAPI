@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
 using FrogExhibitionBLL.Constants;
 using FrogExhibitionBLL.Interfaces.IProvider;
+using FrogExhibitionDAL.Enums;
 
 namespace FrogExhibitionBLL.Services
 {
@@ -68,8 +69,19 @@ namespace FrogExhibitionBLL.Services
                     user.PhoneNumber = applicationUser.PhoneNumber;
                     user.UserName = applicationUser.UserName;
                     user.Email = applicationUser.Email;
-                    var result = await _userManager.UpdateAsync(user);
-                    await _unitOfWork.SaveAsync();
+                    UserKnowledgeLevel knowledgeLevel;
+                    if(Enum.TryParse(applicationUser.KnowledgeLevel,out knowledgeLevel))
+                    {
+                        user.KnowledgeLevel = knowledgeLevel;
+                        var result = await _userManager.UpdateAsync(user);
+                        await _unitOfWork.SaveAsync();
+                    }
+                    else
+                    {
+                        throw new BadRequestException("Knowledge level is invalid");
+                    }
+
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {

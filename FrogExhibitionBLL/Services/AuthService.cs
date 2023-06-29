@@ -2,6 +2,7 @@
 using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionDAL.Enums;
 using FrogExhibitionDAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -73,7 +74,8 @@ namespace FrogExhibitionBLL.Services
                 var identityUser = new ApplicationUser
                 {
                     UserName = user.Email,
-                    Email = user.Email
+                    Email = user.Email,
+                    KnowledgeLevel = UserKnowledgeLevel.Newbie
                 };
 
                 var result = await _userManager.CreateAsync(identityUser, user.Password);

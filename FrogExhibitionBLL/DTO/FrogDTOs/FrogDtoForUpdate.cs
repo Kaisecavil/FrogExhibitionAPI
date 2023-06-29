@@ -39,7 +39,7 @@ namespace FrogExhibitionBLL.DTO.FrogDTOs
 
         [Required]
         [DefaultValue(FrogDefaultValueConstants.FrogSexDefaultValue)]
-        public FrogSex? Sex { get; set; }
+        public string Sex { get; set; }
 
         [Required]
         [DefaultValue(FrogDefaultValueConstants.FrogHouseKeepableDefaultValue)]

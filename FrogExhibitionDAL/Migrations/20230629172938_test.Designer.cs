@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FrogExhibitionDAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230628184757_Comments")]
-    partial class Comments
+    [Migration("20230629172938_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,9 +109,6 @@ namespace FrogExhibitionDAL.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("FrogId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("FrogOnExhibitionId")
                         .HasColumnType("uniqueidentifier");
 
@@ -122,8 +119,6 @@ namespace FrogExhibitionDAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("FrogId");
 
                     b.HasIndex("FrogOnExhibitionId");
 
@@ -453,12 +448,8 @@ namespace FrogExhibitionDAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FrogExhibitionDAL.Models.Frog", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("FrogId");
-
                     b.HasOne("FrogExhibitionDAL.Models.FrogOnExhibition", "FrogOnExhibition")
-                        .WithMany()
+                        .WithMany("Comments")
                         .HasForeignKey("FrogOnExhibitionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -520,7 +511,7 @@ namespace FrogExhibitionDAL.Migrations
             modelBuilder.Entity("FrogExhibitionDAL.Models.Vote", b =>
                 {
                     b.HasOne("FrogExhibitionDAL.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("Votes")
+                        .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -587,11 +578,6 @@ namespace FrogExhibitionDAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FrogExhibitionDAL.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Votes");
-                });
-
             modelBuilder.Entity("FrogExhibitionDAL.Models.Exhibition", b =>
                 {
                     b.Navigation("FrogsOnExhibitions");
@@ -599,8 +585,6 @@ namespace FrogExhibitionDAL.Migrations
 
             modelBuilder.Entity("FrogExhibitionDAL.Models.Frog", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("FrogPhotos");
 
                     b.Navigation("FrogStarRatings");
@@ -610,6 +594,8 @@ namespace FrogExhibitionDAL.Migrations
 
             modelBuilder.Entity("FrogExhibitionDAL.Models.FrogOnExhibition", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Votes");
                 });
 #pragma warning restore 612, 618

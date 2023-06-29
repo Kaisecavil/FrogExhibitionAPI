@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FrogExhibitionDAL.Migrations
 {
     /// <inheritdoc />
-    public partial class Comments : Migration
+    public partial class test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,8 +26,7 @@ namespace FrogExhibitionDAL.Migrations
                     FrogOnExhibitionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FrogId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,11 +43,6 @@ namespace FrogExhibitionDAL.Migrations
                         principalTable: "FrogsOnExhibitions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Comment_Frogs_FrogId",
-                        column: x => x.FrogId,
-                        principalTable: "Frogs",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -82,11 +76,6 @@ namespace FrogExhibitionDAL.Migrations
                 name: "IX_Comment_ApplicationUserId",
                 table: "Comment",
                 column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comment_FrogId",
-                table: "Comment",
-                column: "FrogId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comment_FrogOnExhibitionId",

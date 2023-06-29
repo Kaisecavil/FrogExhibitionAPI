@@ -3,6 +3,7 @@ using FrogExhibitionBLL.DTO.FrogDTOs;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IHelper;
 using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.ViewModels.CommentViewModels;
 using FrogExhibitionBLL.ViewModels.FrogViewModels;
 using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
@@ -89,12 +90,15 @@ namespace FrogExhibitionBLL.Services
 
         public async Task<FrogDetailViewModel> GetFrogAsync(Guid id)
         {
-            var frog = await _unitOfWork.Frogs.GetAsync(id, true);
+            var frog = await _unitOfWork.Frogs.GetAsync(id);
             if (frog == null)
             {
                 throw new NotFoundException("Entity not found");
             }
             var mappedFrog = _mapper.Map<FrogDetailViewModel>(frog);
+            var commentsList = new List<Comment>();
+            frog.FrogsOnExhibitions.ForEach(foe => commentsList.AddRange(foe.Comments));
+            mappedFrog.Comments = _mapper.Map<List<CommentGeneralViewModel>>(commentsList.OrderBy(c => c.CreationDate));
             mappedFrog.PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(mappedFrog.Id).ToList();
             return mappedFrog;
         }

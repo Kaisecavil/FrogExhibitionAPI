@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel;
+using FrogExhibitionBLL.ViewModels.CommentViewModels;
+using FrogExhibitionBLL.ViewModels.FrogStarRatingViewModels;
 using FrogExhibitionDAL.Constants.ModelConstants.FrogConstants;
+using FrogExhibitionDAL.Models;
 
 namespace FrogExhibitionBLL.ViewModels.FrogViewModels
 {
@@ -45,5 +48,8 @@ namespace FrogExhibitionBLL.ViewModels.FrogViewModels
         public string Features { get; set; }
         
         public List<string> PhotoPaths { get; set; }
+
+        public List<CommentGeneralViewModel> Comments { get; set; }
+        public List<FrogStarRatingGeneralViewModel> FrogStarRatings { get; set; }
     }
 }
