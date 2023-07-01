@@ -25,6 +25,6 @@ namespace FrogExhibitionBLL.ViewModels.ExhibitionViewModels
         [DefaultValue(ExhibitionDefaultValueConstants.HouseDefaultValue)]
         public string House { get; set; }
 
-        public List<FrogGeneralViewModel> Frogs { get; set; }
+        public List<FrogExhibitionViewModel> Frogs { get; set; }
     }
 }

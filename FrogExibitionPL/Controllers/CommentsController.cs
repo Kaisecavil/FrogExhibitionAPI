@@ -125,6 +125,7 @@ namespace FrogExhibitionPL.Controllers
         // DELETE: api/Comments/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
@@ -140,9 +141,9 @@ namespace FrogExhibitionPL.Controllers
             {
                 return base.NotFound(ex.Message);
             }
-            catch (ForbidException ex)
+            catch (BadRequestException ex)
             {
-                return base.Forbid(ex.Message);
+                return base.BadRequest(ex.Message);
             }
         }
 

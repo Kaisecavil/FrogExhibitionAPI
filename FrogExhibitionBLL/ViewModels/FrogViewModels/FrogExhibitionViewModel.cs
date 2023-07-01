@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel;
+using FrogExhibitionBLL.ViewModels.CommentViewModels;
 using FrogExhibitionDAL.Constants.ModelConstants.FrogConstants;
 
 namespace FrogExhibitionBLL.ViewModels.FrogViewModels
 {
-    public class FrogGeneralViewModel
+    public class FrogExhibitionViewModel
     {
         public Guid Id { get; set; }
         
@@ -41,6 +42,6 @@ namespace FrogExhibitionBLL.ViewModels.FrogViewModels
         public int MaxAge { get; set; }
         public List<string> PhotoPaths { get; set; }
 
-        //public List<CommentGeneralViewModel> Comments { get; set; }
+        public List<CommentGeneralViewModel> Comments { get; set; }
     }
 }

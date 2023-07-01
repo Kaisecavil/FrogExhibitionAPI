@@ -44,5 +44,6 @@ namespace FrogExhibitionBLL.ViewModels.FrogViewModels
 
         public int VotesCount { get; set; }
         public int VotesSum { get; set; }
+        public double AverageRating { get; set; }
     }
 }

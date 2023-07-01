@@ -2,7 +2,6 @@
 using FrogExhibitionBLL.ViewModels.CommentViewModels;
 using FrogExhibitionBLL.ViewModels.FrogStarRatingViewModels;
 using FrogExhibitionDAL.Constants.ModelConstants.FrogConstants;
-using FrogExhibitionDAL.Models;
 
 namespace FrogExhibitionBLL.ViewModels.FrogViewModels
 {

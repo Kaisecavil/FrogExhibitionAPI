@@ -8,6 +8,7 @@ using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
 using FrogExhibitionBLL.ViewModels.FrogViewModels;
 using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -20,18 +21,24 @@ namespace FrogExhibitionBLL.Services
         private readonly IMapper _mapper;
         private readonly ISortHelper<Exhibition> _sortHelper;
         private readonly IFrogPhotoService _frogPhotoService;
+        private readonly IExcelHelper _excelHelper;
+        private readonly IFileHelper _fileHelper;
 
         public ExhibitionService(IUnitOfWork unitOfWork,
             ILogger<ExhibitionService> logger,
             IMapper mapper,
             ISortHelper<Exhibition> sortHelper,
-            IFrogPhotoService frogPhotoService)
+            IFrogPhotoService frogPhotoService,
+            IExcelHelper excelHelper,
+            IFileHelper fileHelper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
             _sortHelper = sortHelper;
             _frogPhotoService = frogPhotoService;
+            _excelHelper = excelHelper;
+            _fileHelper = fileHelper;
         }
 
         public async Task<Guid> CreateExhibitionAsync(ExhibitionDtoForCreate exebition)
@@ -66,9 +73,14 @@ namespace FrogExhibitionBLL.Services
                 throw new NotFoundException("Entity not found");
             }
             var mappedExhibition = _mapper.Map<ExhibitionDetailViewModel>(exebition);
-            mappedExhibition.Frogs = _mapper.Map<List<FrogGeneralViewModel>>(exebition.Frogs);
+            mappedExhibition.Frogs = _mapper.Map<List<FrogExhibitionViewModel>>(exebition.Frogs);
             mappedExhibition.Frogs
-                .ForEach(f => f.Comments = _mapper.Map<List<CommentGeneralViewModel>>(exebition.FrogsOnExhibitions.First(foe => foe.FrogId == f.Id).Comments)); 
+                .ForEach(f => f.Comments = 
+                    _mapper.Map<List<CommentGeneralViewModel>>
+                    (
+                        exebition.FrogsOnExhibitions.First(foe => foe.FrogId == f.Id).Comments
+                        .OrderBy(c => c.CreationDate))
+                    ); 
             return mappedExhibition;
         }
 
@@ -124,6 +136,7 @@ namespace FrogExhibitionBLL.Services
                 Id = foe.Frog.Id,
                 VotesCount = foe.Votes.Count,
                 VotesSum = foe.Votes.Sum(v => (int)v.ApplicationUser.KnowledgeLevel),
+                AverageRating = foe.Frog.FrogStarRatings.Average(r => r.Rating),
                 Color = foe.Frog.Color,
                 HouseKeepable = foe.Frog.HouseKeepable,
                 CurrentAge = foe.Frog.CurrentAge,
@@ -136,15 +149,92 @@ namespace FrogExhibitionBLL.Services
                 Poisonous = foe.Frog.Poisonous,
                 Size = foe.Frog.Size,
                 Species = foe.Frog.Species
-            });
+            })
+            .OrderByDescending(f => f.VotesSum)
+            .ThenByDescending(f => f.VotesCount)
+            .ThenByDescending(f => f.AverageRating);
+            return res.ToList();
+        }
+
+        public async Task<IEnumerable<FrogRatingViewModel>> GetBestFrogsHistoryAsync()
+        {
+            var exhibitions = (await _unitOfWork.Exhibitions.GetAllAsync()).ToList();
+            List<FrogRatingViewModel> res = new();
+            foreach (var exhibition in exhibitions)
+            {
+                res.Add((await GetRatingAsync(exhibition.Id)).FirstOrDefault());
+            }
+            
             return res.ToList();
         }
 
         public async Task<IEnumerable<ExhibitionGeneralViewModel>> GetAllExhibitionsAsync(string sortParams)
         {
-            var exebitions = _unitOfWork.Exhibitions.GetAllQueryable(true);
-            var sortedExhibitions = await _sortHelper.ApplySort(exebitions, sortParams).ToListAsync();
+            var exhibitions = _unitOfWork.Exhibitions.GetAllQueryable(true);
+            var sortedExhibitions = await _sortHelper.ApplySort(exhibitions, sortParams).ToListAsync();
             return _mapper.Map<IEnumerable<ExhibitionGeneralViewModel>>(sortedExhibitions);
+        }
+
+        public async Task<FileContentResult> GetExhibitionExcelReportAsync(Guid id)
+        {
+            var exhibition = await _unitOfWork.Exhibitions.GetAsync(id);
+            if (exhibition == null)
+            {
+                throw new NotFoundException("Entity not found");
+            }
+
+            string filePath = _fileHelper.GetExhibitionReportFilePath(exhibition.Name);
+            try
+            {
+                _excelHelper.CreateSpreadsheetFromObjects((await GetExcelReportDataAsync(exhibition)).ToList<object>(), filePath);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+
+            if (!File.Exists(filePath))
+            {
+                throw new NotFoundException("a");
+            }
+
+            byte[] fileBytes = File.ReadAllBytes(filePath);
+            string contentType = "application/octet-stream";
+            string fileName = Path.GetFileName(filePath);
+            var fileContentResult = new FileContentResult(fileBytes, contentType)
+            {
+                FileDownloadName = fileName
+            };
+
+            return fileContentResult;
+        }
+
+        private async Task<IEnumerable<FrogExcelReportViewModel>> GetExcelReportDataAsync(Exhibition exhibition)
+        {
+            var frogsOnExhibition = exhibition.FrogsOnExhibitions;
+            var res = frogsOnExhibition.Select(foe => new FrogExcelReportViewModel
+            {
+                Id = foe.Frog.Id,
+                VotesCount = foe.Votes.Count,
+                VotesSum = foe.Votes.Sum(v => (int)v.ApplicationUser.KnowledgeLevel),
+                AverageRating = foe.Frog.FrogStarRatings.Average(r => r.Rating),
+                CommentsCount = foe.Comments.Count,
+                Color = foe.Frog.Color,
+                HouseKeepable = foe.Frog.HouseKeepable,
+                CurrentAge = foe.Frog.CurrentAge,
+                MaxAge = foe.Frog.MaxAge,
+                Genus = foe.Frog.Genus,
+                Habitat = foe.Frog.Habitat,
+                Weight = foe.Frog.Weight,
+                Sex = foe.Frog.Sex.ToString(),
+                Poisonous = foe.Frog.Poisonous,
+                Size = foe.Frog.Size,
+                Species = foe.Frog.Species
+            })
+            .OrderByDescending(f => f.VotesSum)
+            .ThenByDescending(f => f.VotesCount)
+            .ThenByDescending(f => f.AverageRating);
+            return res.ToList();
         }
     }
 }

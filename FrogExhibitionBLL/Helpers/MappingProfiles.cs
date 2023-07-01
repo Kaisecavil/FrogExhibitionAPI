@@ -38,6 +38,11 @@ namespace FrogExhibitionBLL.Helpers
                     dest => dest.Sex,
                     opt => opt.MapFrom(src => src.Sex.ToString())
                 );
+            CreateMap<Frog, FrogExhibitionViewModel>()
+                .ForMember(
+                    dest => dest.Sex,
+                    opt => opt.MapFrom(src => src.Sex.ToString())
+                );
 
             CreateMap<Exhibition, ExhibitionGeneralViewModel>();
             CreateMap<Exhibition, ExhibitionDetailViewModel>();

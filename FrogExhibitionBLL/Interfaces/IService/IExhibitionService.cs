@@ -1,6 +1,7 @@
 ﻿using FrogExhibitionBLL.DTO.ExhibitionDTOs;
 using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
 using FrogExhibitionBLL.ViewModels.FrogViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FrogExhibitionBLL.Interfaces.IService
 {
@@ -13,5 +14,7 @@ namespace FrogExhibitionBLL.Interfaces.IService
         Task UpdateExhibitionAsync(ExhibitionDtoForUpdate exebition);
         Task<IEnumerable<FrogRatingViewModel>> GetRatingAsync(Guid id);
         Task<IEnumerable<ExhibitionGeneralViewModel>> GetAllExhibitionsAsync(string sortParams);
+        Task<IEnumerable<FrogRatingViewModel>> GetBestFrogsHistoryAsync();
+        Task<FileContentResult> GetExhibitionExcelReportAsync(Guid id);
     }
 }

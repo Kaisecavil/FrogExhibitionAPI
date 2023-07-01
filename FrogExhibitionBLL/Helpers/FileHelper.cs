@@ -1,6 +1,7 @@
 ﻿using FrogExhibitionBLL.Interfaces.IHelper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Office.Interop.Excel;
 
 namespace FrogExhibitionBLL.Helpers
 {
@@ -19,12 +20,29 @@ namespace FrogExhibitionBLL.Helpers
         /// <returns>Unique file name</returns>
         public string GetUniqueFileName(string fileName)
         {
+     
             fileName = Path.GetFileName(fileName);
             return string.Concat(Path.GetFileNameWithoutExtension(fileName),
                 "_",
                 Guid.NewGuid().ToString().AsSpan(0, 4),
                 Path.GetExtension(fileName));
 
+        }
+
+        /// <summary>
+        /// Takes exhibihion name and concat it with date
+        /// </summary>
+        /// <param name="exhibitionName"></param>
+        /// <returns></returns>
+        public string GetExhibitionReportFilePath(string exhibitionName)
+        {
+            return string.Concat(
+                _environment.WebRootPath,
+                "\\reports\\",
+                exhibitionName.Replace(" ", "_"),
+                "_",
+                DateTime.Now.ToShortDateString().Replace(".","_"),
+                ".xlsx");
         }
         /// <summary>
         /// Saves file with unique name in wwwroot directory

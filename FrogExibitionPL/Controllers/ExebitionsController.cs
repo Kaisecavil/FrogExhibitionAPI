@@ -6,6 +6,8 @@ using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
 using FrogExhibitionBLL.ViewModels.FrogViewModels;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Constants;
+using System;
+using FrogExhibitionBLL.Interfaces.IHelper;
 
 namespace FrogExhibitionPL.Controllers
 {
@@ -14,10 +16,13 @@ namespace FrogExhibitionPL.Controllers
     public class ExhibitionsController : ControllerBase
     {
         private readonly IExhibitionService _exebitionService;
+        private readonly IExcelHelper _excelHelper;
 
-        public ExhibitionsController(IExhibitionService exebitionService)
+        public ExhibitionsController(IExhibitionService exebitionService,
+            IExcelHelper excelHelper)
         {
             _exebitionService = exebitionService;
+            _excelHelper = excelHelper;
         }
 
         // GET: api/Exhibitions
@@ -149,6 +154,48 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 return base.Ok(await _exebitionService.GetRatingAsync(id));
+            }
+            catch (NotFoundException ex)
+            {
+                return base.NotFound(ex.Message);
+            }
+
+
+        }
+
+        // GET: api/Exhibitions/history
+        [HttpGet("history")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [Authorize(Roles = RoleConstants.UserRole)]
+        public async Task<ActionResult<IEnumerable<FrogRatingViewModel>>> GetHistory()
+        {
+            try
+            {
+                return base.Ok(await _exebitionService.GetBestFrogsHistoryAsync());
+            }
+            catch (NotFoundException ex)
+            {
+                return base.NotFound(ex.Message);
+            }
+
+
+        }
+
+        public class Person
+        {
+            public string Name { get; set; }
+            public int Age { get; set; }
+        }
+        // GET: api/Exhibitions/history
+        [HttpGet("report/{id}")]
+        [ProducesResponseType(200)]
+        [Authorize(Roles = RoleConstants.AdminRole)]
+        public async Task<IActionResult> GetReport(Guid id)
+        {
+            try
+            {
+                return await _exebitionService.GetExhibitionExcelReportAsync(id);
             }
             catch (NotFoundException ex)
             {

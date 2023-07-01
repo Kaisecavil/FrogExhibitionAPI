@@ -82,7 +82,7 @@ namespace FrogExhibitionBLL.Services
                     }
                     else
                     {
-                        throw new ForbidException("You can't update comments of other users");
+                        throw new BadRequestException("You can't update comments of other users");
                     }
 
                 }
@@ -125,7 +125,7 @@ namespace FrogExhibitionBLL.Services
             }
             else
             {
-                throw new ForbidException("You can't delete other users comments");
+                throw new BadRequestException("You can't delete other users comments");
             }
         }
     }

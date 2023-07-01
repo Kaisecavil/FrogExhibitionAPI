@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FrogExhibitionDAL.Constants.ModelConstants.FrogStarRatingConstants
+﻿namespace FrogExhibitionDAL.Constants.ModelConstants.FrogStarRatingConstants
 {
     public class FrogStarRatingDefaultValueConstants
     {

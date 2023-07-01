@@ -4,7 +4,6 @@ using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Services;
 using FrogExhibitionBLL.ViewModels.FrogStarRatingViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -125,6 +124,7 @@ namespace FrogExhibitionPL.Controllers
         // DELETE: api/FrogStarRatings/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
@@ -143,6 +143,10 @@ namespace FrogExhibitionPL.Controllers
             catch (ForbidException ex)
             {
                 return base.Forbid(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                return base.BadRequest(ex.Message);
             }
         }
     }

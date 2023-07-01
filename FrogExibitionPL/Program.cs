@@ -51,6 +51,7 @@ namespace FrogExhibitionPL
             builder.Services.AddScoped<IUserProvider, UserProvider>();
 
             builder.Services.AddSingleton<IFileHelper, FileHelper>();
+            builder.Services.AddSingleton<IExcelHelper, ExcelHelper>();
             builder.Services.AddSingleton<ISortHelper<Frog>, SortHelper<Frog>>();
             builder.Services.AddSingleton<ISortHelper<Exhibition>, SortHelper<Exhibition>>();
 

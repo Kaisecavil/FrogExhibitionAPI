@@ -86,7 +86,7 @@ namespace FrogExhibitionBLL.Services
                     }
                     else
                     {
-                        throw new ForbidException("You can't update frogStarRatings of other users");
+                        throw new BadRequestException("You can't update frogStarRatings of other users");
                     }
 
                 }
@@ -129,7 +129,7 @@ namespace FrogExhibitionBLL.Services
             }
             else
             {
-                throw new ForbidException("You can't delete other users frogStarRatings");
+                throw new BadRequestException("You can't delete other users frogStarRatings");
             }
         }
     }
