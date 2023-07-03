@@ -187,7 +187,7 @@ namespace FrogExhibitionPL.Controllers
             public string Name { get; set; }
             public int Age { get; set; }
         }
-        // GET: api/Exhibitions/history
+        // GET: api/Exhibitions/report
         [HttpGet("report/{id}")]
         [ProducesResponseType(200)]
         [Authorize(Roles = RoleConstants.AdminRole)]

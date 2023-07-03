@@ -156,6 +156,39 @@ namespace FrogExhibitionBLL.Services
             return res.ToList();
         }
 
+        public IEnumerable<FrogRatingViewModel> GetRating(Guid id)
+        {
+            var exebition = _unitOfWork.Exhibitions.Get(id);
+            if (exebition == null)
+            {
+                throw new NotFoundException("Entity not found");
+            }
+            var frogsOnExhibition = exebition.FrogsOnExhibitions;
+            var res = frogsOnExhibition.Select(foe => new FrogRatingViewModel
+            {
+                Id = foe.Frog.Id,
+                VotesCount = foe.Votes.Count,
+                VotesSum = foe.Votes.Sum(v => (int)v.ApplicationUser.KnowledgeLevel),
+                AverageRating = foe.Frog.FrogStarRatings.Average(r => r.Rating),
+                Color = foe.Frog.Color,
+                HouseKeepable = foe.Frog.HouseKeepable,
+                CurrentAge = foe.Frog.CurrentAge,
+                MaxAge = foe.Frog.MaxAge,
+                PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(foe.Frog.Id).ToList(),
+                Genus = foe.Frog.Genus,
+                Habitat = foe.Frog.Habitat,
+                Weight = foe.Frog.Weight,
+                Sex = foe.Frog.Sex.ToString(),
+                Poisonous = foe.Frog.Poisonous,
+                Size = foe.Frog.Size,
+                Species = foe.Frog.Species
+            })
+            .OrderByDescending(f => f.VotesSum)
+            .ThenByDescending(f => f.VotesCount)
+            .ThenByDescending(f => f.AverageRating);
+            return res.ToList();
+        }
+
         public async Task<IEnumerable<FrogRatingViewModel>> GetBestFrogsHistoryAsync()
         {
             var exhibitions = (await _unitOfWork.Exhibitions.GetAllAsync()).ToList();
@@ -186,7 +219,7 @@ namespace FrogExhibitionBLL.Services
             string filePath = _fileHelper.GetExhibitionReportFilePath(exhibition.Name);
             try
             {
-                _excelHelper.CreateSpreadsheetFromObjects((await GetExcelReportDataAsync(exhibition)).ToList<object>(), filePath);
+                _excelHelper.CreateSpreadsheetFromObjects((await GetExhibitionExcelReportDataAsync(exhibition)).ToList<object>(), filePath, "Frogs");
             }
             catch(Exception ex)
             {
@@ -209,7 +242,31 @@ namespace FrogExhibitionBLL.Services
             return fileContentResult;
         }
 
-        private async Task<IEnumerable<FrogExcelReportViewModel>> GetExcelReportDataAsync(Exhibition exhibition)
+        public int GetFrogsPlaceOnExhibition(Guid frogid, Guid exhibitionId) 
+        {
+            var exhibition = _unitOfWork.Exhibitions.Get(exhibitionId);
+            var frog = _unitOfWork.Frogs.Get(frogid);
+            if (exhibition == null || frog == null)
+            {
+                throw new NotFoundException("Entity not found");
+            }
+            var rating = GetRating(exhibitionId);
+            return rating.ToList().IndexOf(rating.FirstOrDefault(f => f.Id == frogid)) + 1;
+        }
+
+        public async Task<int> GetFrogsPlaceOnExhibitionAsync(Guid frogid, Guid exhibitionId)
+        {
+            var exhibition = await _unitOfWork.Exhibitions.GetAsync(exhibitionId);
+            var frog = await _unitOfWork.Frogs.GetAsync(frogid);
+            if (exhibition == null || frog == null)
+            {
+                throw new NotFoundException("Entity not found");
+            }
+            var rating = await GetRatingAsync(exhibitionId);
+            return rating.ToList().IndexOf(rating.FirstOrDefault(f => f.Id == frogid)) + 1;
+        }
+
+        private async Task<IEnumerable<FrogExcelReportViewModel>> GetExhibitionExcelReportDataAsync(Exhibition exhibition)
         {
             var frogsOnExhibition = exhibition.FrogsOnExhibitions;
             var res = frogsOnExhibition.Select(foe => new FrogExcelReportViewModel

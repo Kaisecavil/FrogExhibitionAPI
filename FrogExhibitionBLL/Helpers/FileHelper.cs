@@ -39,11 +39,25 @@ namespace FrogExhibitionBLL.Helpers
             return string.Concat(
                 _environment.WebRootPath,
                 "\\reports\\",
+                "\\exhibitionReports\\",
                 exhibitionName.Replace(" ", "_"),
                 "_",
-                DateTime.Now.ToShortDateString().Replace(".","_"),
+                DateTime.Now.ToShortDateString().Replace(".", "_"),
                 ".xlsx");
         }
+
+        public string GetUserReportFilePath(string userName)
+        {
+            return string.Concat(
+                _environment.WebRootPath,
+                "\\reports",
+                "\\userReports\\",
+                userName.Replace(" ", "_"),
+                "_",
+                DateTime.Now.ToShortDateString().Replace(".", "_"),
+                ".xlsx");
+        }
+
         /// <summary>
         /// Saves file with unique name in wwwroot directory
         /// </summary>

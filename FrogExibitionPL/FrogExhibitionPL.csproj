@@ -30,7 +30,7 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\images\" />
-		<Folder Include="wwwroot\reports\" />
+		<Folder Include="wwwroot\reports\userReports\" />
 		<Folder Include="wwwroot\uploads\" />
 	</ItemGroup>
 

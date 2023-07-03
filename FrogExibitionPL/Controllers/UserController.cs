@@ -3,6 +3,7 @@ using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
+using FrogExhibitionPL.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -111,6 +112,30 @@ namespace FrogExhibitionPL.Controllers
             {
                 await _userService.DeleteApplicationUserAsync(id);
                 return base.NoContent();
+            }
+            catch (ForbidException ex)
+            {
+                return base.Forbid(ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                return base.NotFound(ex.Message);
+            }
+        }
+
+        // GET: api/Users/stat/176223D5-5073-4961-B4EF-ECBE41F1A0C6
+        [HttpGet("stat/{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        //[Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.AdminRole,RoleConstants.UserAdminRole)]
+        public async Task<IActionResult> GetUserStatictics(Guid id)
+        {
+            try
+            {
+                return await _userService.GetUserStatisticsAsync(id);
             }
             catch (ForbidException ex)
             {

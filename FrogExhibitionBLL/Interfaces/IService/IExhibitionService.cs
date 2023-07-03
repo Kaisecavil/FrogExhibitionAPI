@@ -16,5 +16,8 @@ namespace FrogExhibitionBLL.Interfaces.IService
         Task<IEnumerable<ExhibitionGeneralViewModel>> GetAllExhibitionsAsync(string sortParams);
         Task<IEnumerable<FrogRatingViewModel>> GetBestFrogsHistoryAsync();
         Task<FileContentResult> GetExhibitionExcelReportAsync(Guid id);
+        int GetFrogsPlaceOnExhibition(Guid frogid, Guid exhibitionId);
+        IEnumerable<FrogRatingViewModel> GetRating(Guid id);
+        Task<int> GetFrogsPlaceOnExhibitionAsync(Guid frogid, Guid exhibitionId);
     }
 }
