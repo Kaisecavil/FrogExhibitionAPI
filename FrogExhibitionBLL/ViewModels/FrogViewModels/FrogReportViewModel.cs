@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FrogExhibitionBLL.ViewModels.FrogViewModels
 {
-    public class FrogExcelReportViewModel
+    public class FrogReportViewModel
     {
         public Guid Id { get; set; }
 

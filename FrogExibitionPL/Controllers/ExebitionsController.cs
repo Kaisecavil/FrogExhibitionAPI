@@ -187,15 +187,17 @@ namespace FrogExhibitionPL.Controllers
             public string Name { get; set; }
             public int Age { get; set; }
         }
-        // GET: api/Exhibitions/report
-        [HttpGet("report/{id}")]
+        // GET: api/Exhibitions/stat
+        [HttpGet("stat/{id}")]
         [ProducesResponseType(200)]
         [Authorize(Roles = RoleConstants.AdminRole)]
-        public async Task<IActionResult> GetReport(Guid id)
+        public async Task<IActionResult> GetStat(Guid id, bool createExcelReport = true)
         {
             try
             {
-                return await _exebitionService.GetExhibitionExcelReportAsync(id);
+                return createExcelReport?
+                    await _exebitionService.GetExhibitionStatisticsReportAsync(id) :
+                    base.Ok(await _exebitionService.GetExhibitionStatisticsAsync(id));
             }
             catch (NotFoundException ex)
             {

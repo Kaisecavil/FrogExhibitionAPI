@@ -129,13 +129,38 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        //[Authorize(Roles = RoleConstants.UserRole)]
         [AuthorizeRoles(RoleConstants.AdminRole,RoleConstants.UserAdminRole)]
-        public async Task<IActionResult> GetUserStatictics(Guid id)
+        public async Task<IActionResult> GetUserStatictics(Guid id, bool createExcelReport = true)
         {
             try
             {
-                return await _userService.GetUserStatisticsAsync(id);
+                return createExcelReport ?
+                    await _userService.GetUserStatisticsReportAsync(id) :
+                    base.Ok(await _userService.GetUserStatisticsAsync(id));
+            }
+            catch (ForbidException ex)
+            {
+                return base.Forbid(ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                return base.NotFound(ex.Message);
+            }
+        }
+
+        // GET: api/Users/stat/176223D5-5073-4961-B4EF-ECBE41F1A0C6
+        [HttpGet("coolstat/{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        //[Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.AdminRole, RoleConstants.UserAdminRole)]
+        public async Task<IActionResult> GetUserLastVotesOnExhibitions(Guid id, int quantityOfLastExhibitions)
+        {
+            try
+            {
+                return base.Ok(await _userService.GetUserLastVotesOnExhibitionsAsync(id, quantityOfLastExhibitions));
             }
             catch (ForbidException ex)
             {

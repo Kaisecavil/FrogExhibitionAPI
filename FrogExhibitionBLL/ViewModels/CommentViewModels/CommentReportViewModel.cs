@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FrogExhibitionBLL.ViewModels.CommentViewModels
 {
-    public class CommentExcelReportViewModel
+    public class CommentReportViewModel
     {
         public string FrogGenus { get; set; }
         public string FrogSpecies { get; set; }

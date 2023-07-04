@@ -128,7 +128,7 @@ namespace FrogExhibitionPL
                     var voteService = scope.ServiceProvider.GetRequiredService<IVoteService>();
                     var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    var roles = new[] { 
+                    var roles = new[] {
                         RoleConstants.AdminRole,
                         RoleConstants.UserRole,
                         RoleConstants.UserAdminRole
@@ -150,10 +150,7 @@ namespace FrogExhibitionPL
 
 
                     await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email), RoleConstants.AdminRole);
-                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email), RoleConstants.UserAdminRole);
-                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(adminUser.Email), RoleConstants.UserRole);
                     await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(userAdminUser.Email), RoleConstants.UserAdminRole);
-                    await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(userAdminUser.Email), RoleConstants.UserRole);
                     await userManager.AddToRoleAsync(await userManager.FindByEmailAsync(userUser.Email), RoleConstants.UserRole);
                     var service = scope.ServiceProvider.GetService<Seed>();
                     service.SeedApplicationContextAsync();
@@ -171,7 +168,7 @@ namespace FrogExhibitionPL
                             FrogOnExhibitionId = frgOnEx.Id
                         })));
                     await unitOfWork.Votes.CreateRangeAsync(votes);
-                   
+
 
                     var comments = new List<Comment>();
                     users

@@ -20,7 +20,7 @@ namespace FrogExhibitionBLL.Services
 {
     public class ApplicationUserService : IApplicationUserService
     {
-        
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ApplicationUserService> _logger;
@@ -83,7 +83,7 @@ namespace FrogExhibitionBLL.Services
                     user.UserName = applicationUser.UserName;
                     user.Email = applicationUser.Email;
                     UserKnowledgeLevel knowledgeLevel;
-                    if(Enum.TryParse(applicationUser.KnowledgeLevel,out knowledgeLevel))
+                    if (Enum.TryParse(applicationUser.KnowledgeLevel, out knowledgeLevel))
                     {
                         user.KnowledgeLevel = knowledgeLevel;
                         var result = await _userManager.UpdateAsync(user);
@@ -94,7 +94,7 @@ namespace FrogExhibitionBLL.Services
                         throw new BadRequestException("Knowledge level is invalid");
                     }
 
-                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -117,7 +117,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new ForbidException("Access denied");
             }
-            
+
         }
 
         public async Task DeleteApplicationUserAsync(Guid id)
@@ -139,10 +139,10 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new ForbidException("Access denied");
             }
-            
+
         }
 
-        public async Task<FileContentResult> GetUserStatisticsAsync(Guid id)
+        public async Task<FileContentResult> GetUserStatisticsReportAsync(Guid id)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
             if (user == null)
@@ -153,10 +153,10 @@ namespace FrogExhibitionBLL.Services
             string filePath = _fileHelper.GetUserReportFilePath(user.Id);
             try
             {
-                var votes = (await GetUserVotesExcelReportDataAsync(user)).Select(o => o.Result).ToList<object>();
-                var comments = GetUserCommentsExcelReportData(user).ToList<object>();
+                var votes = (await GetUserVotesReportDataAsync(user)).ToList<object>();
+                var comments = GetUserCommentsReportData(user).ToList<object>();
                 _excelHelper.CreateSpreadsheetFromObjects(votes, filePath, "User Votes");
-                _excelHelper.AppendObjectsToSpreadsheet(comments, filePath,"User Comments");
+                _excelHelper.AppendObjectsToSpreadsheet(comments, filePath, "User Comments");
             }
             catch (Exception ex)
             {
@@ -179,25 +179,53 @@ namespace FrogExhibitionBLL.Services
             return fileContentResult;
         }
 
-        private async Task<IEnumerable<Task<VoteExcelReportViewModel>>> GetUserVotesExcelReportDataAsync(ApplicationUser user)
+        public async Task<ApplicationUserReportViewModel> GetUserStatisticsAsync(Guid id)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
+            if (user == null)
+            {
+                throw new NotFoundException("Entity not found");
+            }
+            try
+            {
+                var votes = await GetUserVotesReportDataAsync(user);
+                var comments = GetUserCommentsReportData(user);
+                return new ApplicationUserReportViewModel()
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Comments = comments.ToList(),
+                    Votes = votes.ToList()
+                };
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            
+
+        }
+
+        private async Task<IEnumerable<VoteReportViewModel>> GetUserVotesReportDataAsync(ApplicationUser user)
         {
             var votes = user.Votes;
-            var res = votes.Select(async v => new VoteExcelReportViewModel()
+            var res = votes.Select(async v => new VoteReportViewModel()
             {
                 ApplicationUserName = user.UserName,
                 ExhibitionName = v.FrogOnExhibition.Exhibition.Name,
+                ExhibitionDate = v.FrogOnExhibition.Exhibition.Date.ToString(),
                 FrogColor = v.FrogOnExhibition.Frog.Color,
                 FrogGenus = v.FrogOnExhibition.Frog.Genus,
                 FrogSpecies = v.FrogOnExhibition.Frog.Species,
                 FrogsPlaceOnExhibition = await _exhibitionService.GetFrogsPlaceOnExhibitionAsync(v.FrogOnExhibition.FrogId, v.FrogOnExhibition.ExhibitionId)
             });
-            return res;
+            return res.Select(o => o.Result);
         }
 
-        private IEnumerable<CommentExcelReportViewModel> GetUserCommentsExcelReportData(ApplicationUser user)
+        private IEnumerable<CommentReportViewModel> GetUserCommentsReportData(ApplicationUser user)
         {
             var comments = user.Comments;
-            var res = comments.Select(c => new CommentExcelReportViewModel()
+            var res = comments.Select(c => new CommentReportViewModel()
             {
                 ApplicationUserName = user.UserName,
                 CreationDate = c.CreationDate.ToString(),
@@ -207,6 +235,21 @@ namespace FrogExhibitionBLL.Services
                 FrogColor = c.FrogOnExhibition.Frog.Color,
                 Text = c.Text
             });
+            return res;
+        }
+
+        public async Task<bool> GetUserLastVotesOnExhibitionsAsync(Guid id, int quantityOfLastExhibitions)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
+            if (user == null)
+            {
+                throw new NotFoundException("Entity not found");
+            }
+            var data = (await GetUserVotesReportDataAsync(user)).ToList();
+            var res = data
+                .GroupBy(d => d.ExhibitionName, (k, v) => new { key = k, value = v.ToList() })
+                .Take(quantityOfLastExhibitions)
+                .All(g => g.value.All(v => v.FrogsPlaceOnExhibition < 4));
             return res;
         }
     }
