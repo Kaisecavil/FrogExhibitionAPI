@@ -2,13 +2,12 @@
 using FrogExhibitionDAL.Constants;
 using FrogExhibitionDAL.Enums;
 using FrogExhibitionDAL.Models.Base;
-using FrogExhibitionDAL.ValidationAttributes;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace FrogExhibitionDAL.Models
 {
-    [CurrentAgeFrog(ErrorMessage ="Current age can't be greater than max age")]
+    //[CurrentAgeFrog(ErrorMessage ="Current age can't be greater than max age")]
     public class Frog : BaseModel
     {
         [Required]

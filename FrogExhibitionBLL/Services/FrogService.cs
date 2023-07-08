@@ -99,7 +99,7 @@ namespace FrogExhibitionBLL.Services
             //var commentsList = new List<Comment>();
             //frog.FrogsOnExhibitions.ForEach(foe => commentsList.AddRange(foe.Comments));
             //mappedFrog.Comments = _mapper.Map<List<CommentGeneralViewModel>>(commentsList.OrderBy(c => c.CreationDate));
-            mappedFrog.PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(mappedFrog.Id).ToList();
+            //mappedFrog.PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(mappedFrog.Id).ToList();
             return mappedFrog;
         }
 

@@ -1,7 +1,7 @@
 ﻿using FrogExhibitionBLL.DTO.FrogStarRatingDTOs;
 using FrogExhibitionBLL.ViewModels.FrogStarRatingViewModels;
 
-namespace FrogExhibitionBLL.Services
+namespace FrogExhibitionBLL.Interfaces.IService
 {
     public interface IFrogStarRatingService
     {

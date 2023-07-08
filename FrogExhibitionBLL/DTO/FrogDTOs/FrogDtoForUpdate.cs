@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Microsoft.AspNetCore.Http;
 using FrogExhibitionDAL.Constants.ModelConstants.FrogConstants;
 using FrogExhibitionDAL.Constants;
-using FrogExhibitionDAL.ValidationAttributes;
+using FrogExhibitionBLL.ValidationAttributes;
 
 namespace FrogExhibitionBLL.DTO.FrogDTOs
 {

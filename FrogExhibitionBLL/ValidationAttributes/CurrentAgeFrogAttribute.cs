@@ -1,7 +1,7 @@
-﻿using FrogExhibitionDAL.Models;
+﻿using FrogExhibitionBLL.DTO.FrogDTOs;
 using System.ComponentModel.DataAnnotations;
 
-namespace FrogExhibitionDAL.ValidationAttributes
+namespace FrogExhibitionBLL.ValidationAttributes
 {
     public class CurrentAgeFrogAttribute : ValidationAttribute
     {
@@ -15,7 +15,7 @@ namespace FrogExhibitionDAL.ValidationAttributes
             return value switch
             {
                 null => true,
-                Frog frog => frog?.CurrentAge != null && frog.CurrentAge <= frog.MaxAge,
+                FrogDtoForCreate frog => (frog?.CurrentAge != null && frog.CurrentAge <= frog.MaxAge),
                 _ => false
             };
         }

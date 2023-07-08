@@ -34,7 +34,7 @@ namespace FrogExhibitionBLL.Services
                 {
                     var mappedFrogOnExhibition = _mapper.Map<FrogOnExhibition>(frogOnExhibition);
                     await _unitOfWork.FrogOnExhibitions.CreateAsync(mappedFrogOnExhibition);
-                    var a = await _unitOfWork.SaveAsync();
+                    await _unitOfWork.SaveAsync();
                     return mappedFrogOnExhibition.Id;
                 }
                 else

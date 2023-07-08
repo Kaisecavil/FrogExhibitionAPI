@@ -1,7 +1,7 @@
 ﻿using FrogExhibitionBLL.Constants;
 using FrogExhibitionBLL.DTO.FrogStarRatingDTOs;
 using FrogExhibitionBLL.Exceptions;
-using FrogExhibitionBLL.Services;
+using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.FrogStarRatingViewModels;
 using FrogExhibitionPL.Attributes;
 using Microsoft.AspNetCore.Authorization;

@@ -17,6 +17,7 @@ using FrogExhibitionBLL.Constants;
 using FrogExhibitionBLL.Interfaces.IProvider;
 using FrogExhibitionBLL.Providers;
 using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
+using AutoMapper;
 
 namespace FrogExhibitionPL
 {
@@ -78,7 +79,25 @@ namespace FrogExhibitionPL
             builder.Services.AddTransient<IAuthService, AuthService>();
 
             builder.Services.AddControllers();
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            //builder.Services.AddAutoMapper(builder =>
+            //{
+            //    builder.Profiles.Add(new UserProfile(services.BuildServiceProvider().GetRequiredService<IUserManager>()));
+            //});
+
+            builder.Services.AddSingleton(provider =>
+            {
+                var frogPhotoService = provider.GetRequiredService<IFrogPhotoService>();
+                var userProvider = provider.GetRequiredService<IUserProvider>();
+
+                var mapperConfig = new MapperConfiguration(cfg =>
+                {
+                    cfg.AddProfile(new MappingProfiles(frogPhotoService, userProvider));
+                });
+
+                return mapperConfig.CreateMapper();
+            });
             builder.Services.AddTransient<Seed>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

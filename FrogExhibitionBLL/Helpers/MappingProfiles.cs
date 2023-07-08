@@ -14,13 +14,22 @@ using FrogExhibitionBLL.ViewModels.FrogStarRatingViewModels;
 using FrogExhibitionBLL.DTO.FrogStarRatingDTOs;
 using FrogExhibitionBLL.ViewModels.CommentViewModels;
 using FrogExhibitionBLL.DTO.CommentsDTOs;
+using FrogExhibitionBLL.Interfaces.IService;
+using FrogExhibitionBLL.Interfaces.IProvider;
 
 namespace FrogExhibitionBLL.Helpers
 {
     public class MappingProfiles : Profile
     {
-        public MappingProfiles()
+        private readonly IFrogPhotoService _frogPhotoService;
+        private readonly IUserProvider _userProvider;
+
+        public MappingProfiles(IFrogPhotoService frogPhotoService,
+            IUserProvider userProvider)
         {
+            _frogPhotoService = frogPhotoService;
+            _userProvider = userProvider;
+
             CreateMap<FrogDtoForCreate, Frog>();
             CreateMap<FrogDtoForUpdate, Frog>();
 
@@ -28,12 +37,16 @@ namespace FrogExhibitionBLL.Helpers
                 .ForMember(
                     dest => dest.Sex,
                     opt => opt.MapFrom(src => src.Sex.ToString())
-                ).
-                ForMember(
+                )
+                .ForMember(
                     dest => dest.Comments,
-                    opt => opt.MapFrom(src => 
+                    opt => opt.MapFrom(src =>
                         ConcatenateLists(src.FrogsOnExhibitions
                             .Select(foe => foe.Comments).ToList()))
+                )
+                .ForMember(
+                    dest => dest.PhotoPaths,
+                    opt => opt.MapFrom(src => _frogPhotoService.GetFrogPhotoPaths(src.Id).ToList())
                 );
             CreateMap<Frog, FrogGeneralViewModel>()
                 .ForMember(

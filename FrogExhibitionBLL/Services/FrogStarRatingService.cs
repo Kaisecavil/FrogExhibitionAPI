@@ -2,6 +2,7 @@
 using FrogExhibitionBLL.DTO.FrogStarRatingDTOs;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IProvider;
+using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.FrogStarRatingViewModels;
 using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
