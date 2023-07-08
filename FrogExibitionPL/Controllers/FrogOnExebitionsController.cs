@@ -112,10 +112,15 @@ namespace FrogExhibitionPL.Controllers
             {
                 return base.BadRequest(ex.Message);
             }
+            catch (NotFoundException ex)
+            {
+                return base.UnprocessableEntity(ex.Message);
+            }
             catch (DbUpdateException ex)
             {
                 return base.UnprocessableEntity(ex.Message);
             }
+
         }
 
         // DELETE: api/FrogOnExhibitions/176223D5-5073-4961-B4EF-ECBE41F1A0C6

@@ -8,6 +8,7 @@ using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Constants;
 using System;
 using FrogExhibitionBLL.Interfaces.IHelper;
+using FrogExhibitionPL.Attributes;
 
 namespace FrogExhibitionPL.Controllers
 {
@@ -16,13 +17,10 @@ namespace FrogExhibitionPL.Controllers
     public class ExhibitionsController : ControllerBase
     {
         private readonly IExhibitionService _exebitionService;
-        private readonly IExcelHelper _excelHelper;
 
-        public ExhibitionsController(IExhibitionService exebitionService,
-            IExcelHelper excelHelper)
+        public ExhibitionsController(IExhibitionService exebitionService)
         {
             _exebitionService = exebitionService;
-            _excelHelper = excelHelper;
         }
 
         // GET: api/Exhibitions
@@ -148,7 +146,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<ActionResult<IEnumerable<FrogRatingViewModel>>> GetRating(Guid id)
         {
             try
@@ -167,7 +165,8 @@ namespace FrogExhibitionPL.Controllers
         [HttpGet("history")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [ProducesResponseType(404)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<ActionResult<IEnumerable<FrogRatingViewModel>>> GetHistory()
         {
             try
@@ -187,9 +186,10 @@ namespace FrogExhibitionPL.Controllers
             public string Name { get; set; }
             public int Age { get; set; }
         }
-        // GET: api/Exhibitions/stat
+        // GET: api/Exhibitions/stat/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         [HttpGet("stat/{id}")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [Authorize(Roles = RoleConstants.AdminRole)]
         public async Task<IActionResult> GetStat(Guid id, bool createExcelReport = true)
         {

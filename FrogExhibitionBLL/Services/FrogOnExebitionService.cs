@@ -29,11 +29,18 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                var mappedFrogOnExhibition = _mapper.Map<FrogOnExhibition>(frogOnExhibition);
-                await _unitOfWork.FrogOnExhibitions.CreateAsync(mappedFrogOnExhibition);
-                _logger.LogInformation("FrogOnExhibition Created");
-                await _unitOfWork.SaveAsync();
-                return mappedFrogOnExhibition.Id;
+                if (await _unitOfWork.Frogs.EntityExistsAsync(frogOnExhibition.FrogId) &&
+                    await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(frogOnExhibition.ExhibitionId))
+                {
+                    var mappedFrogOnExhibition = _mapper.Map<FrogOnExhibition>(frogOnExhibition);
+                    await _unitOfWork.FrogOnExhibitions.CreateAsync(mappedFrogOnExhibition);
+                    var a = await _unitOfWork.SaveAsync();
+                    return mappedFrogOnExhibition.Id;
+                }
+                else
+                {
+                    throw new NotFoundException("Can't find frog or exhibition");
+                }
             }
             catch (Exception ex)
             {

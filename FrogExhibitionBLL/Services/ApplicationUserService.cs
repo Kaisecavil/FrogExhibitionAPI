@@ -70,7 +70,8 @@ namespace FrogExhibitionBLL.Services
             var currentUserEmail = _userProvider.GetUserEmail();
             var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
             if (currentUser.Id == applicationUser.Id.ToString() ||
-                await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole))
+                await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole)||
+                await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole))
             {
                 try
                 {
@@ -125,7 +126,8 @@ namespace FrogExhibitionBLL.Services
             var currentUserEmail = _userProvider.GetUserEmail();
             var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
             if (currentUser.Id == id.ToString() ||
-                await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole))
+                await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole)||
+                await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole))
             {
                 var applicationUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
                 if (applicationUser == null)
@@ -165,7 +167,7 @@ namespace FrogExhibitionBLL.Services
 
             if (!File.Exists(filePath))
             {
-                throw new NotFoundException("a");
+                throw new NotFoundException("dirictory doesn't exist");
             }
 
             byte[] fileBytes = File.ReadAllBytes(filePath);

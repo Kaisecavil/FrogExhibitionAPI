@@ -96,9 +96,9 @@ namespace FrogExhibitionBLL.Services
                 throw new NotFoundException("Entity not found");
             }
             var mappedFrog = _mapper.Map<FrogDetailViewModel>(frog);
-            var commentsList = new List<Comment>();
-            frog.FrogsOnExhibitions.ForEach(foe => commentsList.AddRange(foe.Comments));
-            mappedFrog.Comments = _mapper.Map<List<CommentGeneralViewModel>>(commentsList.OrderBy(c => c.CreationDate));
+            //var commentsList = new List<Comment>();
+            //frog.FrogsOnExhibitions.ForEach(foe => commentsList.AddRange(foe.Comments));
+            //mappedFrog.Comments = _mapper.Map<List<CommentGeneralViewModel>>(commentsList.OrderBy(c => c.CreationDate));
             mappedFrog.PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(mappedFrog.Id).ToList();
             return mappedFrog;
         }

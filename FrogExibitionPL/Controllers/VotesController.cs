@@ -3,6 +3,7 @@ using FrogExhibitionBLL.DTO.VoteDtos;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.VoteViewModels;
+using FrogExhibitionPL.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -99,7 +100,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<ActionResult<VoteDetailViewModel>> PostVote(VoteDtoForCreate vote)
         {
             try
@@ -110,6 +111,10 @@ namespace FrogExhibitionPL.Controllers
             catch (BadRequestException ex)
             {
                 return base.BadRequest(ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                return base.NotFound(ex.Message);
             }
             catch (DbUpdateException ex)
             {
@@ -123,7 +128,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles =  RoleConstants.AdminRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.AdminRole, RoleConstants.UserAdminRole)]
         public async Task<IActionResult> DeleteVote(Guid id)
         {
             try
@@ -134,6 +139,10 @@ namespace FrogExhibitionPL.Controllers
             catch (NotFoundException ex)
             {
                 return base.NotFound(ex.Message);
+            }
+            catch (ForbidException ex)
+            {
+                return base.Forbid(ex.Message);
             }
         }
     }

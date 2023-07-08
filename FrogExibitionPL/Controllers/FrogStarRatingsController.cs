@@ -3,6 +3,7 @@ using FrogExhibitionBLL.DTO.FrogStarRatingDTOs;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Services;
 using FrogExhibitionBLL.ViewModels.FrogStarRatingViewModels;
+using FrogExhibitionPL.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -70,7 +71,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<IActionResult> PutFrogStarRating(FrogStarRatingDtoForUpdate frogStarRating)
         {
             try
@@ -102,8 +103,9 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(201, Type = typeof(FrogStarRatingGeneralViewModel))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<ActionResult<FrogStarRatingGeneralViewModel>> PostFrogStarRating(FrogStarRatingDtoForCreate frogStarRating)
         {
             try
@@ -114,6 +116,10 @@ namespace FrogExhibitionPL.Controllers
             catch (BadRequestException ex)
             {
                 return base.BadRequest(ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                return base.NotFound(ex.Message);
             }
             catch (DbUpdateException ex)
             {
@@ -128,7 +134,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<IActionResult> DeleteFrogStarRating(Guid id)
         {
             try

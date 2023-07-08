@@ -25,11 +25,11 @@ namespace FrogExhibitionPL.Controllers
 
         // GET: api/Users
         [HttpGet]
-        [Authorize(Roles =  RoleConstants.AdminRole)]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ApplicationUserGeneralViewModel>))]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
+        [AuthorizeRoles(RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<ActionResult<IEnumerable<ApplicationUserGeneralViewModel>>> GetUsers()
         {
             try
@@ -48,7 +48,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(200, Type = typeof(ApplicationUserDetailViewModel))]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<ActionResult<ApplicationUserDetailViewModel>> GetUser(Guid id)
         {
             try
@@ -72,7 +72,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<IActionResult> PutUser(ApplicationUserDtoForUpdate user)
         {
             try
@@ -105,7 +105,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             try
@@ -148,13 +148,12 @@ namespace FrogExhibitionPL.Controllers
             }
         }
 
-        // GET: api/Users/stat/176223D5-5073-4961-B4EF-ECBE41F1A0C6
-        [HttpGet("coolstat/{id}")]
+        // GET: api/Users/isUserMedium/176223D5-5073-4961-B4EF-ECBE41F1A0C6
+        [HttpGet("isUserMedium/{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        //[Authorize(Roles = RoleConstants.UserRole)]
         [AuthorizeRoles(RoleConstants.AdminRole, RoleConstants.UserAdminRole)]
         public async Task<IActionResult> GetUserLastVotesOnExhibitions(Guid id, int quantityOfLastExhibitions)
         {

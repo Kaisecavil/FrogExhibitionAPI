@@ -32,18 +32,25 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                var currentUserId = await _userProvider.GetUserIdAsync();
-                if(_unitOfWork.FrogStarRatings.GetAllQueryable(true)
-                    .Any(fsr => fsr.FrogId == frogStarRating.FrogId &&
-                         fsr.ApplicationUserId == currentUserId))
+                if (await _unitOfWork.Frogs.EntityExistsAsync(frogStarRating.FrogId))
                 {
-                    throw new DbUpdateException("User can leave only one star rating per one frog");
+                    var currentUserId = await _userProvider.GetUserIdAsync();
+                    if (_unitOfWork.FrogStarRatings.GetAllQueryable(true)
+                        .Any(fsr => fsr.FrogId == frogStarRating.FrogId &&
+                             fsr.ApplicationUserId == currentUserId))
+                    {
+                        throw new DbUpdateException("User can leave only one star rating per one frog");
+                    }
+                    var mappedFrogStarRating = _mapper.Map<FrogStarRating>(frogStarRating);
+                    mappedFrogStarRating.ApplicationUserId = currentUserId;
+                    await _unitOfWork.FrogStarRatings.UpdateAsync(mappedFrogStarRating);
+                    await _unitOfWork.SaveAsync();
+                    return mappedFrogStarRating.Id;
                 }
-                var mappedFrogStarRating = _mapper.Map<FrogStarRating>(frogStarRating);
-                mappedFrogStarRating.ApplicationUserId = currentUserId;
-                await _unitOfWork.FrogStarRatings.UpdateAsync(mappedFrogStarRating);
-                await _unitOfWork.SaveAsync();
-                return mappedFrogStarRating.Id;
+                else
+                {
+                    throw new NotFoundException("Can't find this frog");
+                }
             }
             catch (Exception ex)
             {
@@ -129,7 +136,7 @@ namespace FrogExhibitionBLL.Services
             }
             else
             {
-                throw new BadRequestException("You can't delete other users frogStarRatings");
+                throw new ForbidException("You can't delete other users frogStarRatings");
             }
         }
     }

@@ -3,6 +3,7 @@ using FrogExhibitionBLL.DTO.CommentsDTOs;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionBLL.ViewModels.CommentViewModels;
+using FrogExhibitionPL.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -71,7 +72,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<IActionResult> PutComment(CommentDtoForUpdate comment)
         {
             try
@@ -103,8 +104,9 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(201, Type = typeof(CommentGeneralViewModel))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
         [ProducesResponseType(422)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<ActionResult<CommentGeneralViewModel>> PostComment(CommentDtoForCreate comment)
         {
             try
@@ -115,6 +117,10 @@ namespace FrogExhibitionPL.Controllers
             catch (BadRequestException ex)
             {
                 return base.BadRequest(ex.Message);
+            }
+            catch (NotFoundException ex)
+            {
+                return base.NotFound(ex.Message);
             }
             catch (DbUpdateException ex)
             {
@@ -129,7 +135,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [Authorize(Roles = RoleConstants.UserRole)]
+        [AuthorizeRoles(RoleConstants.UserRole, RoleConstants.UserAdminRole, RoleConstants.AdminRole)]
         public async Task<IActionResult> DeleteComment(Guid id)
         {
             try

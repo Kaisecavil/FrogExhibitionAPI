@@ -42,6 +42,7 @@ namespace FrogExhibitionBLL.Helpers
                     worksheet.Cells[rowIndex + 3, columnIndex + 1] = value?.ToString();
                 }
             }
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             workbook.SaveAs(filePath);
             workbook.Close();
             excelApp.Quit();

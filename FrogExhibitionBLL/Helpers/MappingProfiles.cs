@@ -23,10 +23,17 @@ namespace FrogExhibitionBLL.Helpers
         {
             CreateMap<FrogDtoForCreate, Frog>();
             CreateMap<FrogDtoForUpdate, Frog>();
+
             CreateMap<Frog, FrogDetailViewModel>()
                 .ForMember(
                     dest => dest.Sex,
                     opt => opt.MapFrom(src => src.Sex.ToString())
+                ).
+                ForMember(
+                    dest => dest.Comments,
+                    opt => opt.MapFrom(src => 
+                        ConcatenateLists(src.FrogsOnExhibitions
+                            .Select(foe => foe.Comments).ToList()))
                 );
             CreateMap<Frog, FrogGeneralViewModel>()
                 .ForMember(
@@ -70,6 +77,18 @@ namespace FrogExhibitionBLL.Helpers
             CreateMap<Comment, CommentGeneralViewModel>();
             CreateMap<CommentDtoForUpdate, Comment>();
             CreateMap<CommentDtoForCreate, Comment>();
+        }
+
+        public static List<T> ConcatenateLists<T>(List<List<T>> listOfLists)
+        {
+            List<T> concatenatedList = new List<T>();
+
+            foreach (List<T> innerList in listOfLists)
+            {
+                concatenatedList.AddRange(innerList);
+            }
+
+            return concatenatedList;
         }
     }
 }
