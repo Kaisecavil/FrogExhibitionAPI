@@ -129,7 +129,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [AuthorizeRoles(RoleConstants.AdminRole,RoleConstants.UserAdminRole)]
+        [AuthorizeRoles(RoleConstants.AdminRole, RoleConstants.UserAdminRole)]
         public async Task<IActionResult> GetUserStatictics(Guid id, bool createExcelReport = true)
         {
             try
@@ -148,8 +148,8 @@ namespace FrogExhibitionPL.Controllers
             }
         }
 
-        // GET: api/Users/isUserMedium/176223D5-5073-4961-B4EF-ECBE41F1A0C6
-        [HttpGet("isUserMedium/{id}")]
+        // GET: api/Users/isUserPsychic/176223D5-5073-4961-B4EF-ECBE41F1A0C6
+        [HttpGet("isUserPsychic/{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
@@ -169,6 +169,12 @@ namespace FrogExhibitionPL.Controllers
             {
                 return base.NotFound(ex.Message);
             }
+            catch (BadRequestException ex)
+            {
+                return base.NotFound(ex.Message);
+            }
         }
     }
+
 }
+

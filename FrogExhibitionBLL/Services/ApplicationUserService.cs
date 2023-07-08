@@ -67,13 +67,13 @@ namespace FrogExhibitionBLL.Services
 
         public async Task UpdateApplicationUserAsync(ApplicationUserDtoForUpdate applicationUser)
         {
-            var currentUserEmail = _userProvider.GetUserEmail();
-            var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
-            if (currentUser.Id == applicationUser.Id.ToString() ||
-                await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole)||
-                await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole))
+            try
             {
-                try
+                var currentUserEmail = _userProvider.GetUserEmail();
+                var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
+                if (currentUser.Id == applicationUser.Id.ToString() &&
+                    !(await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole) ||
+                        await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole)))
                 {
                     var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
                     if (user == null)
@@ -83,44 +83,55 @@ namespace FrogExhibitionBLL.Services
                     user.PhoneNumber = applicationUser.PhoneNumber;
                     user.UserName = applicationUser.UserName;
                     user.Email = applicationUser.Email;
-                    UserKnowledgeLevel knowledgeLevel;
-                    if (Enum.TryParse(applicationUser.KnowledgeLevel, out knowledgeLevel))
-                    {
-                        user.KnowledgeLevel = knowledgeLevel;
-                        var result = await _userManager.UpdateAsync(user);
-                        await _unitOfWork.SaveAsync();
-                    }
-                    else
-                    {
-                        throw new BadRequestException("Knowledge level is invalid");
-                    }
-
-
+                    var result = await _userManager.UpdateAsync(user);
+                    await _unitOfWork.SaveAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                else if (await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole) ||
+                    await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole))
                 {
-                    if (!await _userManager.Users.AnyAsync(u => u.Id == applicationUser.Id))
+                    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
+                    if (user == null)
                     {
-                        throw new NotFoundException("Entity not found due to possible concurrency");
+                        throw new NotFoundException("Entity not found");
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    user.PhoneNumber = applicationUser.PhoneNumber;
+                    user.UserName = applicationUser.UserName;
+                    user.Email = applicationUser.Email;
+                        UserKnowledgeLevel knowledgeLevel;
+                        if (Enum.TryParse(applicationUser.KnowledgeLevel, out knowledgeLevel))
+                        {
+                            user.KnowledgeLevel = knowledgeLevel;
+                        }
+                        else
+                        {
+                            throw new BadRequestException("Knowledge level is invalid");
+                        }
+                    var result = await _userManager.UpdateAsync(user);
+                    await _unitOfWork.SaveAsync();
                 }
-                catch (Exception ex)
+                else
                 {
-                    _logger.LogError(ex.Message, applicationUser);
-                    throw;
-                };
+                    throw new BadRequestException("Access denied");
+                }
+
             }
-            else
+            catch (DbUpdateConcurrencyException)
             {
-                throw new ForbidException("Access denied");
+                if (!await _userManager.Users.AnyAsync(u => u.Id == applicationUser.Id))
+                {
+                    throw new NotFoundException("Entity not found due to possible concurrency");
+                }
+                else
+                {
+                    throw;
+                }
             }
-
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, applicationUser);
+                throw;
+            };
         }
-
         public async Task DeleteApplicationUserAsync(Guid id)
         {
             var currentUserEmail = _userProvider.GetUserEmail();
@@ -242,6 +253,10 @@ namespace FrogExhibitionBLL.Services
 
         public async Task<bool> GetUserLastVotesOnExhibitionsAsync(Guid id, int quantityOfLastExhibitions)
         {
+            if(quantityOfLastExhibitions <= 0)
+            {
+                throw new BadRequestException("Quantity Of Last Exhibitions can't be zero or less");
+            }
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
             if (user == null)
             {

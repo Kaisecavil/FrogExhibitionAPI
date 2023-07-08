@@ -30,8 +30,6 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\images\" />
-		<Folder Include="wwwroot\reports\exhibitionReports\" />
-		<Folder Include="wwwroot\reports\userReports\" />
 		<Folder Include="wwwroot\uploads\" />
 	</ItemGroup>
 

@@ -22,13 +22,10 @@ namespace FrogExhibitionBLL.Helpers
     public class MappingProfiles : Profile
     {
         private readonly IFrogPhotoService _frogPhotoService;
-        private readonly IUserProvider _userProvider;
 
-        public MappingProfiles(IFrogPhotoService frogPhotoService,
-            IUserProvider userProvider)
+        public MappingProfiles(IFrogPhotoService frogPhotoService)
         {
             _frogPhotoService = frogPhotoService;
-            _userProvider = userProvider;
 
             CreateMap<FrogDtoForCreate, Frog>();
             CreateMap<FrogDtoForUpdate, Frog>();
@@ -48,6 +45,7 @@ namespace FrogExhibitionBLL.Helpers
                     dest => dest.PhotoPaths,
                     opt => opt.MapFrom(src => _frogPhotoService.GetFrogPhotoPaths(src.Id).ToList())
                 );
+
             CreateMap<Frog, FrogGeneralViewModel>()
                 .ForMember(
                     dest => dest.Sex,
@@ -75,6 +73,7 @@ namespace FrogExhibitionBLL.Helpers
 
 
             CreateMap<Vote, VoteDetailViewModel>();
+            CreateMap<Vote, VoteReportViewModel>();
             CreateMap<VoteDtoForCreate, Vote>();
             CreateMap<VoteDtoForUpdate, Vote>();
 
@@ -88,6 +87,7 @@ namespace FrogExhibitionBLL.Helpers
             CreateMap<FrogStarRatingDtoForCreate, FrogStarRating>();
 
             CreateMap<Comment, CommentGeneralViewModel>();
+            CreateMap<Comment, CommentReportViewModel>();
             CreateMap<CommentDtoForUpdate, Comment>();
             CreateMap<CommentDtoForCreate, Comment>();
         }

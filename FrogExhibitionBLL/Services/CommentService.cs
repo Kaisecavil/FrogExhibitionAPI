@@ -33,13 +33,13 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                var currentUserId = await _userProvider.GetUserIdAsync();
-                var mappedComment = _mapper.Map<Comment>(comment);
                 if (await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(comment.FrogOnExhibitionId))
                 {
+                    var currentUserId = await _userProvider.GetUserIdAsync();
+                    var mappedComment = _mapper.Map<Comment>(comment);
                     mappedComment.ApplicationUserId = currentUserId;
                     mappedComment.CreationDate = DateTime.Now;
-                    await _unitOfWork.Comments.UpdateAsync(mappedComment);
+                    await _unitOfWork.Comments.CreateAsync(mappedComment);
                     await _unitOfWork.SaveAsync();
                     return mappedComment.Id;
                 }

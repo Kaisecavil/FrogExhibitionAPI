@@ -26,8 +26,26 @@ namespace FrogExhibitionDAL.Database
                 },
                 new Exhibition
                 {
-                    Name = "FrogFEST",
+                    Name = "Poisonous frogs",
                     Date = DateTime.Now.AddDays(14),
+                    Country = "France",
+                    City = "Paris",
+                    Street = "Lepitu 56",
+                    House = "17"
+                },
+                new Exhibition
+                {
+                    Name = "Exhibition of Big frogs",
+                    Date = DateTime.Now.AddDays(21),
+                    Country = "Belarus",
+                    City = "Minsk",
+                    Street = "Sovetskaya 34",
+                    House = "11"
+                },
+                new Exhibition
+                {
+                    Name = "FrogFEST",
+                    Date = DateTime.Now.AddDays(28),
                     Country = "Poland",
                     City = "Krakov",
                     Street = "Pervolino 21",
