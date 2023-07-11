@@ -154,39 +154,7 @@ namespace FrogExhibitionBLL.Services
             .ThenByDescending(f => f.AverageRating);
             return res.ToList();
         }
-
-        public IEnumerable<FrogRatingViewModel> GetRating(Guid id)
-        {
-            var exebition = _unitOfWork.Exhibitions.Get(id);
-            if (exebition == null)
-            {
-                throw new NotFoundException("Entity not found");
-            }
-            var frogsOnExhibition = exebition.FrogsOnExhibitions;
-            var res = frogsOnExhibition.Select(foe => new FrogRatingViewModel
-            {
-                Id = foe.Frog.Id,
-                VotesCount = foe.Votes.Count,
-                VotesSum = foe.Votes.Sum(v => (int)v.ApplicationUser.KnowledgeLevel),
-                AverageRating = foe.Frog.FrogStarRatings.Average(r => r.Rating),
-                Color = foe.Frog.Color,
-                HouseKeepable = foe.Frog.HouseKeepable,
-                CurrentAge = foe.Frog.CurrentAge,
-                MaxAge = foe.Frog.MaxAge,
-                PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(foe.Frog.Id).ToList(),
-                Genus = foe.Frog.Genus,
-                Habitat = foe.Frog.Habitat,
-                Weight = foe.Frog.Weight,
-                Sex = foe.Frog.Sex.ToString(),
-                Poisonous = foe.Frog.Poisonous,
-                Size = foe.Frog.Size,
-                Species = foe.Frog.Species
-            })
-            .OrderByDescending(f => f.VotesSum)
-            .ThenByDescending(f => f.VotesCount)
-            .ThenByDescending(f => f.AverageRating);
-            return res.ToList();
-        }
+ 
 
         public async Task<IEnumerable<FrogRatingViewModel>> GetBestFrogsHistoryAsync()
         {

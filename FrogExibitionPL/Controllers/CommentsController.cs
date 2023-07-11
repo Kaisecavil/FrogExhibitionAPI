@@ -33,11 +33,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _commentService.GetAllCommentsAsync());
+                return Ok(await _commentService.GetAllCommentsAsync());
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
         }
@@ -53,11 +53,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _commentService.GetCommentAsync(id));
+                return Ok(await _commentService.GetCommentAsync(id));
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
 
@@ -78,23 +78,23 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _commentService.UpdateCommentAsync(comment);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (ForbidException ex)
             {
-                return base.Forbid(ex.Message);
+                return Forbid(ex.Message);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                return base.UnprocessableEntity(ex.Message);
+                return UnprocessableEntity(ex.Message);
             }
         }
 
@@ -112,19 +112,19 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 var createdCommentId = await _commentService.CreateCommentAsync(comment);
-                return base.CreatedAtAction("GetComment", new { id = createdCommentId }, createdCommentId);
+                return CreatedAtAction("GetComment", new { id = createdCommentId }, createdCommentId);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                return base.UnprocessableEntity(ex.Message);
+                return UnprocessableEntity(ex.Message);
             }
         }
 
@@ -141,15 +141,15 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _commentService.DeleteCommentAsync(id);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 

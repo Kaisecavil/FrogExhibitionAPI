@@ -167,7 +167,7 @@ namespace FrogExhibitionBLL.Services
             try
             {
                 var votes = (await GetUserVotesReportDataAsync(user)).ToList<object>();
-                var comments = GetUserCommentsReportData(user).ToList<object>();
+                var comments = GetUserCommentsReportData(user);
                 _excelHelper.CreateSpreadsheetFromObjects(votes, filePath, "User Votes");
                 _excelHelper.AppendObjectsToSpreadsheet(comments, filePath, "User Comments");
             }

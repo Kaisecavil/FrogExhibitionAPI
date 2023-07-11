@@ -30,11 +30,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _frogOnExhibitionService.GetAllFrogOnExhibitionsAsync());
+                return Ok(await _frogOnExhibitionService.GetAllFrogOnExhibitionsAsync());
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
         }
@@ -51,11 +51,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _frogOnExhibitionService.GetFrogOnExhibitionAsync(id));
+                return Ok(await _frogOnExhibitionService.GetFrogOnExhibitionAsync(id));
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
 
@@ -76,19 +76,19 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _frogOnExhibitionService.UpdateFrogOnExhibitionAsync(frogOnExhibition);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                return base.UnprocessableEntity(ex.Message);
+                return UnprocessableEntity(ex.Message);
             }
         }
 
@@ -106,19 +106,19 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 var createdFrogOnExhibitionId = await _frogOnExhibitionService.CreateFrogOnExhibitionAsync(frogOnExhibition);
-                return base.CreatedAtAction("GetFrogOnExhibition", new { createdFrogOnExhibitionId }, createdFrogOnExhibitionId);
+                return CreatedAtAction("GetFrogOnExhibition", new { createdFrogOnExhibitionId }, createdFrogOnExhibitionId);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (NotFoundException ex)
             {
-                return base.UnprocessableEntity(ex.Message);
+                return UnprocessableEntity(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                return base.UnprocessableEntity(ex.Message);
+                return UnprocessableEntity(ex.Message);
             }
 
         }
@@ -135,11 +135,11 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _frogOnExhibitionService.DeleteFrogOnExhibitionAsync(id);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
         }
     }

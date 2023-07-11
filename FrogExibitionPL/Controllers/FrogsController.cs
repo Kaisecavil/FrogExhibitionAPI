@@ -24,7 +24,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<FrogGeneralViewModel>))]
         public async Task<ActionResult<IEnumerable<FrogGeneralViewModel>>> GetFrogs()
         {
-            return base.Ok(await _frogService.GetAllFrogsAsync());
+            return Ok(await _frogService.GetAllFrogsAsync());
         }
 
         // GET: api/Frogs/?sortParams=genus
@@ -32,7 +32,7 @@ namespace FrogExhibitionPL.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<FrogGeneralViewModel>))]
         public async Task<ActionResult<IEnumerable<FrogGeneralViewModel>>> GetSortedFrogs(string sortParams = "sex,genus desc")
         {
-            return base.Ok(await _frogService.GetAllFrogsAsync(sortParams));
+            return Ok(await _frogService.GetAllFrogsAsync(sortParams));
         }
 
         // GET: api/Frogs/176223D5-5073-4961-B4EF-ECBE41F1A0C6
@@ -43,11 +43,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _frogService.GetFrogAsync(id));
+                return Ok(await _frogService.GetFrogAsync(id));
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
         }
 
@@ -64,15 +64,15 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _frogService.UpdateFrogAsync(frog);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -89,11 +89,11 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 var createdFrogId = await _frogService.CreateFrogAsync(frog);
-                return base.CreatedAtAction("GetFrog", new { id = createdFrogId }, createdFrogId);
+                return CreatedAtAction("GetFrog", new { id = createdFrogId }, createdFrogId);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -109,11 +109,11 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _frogService.DeleteFrogAsync(id);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
         }
 

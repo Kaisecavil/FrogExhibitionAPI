@@ -34,11 +34,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _userService.GetAllApplicationUsersAsync());
+                return Ok(await _userService.GetAllApplicationUsersAsync());
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
         }
@@ -53,11 +53,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _userService.GetApplicationUserAsync(id));
+                return Ok(await _userService.GetApplicationUserAsync(id));
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
 
@@ -78,23 +78,23 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _userService.UpdateApplicationUserAsync(user);
-                return base.NoContent();
+                return NoContent();
             }
             catch (ForbidException ex)
             {
-                return base.Forbid(ex.Message);
+                return Forbid(ex.Message);
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                return base.UnprocessableEntity(ex.Message);
+                return UnprocessableEntity(ex.Message);
             }
 
         }
@@ -111,15 +111,15 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _userService.DeleteApplicationUserAsync(id);
-                return base.NoContent();
+                return NoContent();
             }
             catch (ForbidException ex)
             {
-                return base.Forbid(ex.Message);
+                return Forbid(ex.Message);
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
         }
 
@@ -136,15 +136,15 @@ namespace FrogExhibitionPL.Controllers
             {
                 return createExcelReport ?
                     await _userService.GetUserStatisticsReportAsync(id) :
-                    base.Ok(await _userService.GetUserStatisticsAsync(id));
+                    Ok(await _userService.GetUserStatisticsAsync(id));
             }
             catch (ForbidException ex)
             {
-                return base.Forbid(ex.Message);
+                return Forbid(ex.Message);
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
         }
 
@@ -159,19 +159,19 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _userService.GetUserLastVotesOnExhibitionsAsync(id, quantityOfLastExhibitions));
+                return Ok(await _userService.GetUserLastVotesOnExhibitionsAsync(id, quantityOfLastExhibitions));
             }
             catch (ForbidException ex)
             {
-                return base.Forbid(ex.Message);
+                return Forbid(ex.Message);
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (BadRequestException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
         }
     }

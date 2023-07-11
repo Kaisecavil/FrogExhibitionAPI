@@ -32,11 +32,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _frogStarRatingService.GetAllFrogStarRatingsAsync());
+                return Ok(await _frogStarRatingService.GetAllFrogStarRatingsAsync());
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
         }
@@ -52,11 +52,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _frogStarRatingService.GetFrogStarRatingAsync(id));
+                return Ok(await _frogStarRatingService.GetFrogStarRatingAsync(id));
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
 
@@ -77,23 +77,23 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _frogStarRatingService.UpdateFrogStarRatingAsync(frogStarRating);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (ForbidException ex)
             {
-                return base.Forbid(ex.Message);
+                return Forbid(ex.Message);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                return base.UnprocessableEntity(ex.Message);
+                return UnprocessableEntity(ex.Message);
             }
         }
 
@@ -111,19 +111,19 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 var createdFrogStarRatingId = await _frogStarRatingService.CreateFrogStarRatingAsync(frogStarRating);
-                return base.CreatedAtAction("GetFrogStarRating", new { id = createdFrogStarRatingId }, createdFrogStarRatingId);
+                return CreatedAtAction("GetFrogStarRating", new { id = createdFrogStarRatingId }, createdFrogStarRatingId);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                return base.UnprocessableEntity(ex.Message);
+                return UnprocessableEntity(ex.Message);
             }
         }
 
@@ -140,19 +140,19 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _frogStarRatingService.DeleteFrogStarRatingAsync(id);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (ForbidException ex)
             {
-                return base.Forbid(ex.Message);
+                return Forbid(ex.Message);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
     }

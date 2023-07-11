@@ -32,11 +32,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _voteService.GetAllVotesAsync());
+                return Ok(await _voteService.GetAllVotesAsync());
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
         }
@@ -52,11 +52,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _voteService.GetVoteAsync(id));
+                return Ok(await _voteService.GetVoteAsync(id));
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
 
@@ -77,19 +77,19 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _voteService.UpdateVoteAsync(vote);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                return base.UnprocessableEntity(ex.Message);
+                return UnprocessableEntity(ex.Message);
             }
         }
 
@@ -106,19 +106,19 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 var createdVoteId = await _voteService.CreateVoteAsync(vote);
-                return base.CreatedAtAction("GetVote", new { id = createdVoteId }, createdVoteId);
+                return CreatedAtAction("GetVote", new { id = createdVoteId }, createdVoteId);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                return base.UnprocessableEntity(ex.Message);
+                return UnprocessableEntity(ex.Message);
             }
         }
 
@@ -134,15 +134,15 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _voteService.DeleteVoteAsync(id);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (ForbidException ex)
             {
-                return base.Forbid(ex.Message);
+                return Forbid(ex.Message);
             }
         }
     }

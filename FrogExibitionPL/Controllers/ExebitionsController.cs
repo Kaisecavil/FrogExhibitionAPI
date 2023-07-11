@@ -31,11 +31,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _exebitionService.GetAllExhibitionsAsync());
+                return Ok(await _exebitionService.GetAllExhibitionsAsync());
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
         }
@@ -47,11 +47,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _exebitionService.GetAllExhibitionsAsync(sortParams));
+                return Ok(await _exebitionService.GetAllExhibitionsAsync(sortParams));
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
         }
@@ -64,11 +64,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _exebitionService.GetExhibitionAsync(id));
+                return Ok(await _exebitionService.GetExhibitionAsync(id));
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
 
@@ -88,15 +88,15 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _exebitionService.UpdateExhibitionAsync(exebition);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -113,11 +113,11 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 var createdExhibitionId = await _exebitionService.CreateExhibitionAsync(exebition);
-                return base.CreatedAtAction("GetExhibition", new { id = createdExhibitionId }, createdExhibitionId);
+                return CreatedAtAction("GetExhibition", new { id = createdExhibitionId }, createdExhibitionId);
             }
             catch (BadRequestException ex)
             {
-                return base.BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -133,11 +133,11 @@ namespace FrogExhibitionPL.Controllers
             try
             {
                 await _exebitionService.DeleteExhibitionAsync(id);
-                return base.NoContent();
+                return NoContent();
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
         }
 
@@ -151,11 +151,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _exebitionService.GetRatingAsync(id));
+                return Ok(await _exebitionService.GetRatingAsync(id));
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
 
@@ -171,11 +171,11 @@ namespace FrogExhibitionPL.Controllers
         {
             try
             {
-                return base.Ok(await _exebitionService.GetBestFrogsHistoryAsync());
+                return Ok(await _exebitionService.GetBestFrogsHistoryAsync());
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
 
@@ -197,11 +197,11 @@ namespace FrogExhibitionPL.Controllers
             {
                 return createExcelReport?
                     await _exebitionService.GetExhibitionStatisticsReportAsync(id) :
-                    base.Ok(await _exebitionService.GetExhibitionStatisticsAsync(id));
+                    Ok(await _exebitionService.GetExhibitionStatisticsAsync(id));
             }
             catch (NotFoundException ex)
             {
-                return base.NotFound(ex.Message);
+                return NotFound(ex.Message);
             }
 
 

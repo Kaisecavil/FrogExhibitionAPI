@@ -5,7 +5,7 @@ namespace FrogExhibitionBLL.Helpers
 {
     public class ExcelHelper : IExcelHelper
     {
-        public void CreateSpreadsheetFromObjects(List<object> objects, string filePath, string tableHeader)
+        public void CreateSpreadsheetFromObjects(List<Object> objects, string filePath, string tableHeader)
         {
             var excelApp = new Application();
             var workbook = excelApp.Workbooks.Add();
@@ -51,15 +51,7 @@ namespace FrogExhibitionBLL.Helpers
             ReleaseCOMObjects(workbook);
             ReleaseCOMObjects(excelApp);
         }
-
-        private void ReleaseCOMObjects(object obj)
-        {
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-            obj = null;
-            GC.Collect();
-        }
-
-
+       
         public void AppendObjectsToSpreadsheet(List<object> objects, string filePath, string tableHeader, bool printColumnNamesAgain = true)
         {
             var excelApp = new Application();
@@ -114,7 +106,7 @@ namespace FrogExhibitionBLL.Helpers
             ReleaseCOMObjects(excelApp);
         }
 
-        public static string ReplaceCapitalLetters(string input)
+        private static string ReplaceCapitalLetters(string input)
         {
             string output = "";
             foreach (char c in input)
@@ -130,6 +122,13 @@ namespace FrogExhibitionBLL.Helpers
             }
 
             return output.Trim();
+        }
+
+        private void ReleaseCOMObjects(object obj)
+        {
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+            obj = null;
+            GC.Collect();
         }
     }
 }
