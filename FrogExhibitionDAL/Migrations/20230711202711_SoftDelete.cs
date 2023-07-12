@@ -1,15 +1,46 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace FrogExhibitionDAL.Migrations
 {
     /// <inheritdoc />
-    public partial class test : Migration
+    public partial class SoftDelete : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DeletedAt",
+                table: "Votes",
+                type: "datetime2",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DeletedAt",
+                table: "FrogsOnExhibitions",
+                type: "datetime2",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DeletedAt",
+                table: "Frogs",
+                type: "datetime2",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DeletedAt",
+                table: "FrogPhoto",
+                type: "datetime2",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DeletedAt",
+                table: "Exhibitions",
+                type: "datetime2",
+                nullable: true);
+
             migrationBuilder.AddColumn<int>(
                 name: "KnowledgeLevel",
                 table: "AspNetUsers",
@@ -25,7 +56,8 @@ namespace FrogExhibitionDAL.Migrations
                     FrogOnExhibitionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -52,7 +84,8 @@ namespace FrogExhibitionDAL.Migrations
                     FrogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -100,6 +133,26 @@ namespace FrogExhibitionDAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "FrogStarRating");
+
+            migrationBuilder.DropColumn(
+                name: "DeletedAt",
+                table: "Votes");
+
+            migrationBuilder.DropColumn(
+                name: "DeletedAt",
+                table: "FrogsOnExhibitions");
+
+            migrationBuilder.DropColumn(
+                name: "DeletedAt",
+                table: "Frogs");
+
+            migrationBuilder.DropColumn(
+                name: "DeletedAt",
+                table: "FrogPhoto");
+
+            migrationBuilder.DropColumn(
+                name: "DeletedAt",
+                table: "Exhibitions");
 
             migrationBuilder.DropColumn(
                 name: "KnowledgeLevel",

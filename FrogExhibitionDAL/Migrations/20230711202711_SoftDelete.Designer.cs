@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FrogExhibitionDAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230629172938_test")]
-    partial class test
+    [Migration("20230711202711_SoftDelete")]
+    partial class SoftDelete
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,6 +109,9 @@ namespace FrogExhibitionDAL.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("FrogOnExhibitionId")
                         .HasColumnType("uniqueidentifier");
 
@@ -143,6 +146,9 @@ namespace FrogExhibitionDAL.Migrations
                         .IsRequired()
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("House")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -172,6 +178,9 @@ namespace FrogExhibitionDAL.Migrations
 
                     b.Property<int>("CurrentAge")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Diet")
                         .HasColumnType("nvarchar(max)");
@@ -220,6 +229,9 @@ namespace FrogExhibitionDAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("ExhibitionId")
                         .HasColumnType("uniqueidentifier");
 
@@ -241,6 +253,9 @@ namespace FrogExhibitionDAL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("FrogId")
                         .HasColumnType("uniqueidentifier");
@@ -269,6 +284,9 @@ namespace FrogExhibitionDAL.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("FrogId")
                         .HasColumnType("uniqueidentifier");
 
@@ -293,6 +311,9 @@ namespace FrogExhibitionDAL.Migrations
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("FrogOnExhibitionId")
                         .HasColumnType("uniqueidentifier");
@@ -443,7 +464,7 @@ namespace FrogExhibitionDAL.Migrations
             modelBuilder.Entity("FrogExhibitionDAL.Models.Comment", b =>
                 {
                     b.HasOne("FrogExhibitionDAL.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
+                        .WithMany("Comments")
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -492,7 +513,7 @@ namespace FrogExhibitionDAL.Migrations
             modelBuilder.Entity("FrogExhibitionDAL.Models.FrogStarRating", b =>
                 {
                     b.HasOne("FrogExhibitionDAL.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
+                        .WithMany("FrogStarRatings")
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -511,7 +532,7 @@ namespace FrogExhibitionDAL.Migrations
             modelBuilder.Entity("FrogExhibitionDAL.Models.Vote", b =>
                 {
                     b.HasOne("FrogExhibitionDAL.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
+                        .WithMany("Votes")
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -576,6 +597,15 @@ namespace FrogExhibitionDAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FrogExhibitionDAL.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("FrogStarRatings");
+
+                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("FrogExhibitionDAL.Models.Exhibition", b =>

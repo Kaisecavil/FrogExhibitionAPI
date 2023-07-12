@@ -2,7 +2,7 @@
 {
     public interface IExcelHelper
     {
-        void AppendObjectsToSpreadsheet(List<object> objects, string filePath, string tableHeader, bool printColumnNamesAgain = true);
-        void CreateSpreadsheetFromObjects(List<object> objects, string filePath, string tableHeader);
+        void AppendObjectsToSpreadsheet<T>(List<T> objects, string filePath, string tableHeader, bool printColumnNamesAgain = true);
+        void CreateSpreadsheetFromObjects<T>(List<T> objects, string filePath, string tableHeader);
     }
 }

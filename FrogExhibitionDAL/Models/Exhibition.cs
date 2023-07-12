@@ -31,7 +31,7 @@ namespace FrogExhibitionDAL.Models
         [DefaultValue(ExhibitionDefaultValueConstants.HouseDefaultValue)]
         public string House { get; set; }
 
-        public virtual List<Frog> Frogs { get; set; } = new();
-        public virtual List<FrogOnExhibition> FrogsOnExhibitions { get; set; } = new();
+        public virtual ICollection<Frog> Frogs { get; set; } = new List<Frog>();
+        public virtual ICollection<FrogOnExhibition> FrogsOnExhibitions { get; set; } = new List<FrogOnExhibition>();
     }
 }

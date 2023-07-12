@@ -166,8 +166,8 @@ namespace FrogExhibitionBLL.Services
             string filePath = _fileHelper.GetUserReportFilePath(user.Id);
             try
             {
-                var votes = (await GetUserVotesReportDataAsync(user)).ToList<object>();
-                var comments = GetUserCommentsReportData(user);
+                var votes = (await GetUserVotesReportDataAsync(user)).ToList();
+                var comments = GetUserCommentsReportData(user).ToList();
                 _excelHelper.CreateSpreadsheetFromObjects(votes, filePath, "User Votes");
                 _excelHelper.AppendObjectsToSpreadsheet(comments, filePath, "User Comments");
             }
@@ -176,20 +176,7 @@ namespace FrogExhibitionBLL.Services
                 _logger.LogError(ex.Message);
             }
 
-            if (!File.Exists(filePath))
-            {
-                throw new NotFoundException("dirictory doesn't exist");
-            }
-
-            byte[] fileBytes = File.ReadAllBytes(filePath);
-            string contentType = "application/octet-stream";
-            string fileName = Path.GetFileName(filePath);
-            var fileContentResult = new FileContentResult(fileBytes, contentType)
-            {
-                FileDownloadName = fileName
-            };
-
-            return fileContentResult;
+            return _fileHelper.GetFileContentResult(filePath, "application/octet-stream");
         }
 
         public async Task<ApplicationUserReportViewModel> GetUserStatisticsAsync(Guid id)
@@ -199,56 +186,17 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
-            try
+            var votes = await GetUserVotesReportDataAsync(user);
+            var comments = GetUserCommentsReportData(user);
+            return new ApplicationUserReportViewModel()
             {
-                var votes = await GetUserVotesReportDataAsync(user);
-                var comments = GetUserCommentsReportData(user);
-                return new ApplicationUserReportViewModel()
-                {
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    Comments = comments.ToList(),
-                    Votes = votes.ToList()
-                };
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-            
+                UserName = user.UserName,
+                Email = user.Email,
+                Comments = comments.ToList(),
+                Votes = votes.ToList()
+            };
 
-        }
 
-        private async Task<IEnumerable<VoteReportViewModel>> GetUserVotesReportDataAsync(ApplicationUser user)
-        {
-            var votes = user.Votes;
-            var res = votes.Select(async v => new VoteReportViewModel()
-            {
-                ApplicationUserName = user.UserName,
-                ExhibitionName = v.FrogOnExhibition.Exhibition.Name,
-                ExhibitionDate = v.FrogOnExhibition.Exhibition.Date.ToString(),
-                FrogColor = v.FrogOnExhibition.Frog.Color,
-                FrogGenus = v.FrogOnExhibition.Frog.Genus,
-                FrogSpecies = v.FrogOnExhibition.Frog.Species,
-                FrogsPlaceOnExhibition = await _exhibitionService.GetFrogsPlaceOnExhibitionAsync(v.FrogOnExhibition.FrogId, v.FrogOnExhibition.ExhibitionId)
-            });
-            return res.Select(o => o.Result);
-        }
-
-        private IEnumerable<CommentReportViewModel> GetUserCommentsReportData(ApplicationUser user)
-        {
-            var comments = user.Comments;
-            var res = comments.Select(c => new CommentReportViewModel()
-            {
-                ApplicationUserName = user.UserName,
-                CreationDate = c.CreationDate.ToString(),
-                ExhibitionName = c.FrogOnExhibition.Exhibition.Name,
-                FrogGenus = c.FrogOnExhibition.Frog.Genus,
-                FrogSpecies = c.FrogOnExhibition.Frog.Species,
-                FrogColor = c.FrogOnExhibition.Frog.Color,
-                Text = c.Text
-            });
-            return res;
         }
 
         public async Task<bool> GetUserLastVotesOnExhibitionsAsync(Guid id, int quantityOfLastExhibitions)
@@ -267,6 +215,38 @@ namespace FrogExhibitionBLL.Services
                 .GroupBy(d => d.ExhibitionName, (k, v) => new { key = k, value = v.ToList() })
                 .Take(quantityOfLastExhibitions)
                 .All(g => g.value.All(v => v.FrogsPlaceOnExhibition < 4));
+            return res;
+        }
+
+        private async Task<IEnumerable<VoteReportViewModel>> GetUserVotesReportDataAsync(ApplicationUser user)
+        {
+            var votes = user.Votes;
+            var res = votes.Select(async v => new VoteReportViewModel()
+            {
+                ApplicationUserName = user.UserName,
+                ExhibitionName = v.FrogOnExhibition.Exhibition.Name,
+                ExhibitionDate = v.FrogOnExhibition.Exhibition.Date.ToString(),
+                FrogColor = v.FrogOnExhibition.Frog.Color,
+                FrogGenus = v.FrogOnExhibition.Frog.Genus,
+                FrogSpecies = v.FrogOnExhibition.Frog.Species,
+                FrogsPlaceOnExhibition = await _exhibitionService.GetFrogsPlaceOnExhibitionAsync(v.FrogOnExhibition.FrogId, v.FrogOnExhibition.ExhibitionId)
+            });
+            return res.Select(o => o.Result).ToList();
+        }
+
+        private IEnumerable<CommentReportViewModel> GetUserCommentsReportData(ApplicationUser user)
+        {
+            var comments = user.Comments;
+            var res = comments.Select(c => new CommentReportViewModel()
+            {
+                ApplicationUserName = user.UserName,
+                CreationDate = c.CreationDate.ToString(),
+                ExhibitionName = c.FrogOnExhibition.Exhibition.Name,
+                FrogGenus = c.FrogOnExhibition.Frog.Genus,
+                FrogSpecies = c.FrogOnExhibition.Frog.Species,
+                FrogColor = c.FrogOnExhibition.Frog.Color,
+                Text = c.Text
+            });
             return res;
         }
     }

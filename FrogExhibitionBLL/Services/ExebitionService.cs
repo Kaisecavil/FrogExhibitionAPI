@@ -186,27 +186,15 @@ namespace FrogExhibitionBLL.Services
             string filePath = _fileHelper.GetExhibitionReportFilePath(exhibition.Name);
             try
             {
-                _excelHelper.CreateSpreadsheetFromObjects((await GetExhibitionReportDataAsync(exhibition)).Frogs.ToList<object>(), filePath, "Frogs");
+                var frogs = (await GetExhibitionReportDataAsync(exhibition)).Frogs.ToList();
+                _excelHelper.CreateSpreadsheetFromObjects(frogs, filePath, "Frogs");
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex.Message);
             }
 
-            if (!File.Exists(filePath))
-            {
-                throw new NotFoundException("a");
-            }
-
-            byte[] fileBytes = File.ReadAllBytes(filePath);
-            string contentType = "application/octet-stream";
-            string fileName = Path.GetFileName(filePath);
-            var fileContentResult = new FileContentResult(fileBytes, contentType)
-            {
-                FileDownloadName = fileName
-            };
-
-            return fileContentResult;
+            return _fileHelper.GetFileContentResult(filePath, "application/octet-stream");
         }
 
         public async Task<ExhibitionReportViewModel> GetExhibitionStatisticsAsync(Guid id)

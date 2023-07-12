@@ -76,28 +76,23 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-
-                if (await _unitOfWork.Comments.EntityExistsAsync(comment.Id))
-                {
-                    var currentUserId = await _userProvider.GetUserIdAsync();
-                    var commentToUpdate = await _unitOfWork.Comments.GetAsync(comment.Id);
-                    if (commentToUpdate.ApplicationUserId == currentUserId)
-                    {
-                        var mappedComment = _mapper.Map<Comment>(comment);
-                        mappedComment.ApplicationUserId = currentUserId;
-                        await _unitOfWork.Comments.UpdateAsync(mappedComment);
-                        await _unitOfWork.SaveAsync();
-                    }
-                    else
-                    {
-                        throw new BadRequestException("You can't update comments of other users");
-                    }
-
-                }
-                else
+                var isExists = await _unitOfWork.Comments.EntityExistsAsync(comment.Id);
+                if (!isExists)
                 {
                     throw new NotFoundException("Entity not found");
+
                 }
+
+                var currentUserId = await _userProvider.GetUserIdAsync();
+                var commentToUpdate = await _unitOfWork.Comments.GetAsync(comment.Id);
+                if (commentToUpdate.ApplicationUserId != currentUserId)
+                {
+                    throw new BadRequestException("You can't update comments of other users");
+                }
+                var mappedComment = _mapper.Map<Comment>(comment);
+                mappedComment.ApplicationUserId = currentUserId;
+                await _unitOfWork.Comments.UpdateAsync(mappedComment);
+                await _unitOfWork.SaveAsync();
 
             }
             catch (DbUpdateConcurrencyException)

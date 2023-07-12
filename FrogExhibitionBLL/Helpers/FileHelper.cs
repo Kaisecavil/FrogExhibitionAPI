@@ -1,6 +1,8 @@
-﻿using FrogExhibitionBLL.Interfaces.IHelper;
+﻿using FrogExhibitionBLL.Exceptions;
+using FrogExhibitionBLL.Interfaces.IHelper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Office.Interop.Excel;
 
 namespace FrogExhibitionBLL.Helpers
@@ -81,6 +83,21 @@ namespace FrogExhibitionBLL.Helpers
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             await file.CopyToAsync(new FileStream(filePath, FileMode.Create));
             return filePath;
+        }
+
+        public FileContentResult GetFileContentResult(string filePath, string contentType)
+        {
+            if (!File.Exists(filePath))
+            {
+                throw new NotFoundException("Something went wrong");
+            }
+            byte[] fileBytes = File.ReadAllBytes(filePath);
+            string fileName = Path.GetFileName(filePath);
+            var fileContentResult = new FileContentResult(fileBytes, contentType)
+            {
+                FileDownloadName = fileName
+            };
+            return fileContentResult;
         }
 
 

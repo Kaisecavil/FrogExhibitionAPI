@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FrogExhibitionBLL.Interfaces.IHelper
 {
@@ -8,5 +9,6 @@ namespace FrogExhibitionBLL.Interfaces.IHelper
         string GetUserReportFilePath(string userId);
         string GetUniqueFileName(string fileName);
         Task<string> SavePhotoAsync(IFormFile file);
+        FileContentResult GetFileContentResult(string filePath, string contentType);
     }
 }

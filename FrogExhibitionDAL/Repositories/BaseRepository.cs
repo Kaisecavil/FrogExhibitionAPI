@@ -32,15 +32,15 @@ namespace FrogExhibitionDAL.Repositories
         public IEnumerable<DbModel> GetAll(bool asNoTraking = false)
         {
             return asNoTraking ?
-                _context.Set<DbModel>().AsNoTracking().ToList() :
-                _context.Set<DbModel>().ToList();
+                _context.Set<DbModel>().AsNoTracking().Where(m => m.DeletedAt == null).ToList() :
+                _context.Set<DbModel>().Where(m => m.DeletedAt == null).ToList();
         }
 
         public IQueryable<DbModel> GetAllQueryable(bool asNoTraking = false)
         {
             return asNoTraking ?
-               _context.Set<DbModel>().AsNoTracking() :
-               _context.Set<DbModel>();
+               _context.Set<DbModel>().AsNoTracking().Where(m => m.DeletedAt == null) :
+               _context.Set<DbModel>().Where(m => m.DeletedAt == null);
         }
 
         public void Update(DbModel model)
@@ -50,21 +50,27 @@ namespace FrogExhibitionDAL.Repositories
 
         public DbModel Get(Guid id)
         {
-            return _context.Set<DbModel>().FirstOrDefault(m => m.Id == id);
+            return _context.Set<DbModel>().Where(m => m.DeletedAt == null).FirstOrDefault(m => m.Id == id);
         }
 
         public async Task<IEnumerable<DbModel>> GetAllAsync(bool asNoTraking = false)
         {
             return asNoTraking ?
-                await _context.Set<DbModel>().AsNoTracking().ToListAsync() :
-                await _context.Set<DbModel>().ToListAsync() ;
+                await _context.Set<DbModel>().AsNoTracking()
+                    .Where(m => m.DeletedAt == null).ToListAsync() :
+                await _context.Set<DbModel>()
+                    .Where(m => m.DeletedAt == null).ToListAsync() ;
         }
 
         public async Task<DbModel> GetAsync(Guid id, bool asNoTraking = false)
         {    
             return asNoTraking?
-                await _context.Set<DbModel>().AsNoTracking().FirstOrDefaultAsync(m => m.Id == id) :
-                await _context.Set<DbModel>().FirstOrDefaultAsync(m => m.Id == id);
+                await _context.Set<DbModel>().AsNoTracking()
+                    .Where(m => m.DeletedAt == null)
+                    .FirstOrDefaultAsync(m => m.Id == id) :
+                await _context.Set<DbModel>()
+                    .Where(m => m.DeletedAt == null)
+                    .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task CreateAsync(DbModel model)
@@ -85,12 +91,16 @@ namespace FrogExhibitionDAL.Repositories
 
         public async Task<bool> EntityExistsAsync(Guid id)
         {
-            return await _context.Set<DbModel>().AsNoTracking().AnyAsync(e => e.Id == id);
+            return await _context.Set<DbModel>().AsNoTracking()
+                .Where(m => m.DeletedAt == null)
+                .AnyAsync(e => e.Id == id);
         }
 
         public async Task<bool> IsEmptyAsync()
         {
-            return !await _context.Set<DbModel>().AsNoTracking().AnyAsync();
+            return !await _context.Set<DbModel>().AsNoTracking()
+                .Where(m => m.DeletedAt == null)
+                .AnyAsync();
         }
 
         public async Task CreateRangeAsync(IEnumerable<DbModel> models)

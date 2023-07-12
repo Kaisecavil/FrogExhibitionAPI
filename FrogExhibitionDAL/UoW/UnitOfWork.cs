@@ -3,6 +3,9 @@ using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Interfaces.IRepository;
 using FrogExhibitionDAL.Models;
 using FrogExhibitionDAL.Repositories;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore;
+using FrogExhibitionDAL.Models.Base;
 
 namespace FrogExhibitionDAL.UoW
 {
