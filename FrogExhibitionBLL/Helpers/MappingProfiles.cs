@@ -15,7 +15,6 @@ using FrogExhibitionBLL.DTO.FrogStarRatingDTOs;
 using FrogExhibitionBLL.ViewModels.CommentViewModels;
 using FrogExhibitionBLL.DTO.CommentsDTOs;
 using FrogExhibitionBLL.Interfaces.IService;
-using FrogExhibitionBLL.Interfaces.IProvider;
 
 namespace FrogExhibitionBLL.Helpers
 {

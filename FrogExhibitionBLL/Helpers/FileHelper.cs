@@ -3,7 +3,6 @@ using FrogExhibitionBLL.Interfaces.IHelper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Office.Interop.Excel;
 
 namespace FrogExhibitionBLL.Helpers
 {
@@ -15,6 +14,7 @@ namespace FrogExhibitionBLL.Helpers
         {
             _environment = environment;
         }
+
         /// <summary>
         /// Takes file name and concat it with 4 symbols from generated Guid
         /// </summary>
@@ -85,18 +85,23 @@ namespace FrogExhibitionBLL.Helpers
             return filePath;
         }
 
-        public FileContentResult GetFileContentResult(string filePath, string contentType)
+        public async Task<FileContentResult> GetFileContentResultAsync(string filePath, string contentType, bool deleteFileAfter = false)
         {
             if (!File.Exists(filePath))
             {
                 throw new NotFoundException("Something went wrong");
             }
-            byte[] fileBytes = File.ReadAllBytes(filePath);
+            byte[] fileBytes = await File.ReadAllBytesAsync(filePath);
             string fileName = Path.GetFileName(filePath);
             var fileContentResult = new FileContentResult(fileBytes, contentType)
             {
                 FileDownloadName = fileName
             };
+            if (deleteFileAfter)
+            {
+                File.Delete(filePath);
+            }
+
             return fileContentResult;
         }
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using System.Data;
 
 namespace FrogExhibitionPL.Attributes
 {

@@ -62,31 +62,82 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             return _mapper.Map<ApplicationUserDetailViewModel>(applicationUser);
         }
 
         public async Task UpdateApplicationUserAsync(ApplicationUserDtoForUpdate applicationUser)
         {
+            //try
+            //{
+            //    var currentUserEmail = _userProvider.GetUserEmail();
+            //    var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
+            //    if (currentUser.Id == applicationUser.Id.ToString() &&
+            //        !(await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole) ||
+            //            await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole)))
+            //    {
+            //        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
+            //        if (user == null)
+            //        {
+            //            throw new NotFoundException("Entity not found");
+            //        }
+            //        user.PhoneNumber = applicationUser.PhoneNumber;
+            //        user.UserName = applicationUser.UserName;
+            //        user.Email = applicationUser.Email;
+            //        var result = await _userManager.UpdateAsync(user);
+            //        await _unitOfWork.SaveAsync();
+            //    }
+            //    else if (await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole) ||
+            //        await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole))
+            //    {
+            //        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
+            //        if (user == null)
+            //        {
+            //            throw new NotFoundException("Entity not found");
+            //        }
+            //        user.PhoneNumber = applicationUser.PhoneNumber;
+            //        user.UserName = applicationUser.UserName;
+            //        user.Email = applicationUser.Email;
+            //            UserKnowledgeLevel knowledgeLevel;
+            //            if (Enum.TryParse(applicationUser.KnowledgeLevel, out knowledgeLevel))
+            //            {
+            //                user.KnowledgeLevel = knowledgeLevel;
+            //            }
+            //            else
+            //            {
+            //                throw new BadRequestException("Knowledge level is invalid");
+            //            }
+            //        var result = await _userManager.UpdateAsync(user);
+            //        await _unitOfWork.SaveAsync();
+            //    }
+            //    else
+            //    {
+            //        throw new BadRequestException("Access denied");
+            //    }
+
+            //}
+            //catch (DbUpdateConcurrencyException)
+            //{
+            //    if (!await _userManager.Users.AnyAsync(u => u.Id == applicationUser.Id))
+            //    {
+            //        throw new NotFoundException("Entity not found due to possible concurrency");
+            //    }
+            //    else
+            //    {
+            //        throw;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.LogError(ex.Message, applicationUser);
+            //    throw;
+            //};
+
             try
             {
                 var currentUserEmail = _userProvider.GetUserEmail();
                 var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
-                if (currentUser.Id == applicationUser.Id.ToString() &&
-                    !(await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole) ||
-                        await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole)))
-                {
-                    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
-                    if (user == null)
-                    {
-                        throw new NotFoundException("Entity not found");
-                    }
-                    user.PhoneNumber = applicationUser.PhoneNumber;
-                    user.UserName = applicationUser.UserName;
-                    user.Email = applicationUser.Email;
-                    var result = await _userManager.UpdateAsync(user);
-                    await _unitOfWork.SaveAsync();
-                }
-                else if (await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole) ||
+                if (await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole) ||
                     await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole))
                 {
                     var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
@@ -94,18 +145,35 @@ namespace FrogExhibitionBLL.Services
                     {
                         throw new NotFoundException("Entity not found");
                     }
+
                     user.PhoneNumber = applicationUser.PhoneNumber;
                     user.UserName = applicationUser.UserName;
                     user.Email = applicationUser.Email;
-                        UserKnowledgeLevel knowledgeLevel;
-                        if (Enum.TryParse(applicationUser.KnowledgeLevel, out knowledgeLevel))
-                        {
-                            user.KnowledgeLevel = knowledgeLevel;
-                        }
-                        else
+                    UserKnowledgeLevel knowledgeLevel;
+
+                    if(applicationUser.KnowledgeLevel != null)
+                    {
+                        if (!Enum.TryParse(applicationUser.KnowledgeLevel, out knowledgeLevel))
                         {
                             throw new BadRequestException("Knowledge level is invalid");
                         }
+                        user.KnowledgeLevel = knowledgeLevel;
+                    }
+
+                    var result = await _userManager.UpdateAsync(user);
+                    await _unitOfWork.SaveAsync();
+                }
+                else if (currentUser.Id == applicationUser.Id.ToString())
+                {
+                    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
+                    if (user == null)
+                    {
+                        throw new NotFoundException("Entity not found");
+                    }
+
+                    user.PhoneNumber = applicationUser.PhoneNumber;
+                    user.UserName = applicationUser.UserName;
+                    user.Email = applicationUser.Email;
                     var result = await _userManager.UpdateAsync(user);
                     await _unitOfWork.SaveAsync();
                 }
@@ -136,22 +204,21 @@ namespace FrogExhibitionBLL.Services
         {
             var currentUserEmail = _userProvider.GetUserEmail();
             var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
-            if (currentUser.Id == id.ToString() ||
+            if (!(currentUser.Id == id.ToString() ||
                 await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole)||
-                await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole))
-            {
-                var applicationUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
-                if (applicationUser == null)
-                {
-                    throw new NotFoundException("Entity not found");
-                }
-                await _userManager.DeleteAsync(applicationUser);
-                await _unitOfWork.SaveAsync();
-            }
-            else
+                await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole)))
             {
                 throw new ForbidException("Access denied");
             }
+
+            var applicationUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
+            if (applicationUser == null)
+            {
+                throw new NotFoundException("Entity not found");
+            }
+
+            await _userManager.DeleteAsync(applicationUser);
+            await _unitOfWork.SaveAsync();
 
         }
 
@@ -174,9 +241,10 @@ namespace FrogExhibitionBLL.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
+                throw;
             }
 
-            return _fileHelper.GetFileContentResult(filePath, "application/octet-stream");
+            return await _fileHelper.GetFileContentResultAsync(filePath, "application/octet-stream", true);
         }
 
         public async Task<ApplicationUserReportViewModel> GetUserStatisticsAsync(Guid id)
@@ -186,6 +254,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             var votes = await GetUserVotesReportDataAsync(user);
             var comments = GetUserCommentsReportData(user);
             return new ApplicationUserReportViewModel()
@@ -205,11 +274,13 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new BadRequestException("Quantity Of Last Exhibitions can't be zero or less");
             }
+
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
             if (user == null)
             {
                 throw new NotFoundException("Entity not found");
             }
+
             var data = (await GetUserVotesReportDataAsync(user)).ToList();
             var res = data
                 .GroupBy(d => d.ExhibitionName, (k, v) => new { key = k, value = v.ToList() })

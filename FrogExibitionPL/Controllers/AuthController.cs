@@ -46,6 +46,7 @@ namespace FrogExhibitionPL.Controllers
                 {
                     return Ok("Successful registration");
                 }
+
                 return BadRequest("smth went wrong");
             }
             catch(DbUpdateException ex)

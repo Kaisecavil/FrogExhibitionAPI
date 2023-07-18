@@ -1,6 +1,5 @@
 ﻿using FrogExhibitionBLL.DTO.ApplicatonUserDTOs;
 using FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels;
-using FrogExhibitionBLL.ViewModels.VoteViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FrogExhibitionBLL.Interfaces.IService

@@ -33,21 +33,19 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                if (await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(comment.FrogOnExhibitionId))
-                {
-                    var currentUserId = await _userProvider.GetUserIdAsync();
-                    var mappedComment = _mapper.Map<Comment>(comment);
-                    mappedComment.ApplicationUserId = currentUserId;
-                    mappedComment.CreationDate = DateTime.Now;
-                    await _unitOfWork.Comments.CreateAsync(mappedComment);
-                    await _unitOfWork.SaveAsync();
-                    return mappedComment.Id;
-                }
-                else
-                {
+                if (!await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(comment.FrogOnExhibitionId))
+                {  
                     throw new NotFoundException("Can't find this frog at exhibition");
                 }
-                
+
+                var currentUserId = await _userProvider.GetUserIdAsync();
+                var mappedComment = _mapper.Map<Comment>(comment);
+                mappedComment.ApplicationUserId = currentUserId;
+                mappedComment.CreationDate = DateTime.Now;
+                await _unitOfWork.Comments.CreateAsync(mappedComment);
+                await _unitOfWork.SaveAsync();
+                return mappedComment.Id;
+
             }
             catch (Exception ex)
             {
@@ -69,6 +67,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             return _mapper.Map<CommentGeneralViewModel>(comment);
         }
 
@@ -89,6 +88,7 @@ namespace FrogExhibitionBLL.Services
                 {
                     throw new BadRequestException("You can't update comments of other users");
                 }
+
                 var mappedComment = _mapper.Map<Comment>(comment);
                 mappedComment.ApplicationUserId = currentUserId;
                 await _unitOfWork.Comments.UpdateAsync(mappedComment);
@@ -121,15 +121,14 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
-            if(comment.ApplicationUserId == currentUserId)
-            {
-                await _unitOfWork.Comments.DeleteAsync(comment.Id);
-                await _unitOfWork.SaveAsync();
-            }
-            else
+
+            if(comment.ApplicationUserId != currentUserId)
             {
                 throw new BadRequestException("You can't delete other users comments");
             }
+
+            await _unitOfWork.Comments.DeleteAsync(comment.Id);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

@@ -71,6 +71,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             var mappedExhibition = _mapper.Map<ExhibitionDetailViewModel>(exebition);
             mappedExhibition.Frogs = _mapper.Map<List<FrogExhibitionViewModel>>(exebition.Frogs);
             mappedExhibition.Frogs
@@ -87,16 +88,15 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                if (await _unitOfWork.Exhibitions.EntityExistsAsync(exebition.Id))
-                {
-                    var mappedExhibition = _mapper.Map<Exhibition>(exebition);
-                    await _unitOfWork.Exhibitions.UpdateAsync(mappedExhibition);
-                    await _unitOfWork.SaveAsync();
-                }
-                else
+                var isExists = await _unitOfWork.Exhibitions.EntityExistsAsync(exebition.Id);
+                if(!isExists)
                 {
                     throw new NotFoundException("Entity not found");
                 }
+
+                var mappedExhibition = _mapper.Map<Exhibition>(exebition);
+                await _unitOfWork.Exhibitions.UpdateAsync(mappedExhibition);
+                await _unitOfWork.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -118,6 +118,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             await _unitOfWork.Exhibitions.DeleteAsync(exebition.Id);
             await _unitOfWork.SaveAsync();
         }
@@ -129,6 +130,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             var frogsOnExhibition = exebition.FrogsOnExhibitions;
             var res = frogsOnExhibition.Select(foe => new FrogRatingViewModel
             {
@@ -194,7 +196,7 @@ namespace FrogExhibitionBLL.Services
                 _logger.LogError(ex.Message);
             }
 
-            return _fileHelper.GetFileContentResult(filePath, "application/octet-stream");
+            return await _fileHelper.GetFileContentResultAsync(filePath, "application/octet-stream", true);
         }
 
         public async Task<ExhibitionReportViewModel> GetExhibitionStatisticsAsync(Guid id)
@@ -217,6 +219,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             var rating = await GetRatingAsync(exhibitionId);
             return rating.ToList().IndexOf(rating.FirstOrDefault(f => f.Id == frogid)) + 1;
         }

@@ -33,35 +33,34 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                if (await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(vote.FrogOnExhibitionId))
-                {
-                    var currentUserId = await _userProvider.GetUserIdAsync();
-                    var userVotesOnExhibitionCount = _unitOfWork.Votes
-                        .GetAllQueryable()
-                        .Where(v => v.ApplicationUserId == currentUserId
-                        && v.FrogOnExhibitionId == vote.FrogOnExhibitionId)
-                        .Count();
-                    if (userVotesOnExhibitionCount >= 3)
-                    {
-                        throw new DbUpdateException("This user has cast all of his available votes on this exebiton");
-                    }
-                    try
-                    {
-                        var mappedVote = _mapper.Map<Vote>(vote);
-                        mappedVote.ApplicationUserId = currentUserId;
-                        await _unitOfWork.Votes.CreateAsync(mappedVote);
-                        _logger.LogInformation("Vote Created");
-                        await _unitOfWork.SaveAsync();
-                        return mappedVote.Id;
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        throw new DbUpdateException("You can't vote for the same frog on exebition twice");
-                    }
-                }
-                else
+                if (!await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(vote.FrogOnExhibitionId))
                 {
                     throw new NotFoundException("Can't find frog at exhibition");
+                }
+
+                var currentUserId = await _userProvider.GetUserIdAsync();
+                var userVotesOnExhibitionCount = _unitOfWork.Votes
+                    .GetAllQueryable()
+                    .Where(v => v.ApplicationUserId == currentUserId
+                    && v.FrogOnExhibitionId == vote.FrogOnExhibitionId)
+                    .Count();
+                if (userVotesOnExhibitionCount >= 3)
+                {
+                    throw new DbUpdateException("This user has cast all of his available votes on this exebiton");
+                }
+
+                try
+                {
+                    var mappedVote = _mapper.Map<Vote>(vote);
+                    mappedVote.ApplicationUserId = currentUserId;
+                    await _unitOfWork.Votes.CreateAsync(mappedVote);
+                    _logger.LogInformation("Vote Created");
+                    await _unitOfWork.SaveAsync();
+                    return mappedVote.Id;
+                }
+                catch (DbUpdateException ex)
+                {
+                    throw new DbUpdateException("You can't vote for the same frog on exebition twice");
                 }
             }
             catch (Exception ex)
@@ -84,6 +83,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             return _mapper.Map<VoteDetailViewModel>(vote);
         }
 
@@ -91,34 +91,31 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                if (await _unitOfWork.Votes.EntityExistsAsync(vote.Id))
-                {
-                    if (await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(vote.FrogOnExhibitionId))
-                    {
-                        var currentUserId = await _userProvider.GetUserIdAsync();
-                        var userVotesOnExhibitionCount = _unitOfWork.Votes.GetAllQueryable()
-                            .Where(v => v.ApplicationUserId == currentUserId
-                            && v.FrogOnExhibitionId == vote.FrogOnExhibitionId)
-                            .Count();
-                        if (userVotesOnExhibitionCount >= 3)
-                        {
-                            throw new DbUpdateException("This user has cast all of his available votes on this exebiton");
-                        }
-                        var mappedVote = _mapper.Map<Vote>(vote);
-                        mappedVote.ApplicationUserId = currentUserId;
-                        await _unitOfWork.Votes.UpdateAsync(mappedVote);
-                        await _unitOfWork.SaveAsync();
-                    }
-                    else
-                    {
-                        throw new NotFoundException("Frog on exhibition not found");
-                    }
-                }
-                else
+                if (!(await _unitOfWork.Votes.EntityExistsAsync(vote.Id)))
                 {
                     throw new NotFoundException("Entity not found");
                 }
-                
+
+                if (!await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(vote.FrogOnExhibitionId))
+                {
+                    throw new NotFoundException("Frog on exhibition not found");
+                }
+
+                var currentUserId = await _userProvider.GetUserIdAsync();
+                var userVotesOnExhibitionCount = _unitOfWork.Votes.GetAllQueryable()
+                    .Where(v => v.ApplicationUserId == currentUserId
+                    && v.FrogOnExhibitionId == vote.FrogOnExhibitionId)
+                    .Count();
+                if (userVotesOnExhibitionCount >= 3)
+                {
+                    throw new DbUpdateException("This user has cast all of his available votes on this exebiton");
+                }
+
+                var mappedVote = _mapper.Map<Vote>(vote);
+                mappedVote.ApplicationUserId = currentUserId;
+                await _unitOfWork.Votes.UpdateAsync(mappedVote);
+                await _unitOfWork.SaveAsync();
+
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -147,16 +144,15 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
-            if (vote.ApplicationUserId == currentUserId)
-            {
-                await _unitOfWork.Votes.DeleteAsync(vote.Id);
-                await _unitOfWork.SaveAsync();
-            }
-            else
+
+            if (vote.ApplicationUserId != currentUserId)
             {
                 throw new ForbidException("You can't delete other users votes");
             }
-            
+
+            await _unitOfWork.Votes.DeleteAsync(vote.Id);
+            await _unitOfWork.SaveAsync();
+
         }
     }
 }

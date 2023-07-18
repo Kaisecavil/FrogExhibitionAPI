@@ -1,10 +1,5 @@
 ﻿using FrogExhibitionBLL.ViewModels.CommentViewModels;
 using FrogExhibitionBLL.ViewModels.VoteViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FrogExhibitionBLL.ViewModels.ApplicatonUserViewModels
 {

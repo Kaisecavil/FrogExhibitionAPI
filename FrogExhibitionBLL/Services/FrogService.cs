@@ -3,7 +3,6 @@ using FrogExhibitionBLL.DTO.FrogDTOs;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IHelper;
 using FrogExhibitionBLL.Interfaces.IService;
-using FrogExhibitionBLL.ViewModels.CommentViewModels;
 using FrogExhibitionBLL.ViewModels.FrogViewModels;
 using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
@@ -111,6 +110,7 @@ namespace FrogExhibitionBLL.Services
                 {
                     throw new NotFoundException("Entity not found");
                 }
+
                 Frog mappedFrog = _mapper.Map<Frog>(frog);
                 await _unitOfWork.Frogs.UpdateAsync(mappedFrog);
                 await _frogPhotoService.DeleteFrogPhotosAsync(frog.Id);
@@ -144,6 +144,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             await _unitOfWork.Frogs.DeleteAsync(frog.Id);
             await _unitOfWork.SaveAsync();
         }

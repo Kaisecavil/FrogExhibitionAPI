@@ -38,7 +38,6 @@ namespace FrogExhibitionPL.Controllers
             {
                 return NotFound(ex.Message);
             }
-
         }
 
         // GET: api/FrogStarRatings/176223D5-5073-4961-B4EF-ECBE41F1A0C6
@@ -58,8 +57,6 @@ namespace FrogExhibitionPL.Controllers
             {
                 return NotFound(ex.Message);
             }
-
-
         }
 
         // PUT: api/FrogStarRatings/5

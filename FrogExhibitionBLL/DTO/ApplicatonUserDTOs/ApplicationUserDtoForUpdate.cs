@@ -10,6 +10,6 @@ namespace FrogExhibitionBLL.DTO.ApplicatonUserDTOs
         [Required]
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public string KnowledgeLevel { get; set; }
+        public string? KnowledgeLevel { get; set; }
     }
 }

@@ -56,12 +56,15 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new BadRequestException("Wrong username or password");
             }
-            if(await _userManager.CheckPasswordAsync(appUser, user.Password))
+
+            if(!await _userManager.CheckPasswordAsync(appUser, user.Password))
             {
-                var roles = await _userManager.GetRolesAsync(appUser);
-                return GenerateTokenString(user, roles);
+                throw new BadRequestException("Wrong username or password");
+                
             }
-            throw new BadRequestException("Wrong username or password");
+
+            var roles = await _userManager.GetRolesAsync(appUser);
+            return GenerateTokenString(user, roles);
         }
 
         
@@ -69,22 +72,19 @@ namespace FrogExhibitionBLL.Services
         public async Task<bool> RegisterUserAsync(ApplicationUserDtoForLogin user)
         {
             var existingUser = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
-            if (existingUser == null)
-            {
-                var identityUser = new ApplicationUser
-                {
-                    UserName = user.Email,
-                    Email = user.Email,
-                    KnowledgeLevel = UserKnowledgeLevel.Newbie
-                };
-
-                var result = await _userManager.CreateAsync(identityUser, user.Password);
-                return result.Succeeded;
-            }
-            else
+            if (existingUser != null)
             {
                 throw new DbUpdateException("User with the same email alredy exists");
             }
+
+            var identityUser = new ApplicationUser
+            {
+                UserName = user.Email,
+                Email = user.Email,
+                KnowledgeLevel = UserKnowledgeLevel.Newbie
+            };
+            var result = await _userManager.CreateAsync(identityUser, user.Password);
+            return result.Succeeded;
         }
 
     }

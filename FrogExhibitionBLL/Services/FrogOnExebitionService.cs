@@ -29,18 +29,16 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                if (await _unitOfWork.Frogs.EntityExistsAsync(frogOnExhibition.FrogId) &&
-                    await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(frogOnExhibition.ExhibitionId))
-                {
-                    var mappedFrogOnExhibition = _mapper.Map<FrogOnExhibition>(frogOnExhibition);
-                    await _unitOfWork.FrogOnExhibitions.CreateAsync(mappedFrogOnExhibition);
-                    await _unitOfWork.SaveAsync();
-                    return mappedFrogOnExhibition.Id;
-                }
-                else
+                if (!(await _unitOfWork.Frogs.EntityExistsAsync(frogOnExhibition.FrogId) &&
+                    await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(frogOnExhibition.ExhibitionId)))
                 {
                     throw new NotFoundException("Can't find frog or exhibition");
                 }
+
+                var mappedFrogOnExhibition = _mapper.Map<FrogOnExhibition>(frogOnExhibition);
+                await _unitOfWork.FrogOnExhibitions.CreateAsync(mappedFrogOnExhibition);
+                await _unitOfWork.SaveAsync();
+                return mappedFrogOnExhibition.Id;
             }
             catch (Exception ex)
             {
@@ -62,6 +60,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             return _mapper.Map<FrogOnExhibitionDetailViewModel>(frogOnExhibition);
         }
 
@@ -69,16 +68,14 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                if (await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(frogOnExhibition.Id))
-                {
-                    var mappedFrogOnExhibition = _mapper.Map<FrogOnExhibition>(frogOnExhibition);
-                    await _unitOfWork.FrogOnExhibitions.UpdateAsync(mappedFrogOnExhibition);
-                    await _unitOfWork.SaveAsync();
-                }
-                else 
+                if (!await _unitOfWork.FrogOnExhibitions.EntityExistsAsync(frogOnExhibition.Id))
                 {
                     throw new NotFoundException("Entity not found");
                 }
+
+                var mappedFrogOnExhibition = _mapper.Map<FrogOnExhibition>(frogOnExhibition);
+                await _unitOfWork.FrogOnExhibitions.UpdateAsync(mappedFrogOnExhibition);
+                await _unitOfWork.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -105,6 +102,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             await _unitOfWork.FrogOnExhibitions.DeleteAsync(frogOnExhibition.Id);
             await _unitOfWork.SaveAsync();
         }

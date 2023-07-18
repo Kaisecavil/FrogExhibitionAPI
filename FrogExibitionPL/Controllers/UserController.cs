@@ -40,7 +40,6 @@ namespace FrogExhibitionPL.Controllers
             {
                 return NotFound(ex.Message);
             }
-
         }
 
         // GET: api/Users/176223D5-5073-4961-B4EF-ECBE41F1A0C6
@@ -59,8 +58,6 @@ namespace FrogExhibitionPL.Controllers
             {
                 return NotFound(ex.Message);
             }
-
-
         }
 
         // PUT: api/Users/176223D5-5073-4961-B4EF-ECBE41F1A0C6
@@ -96,7 +93,6 @@ namespace FrogExhibitionPL.Controllers
             {
                 return UnprocessableEntity(ex.Message);
             }
-
         }
 
         // DELETE: api/Users/176223D5-5073-4961-B4EF-ECBE41F1A0C6

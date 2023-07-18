@@ -33,25 +33,24 @@ namespace FrogExhibitionBLL.Services
         {
             try
             {
-                if (await _unitOfWork.Frogs.EntityExistsAsync(frogStarRating.FrogId))
-                {
-                    var currentUserId = await _userProvider.GetUserIdAsync();
-                    if (_unitOfWork.FrogStarRatings.GetAllQueryable(true)
-                        .Any(fsr => fsr.FrogId == frogStarRating.FrogId &&
-                             fsr.ApplicationUserId == currentUserId))
-                    {
-                        throw new DbUpdateException("User can leave only one star rating per one frog");
-                    }
-                    var mappedFrogStarRating = _mapper.Map<FrogStarRating>(frogStarRating);
-                    mappedFrogStarRating.ApplicationUserId = currentUserId;
-                    await _unitOfWork.FrogStarRatings.UpdateAsync(mappedFrogStarRating);
-                    await _unitOfWork.SaveAsync();
-                    return mappedFrogStarRating.Id;
-                }
-                else
+                if (!await _unitOfWork.Frogs.EntityExistsAsync(frogStarRating.FrogId))
                 {
                     throw new NotFoundException("Can't find this frog");
                 }
+
+                var currentUserId = await _userProvider.GetUserIdAsync();
+                if (_unitOfWork.FrogStarRatings.GetAllQueryable(true)
+                    .Any(fsr => fsr.FrogId == frogStarRating.FrogId &&
+                         fsr.ApplicationUserId == currentUserId))
+                {
+                    throw new DbUpdateException("User can leave only one star rating per one frog");
+                }
+
+                var mappedFrogStarRating = _mapper.Map<FrogStarRating>(frogStarRating);
+                mappedFrogStarRating.ApplicationUserId = currentUserId;
+                await _unitOfWork.FrogStarRatings.UpdateAsync(mappedFrogStarRating);
+                await _unitOfWork.SaveAsync();
+                return mappedFrogStarRating.Id;
             }
             catch (Exception ex)
             {
@@ -73,6 +72,7 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             return _mapper.Map<FrogStarRatingGeneralViewModel>(frogStarRating);
         }
 
@@ -81,27 +81,22 @@ namespace FrogExhibitionBLL.Services
             try
             {
 
-                if (await _unitOfWork.FrogStarRatings.EntityExistsAsync(frogStarRating.Id))
-                {
-                    var currentUserId = await _userProvider.GetUserIdAsync();
-                    var frogStarRatingToUpdate = await _unitOfWork.FrogStarRatings.GetAsync(frogStarRating.Id);
-                    if (frogStarRatingToUpdate.ApplicationUserId == currentUserId)
-                    {
-                        var mappedFrogStarRating = _mapper.Map<FrogStarRating>(frogStarRating);
-                        mappedFrogStarRating.ApplicationUserId = currentUserId;
-                        await _unitOfWork.FrogStarRatings.UpdateAsync(mappedFrogStarRating);
-                        await _unitOfWork.SaveAsync();
-                    }
-                    else
-                    {
-                        throw new BadRequestException("You can't update frogStarRatings of other users");
-                    }
-
-                }
-                else
+                if (!await _unitOfWork.FrogStarRatings.EntityExistsAsync(frogStarRating.Id))
                 {
                     throw new NotFoundException("Entity not found");
                 }
+
+                var currentUserId = await _userProvider.GetUserIdAsync();
+                var frogStarRatingToUpdate = await _unitOfWork.FrogStarRatings.GetAsync(frogStarRating.Id);
+                if (frogStarRatingToUpdate.ApplicationUserId != currentUserId)
+                {
+                    throw new BadRequestException("You can't update frogStarRatings of other users");
+                }
+
+                var mappedFrogStarRating = _mapper.Map<FrogStarRating>(frogStarRating);
+                mappedFrogStarRating.ApplicationUserId = currentUserId;
+                await _unitOfWork.FrogStarRatings.UpdateAsync(mappedFrogStarRating);
+                await _unitOfWork.SaveAsync();
 
             }
             catch (DbUpdateConcurrencyException)
@@ -129,16 +124,15 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             var currentUserId = await _userProvider.GetUserIdAsync();
-            if (frogStarRating.ApplicationUserId == currentUserId)
-            {
-                await _unitOfWork.FrogStarRatings.DeleteAsync(frogStarRating.Id);
-                await _unitOfWork.SaveAsync();
-            }
-            else
+            if (frogStarRating.ApplicationUserId != currentUserId)
             {
                 throw new ForbidException("You can't delete other users frogStarRatings");
             }
+
+            await _unitOfWork.FrogStarRatings.DeleteAsync(frogStarRating.Id);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

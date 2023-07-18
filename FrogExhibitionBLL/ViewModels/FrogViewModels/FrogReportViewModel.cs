@@ -1,10 +1,5 @@
 ﻿using FrogExhibitionDAL.Constants.ModelConstants.FrogConstants;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FrogExhibitionBLL.ViewModels.FrogViewModels
 {

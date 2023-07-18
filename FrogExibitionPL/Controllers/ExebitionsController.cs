@@ -6,8 +6,6 @@ using FrogExhibitionBLL.ViewModels.ExhibitionViewModels;
 using FrogExhibitionBLL.ViewModels.FrogViewModels;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Constants;
-using System;
-using FrogExhibitionBLL.Interfaces.IHelper;
 using FrogExhibitionPL.Attributes;
 
 namespace FrogExhibitionPL.Controllers
@@ -37,7 +35,6 @@ namespace FrogExhibitionPL.Controllers
             {
                 return NotFound(ex.Message);
             }
-
         }
 
         [HttpGet("sort/{sortParams}")]
@@ -53,7 +50,6 @@ namespace FrogExhibitionPL.Controllers
             {
                 return NotFound(ex.Message);
             }
-
         }
 
         // GET: api/Exhibitions/176223D5-5073-4961-B4EF-ECBE41F1A0C6
@@ -70,8 +66,6 @@ namespace FrogExhibitionPL.Controllers
             {
                 return NotFound(ex.Message);
             }
-
-
         }
 
         // PUT: api/Exhibitions/176223D5-5073-4961-B4EF-ECBE41F1A0C6
@@ -157,8 +151,6 @@ namespace FrogExhibitionPL.Controllers
             {
                 return NotFound(ex.Message);
             }
-
-
         }
 
         // GET: api/Exhibitions/history
@@ -177,15 +169,8 @@ namespace FrogExhibitionPL.Controllers
             {
                 return NotFound(ex.Message);
             }
-
-
         }
 
-        public class Person
-        {
-            public string Name { get; set; }
-            public int Age { get; set; }
-        }
         // GET: api/Exhibitions/stat/176223D5-5073-4961-B4EF-ECBE41F1A0C6
         [HttpGet("stat/{id}")]
         [ProducesResponseType(200)]
@@ -203,8 +188,6 @@ namespace FrogExhibitionPL.Controllers
             {
                 return NotFound(ex.Message);
             }
-
-
         }
     }
 }
