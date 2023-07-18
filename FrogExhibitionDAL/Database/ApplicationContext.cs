@@ -77,7 +77,7 @@ namespace FrogExhibitionDAL.Database
 
         private void ProcessEntityNavigationProperties()
         {
-            foreach (var entry in ChangeTracker.Entries().ToList())
+            foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Deleted).ToList())
             {
                 var navigations = new List<NavigationEntry>();
                 foreach (var navigation in entry.Navigations)
