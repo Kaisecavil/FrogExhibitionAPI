@@ -16,6 +16,7 @@ namespace FrogExhibitionBLL.ValidationAttributes
             {
                 null => true,
                 FrogDtoForCreate frog => (frog?.CurrentAge != null && frog.CurrentAge <= frog.MaxAge),
+                FrogDtoForUpdate frog => (frog?.CurrentAge != null && frog.CurrentAge <= frog.MaxAge),
                 _ => false
             };
         }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using FrogExhibitionBLL.Constants;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace FrogExhibitionBLL.DTO.ApplicatonUserDTOs
@@ -6,10 +7,10 @@ namespace FrogExhibitionBLL.DTO.ApplicatonUserDTOs
     public class ApplicationUserDtoForLogin
     {
         [Required]
-        [DefaultValue("Admin@mail.com")]
+        [DefaultValue(DefaultValueConstants.AdminEmail)]
         public string Email { get; set; }
         [Required]
-        [DefaultValue("P@ssw0rd")]
+        [DefaultValue(DefaultValueConstants.BasicPassword)]
         public string Password { get; set; }
     }
 }

@@ -41,16 +41,16 @@ namespace FrogExhibitionBLL.Services
             {
                 Frog mappedFrog = _mapper.Map<Frog>(frog);
                 await _unitOfWork.Frogs.CreateAsync(mappedFrog);
-                if(frog.Photos!= null)
-                {
-                    foreach (var photo in frog.Photos)
-                    {
-                        var photopath = await _fileHelper.SavePhotoAsync(photo);
-                        var frogPhoto = _frogPhotoService.CreateFrogPhotoAsync(new FrogPhoto { PhotoPath = photopath, FrogId = mappedFrog.Id });
-                    }
-                }
+                frog.Photos?.Select(p => _fileHelper.SavePhotoAsync(p)).ToList()
+                    .ForEach(async photopath => await _frogPhotoService
+                        .CreateFrogPhotoAsync(
+                            new FrogPhoto 
+                            { 
+                                PhotoPath = photopath.Result,
+                                FrogId = mappedFrog.Id
+                            }));
                 await _unitOfWork.SaveAsync();
-                return mappedFrog.Id; 
+                return mappedFrog.Id;
             }
             catch (AutoMapperMappingException ex)
             {
@@ -67,10 +67,8 @@ namespace FrogExhibitionBLL.Services
         {
             var frogs = await _unitOfWork.Frogs.GetAllAsync(true);
             var mappedfrogs = _mapper.Map<IEnumerable<FrogGeneralViewModel>>(frogs);
-            foreach (var frog in mappedfrogs)
-            {
-                frog.PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(frog.Id).ToList();
-            }
+            mappedfrogs.ToList()
+                .ForEach(f => f.PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(f.Id).ToList());
             return mappedfrogs;
         }
 
@@ -79,12 +77,10 @@ namespace FrogExhibitionBLL.Services
             var frogs = (await _unitOfWork.Frogs.GetAllAsync(true)).AsQueryable();
             var sortedFrogs = _sortHelper.ApplySort(frogs, sortParams);
             var sortedMappedfrogs = _mapper.Map<IEnumerable<FrogGeneralViewModel>>(sortedFrogs);
-            foreach (var frog in sortedMappedfrogs)
-            {
-                frog.PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(frog.Id).ToList();
-            }
+            sortedMappedfrogs.ToList()
+                .ForEach(f => f.PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(f.Id).ToList());
             return sortedMappedfrogs;
-            
+
         }
 
         public async Task<FrogDetailViewModel> GetFrogAsync(Guid id)
@@ -94,15 +90,12 @@ namespace FrogExhibitionBLL.Services
             {
                 throw new NotFoundException("Entity not found");
             }
+
             var mappedFrog = _mapper.Map<FrogDetailViewModel>(frog);
-            //var commentsList = new List<Comment>();
-            //frog.FrogsOnExhibitions.ForEach(foe => commentsList.AddRange(foe.Comments));
-            //mappedFrog.Comments = _mapper.Map<List<CommentGeneralViewModel>>(commentsList.OrderBy(c => c.CreationDate));
-            //mappedFrog.PhotoPaths = _frogPhotoService.GetFrogPhotoPaths(mappedFrog.Id).ToList();
             return mappedFrog;
         }
 
-        public async Task UpdateFrogAsync(FrogDtoForUpdate frog) 
+        public async Task UpdateFrogAsync(FrogDtoForUpdate frog)
         {
             try
             {
@@ -114,14 +107,14 @@ namespace FrogExhibitionBLL.Services
                 Frog mappedFrog = _mapper.Map<Frog>(frog);
                 await _unitOfWork.Frogs.UpdateAsync(mappedFrog);
                 await _frogPhotoService.DeleteFrogPhotosAsync(frog.Id);
-                if(frog.Photos != null)
-                {
-                    foreach (var photo in frog.Photos)
-                    {
-                        var photopath = await _fileHelper.SavePhotoAsync(photo);
-                        var frogPhoto = _frogPhotoService.CreateFrogPhotoAsync(new FrogPhoto { PhotoPath = photopath, FrogId = frog.Id });
-                    }
-                }
+                frog.Photos?.Select(p => _fileHelper.SavePhotoAsync(p)).ToList()
+                    .ForEach(async photopath => await _frogPhotoService
+                        .CreateFrogPhotoAsync(
+                            new FrogPhoto
+                            {
+                                PhotoPath = photopath.Result,
+                                FrogId = mappedFrog.Id
+                            }));
                 await _unitOfWork.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -140,6 +133,7 @@ namespace FrogExhibitionBLL.Services
         public async Task DeleteFrogAsync(Guid id)
         {
             var frog = await _unitOfWork.Frogs.GetAsync(id);
+
             if (frog == null)
             {
                 throw new NotFoundException("Entity not found");

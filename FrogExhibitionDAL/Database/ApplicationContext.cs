@@ -24,7 +24,7 @@ namespace FrogExhibitionDAL.Database
 
         public override int SaveChanges()
         {
-            ProcessEntities();
+            ProcessEntityNavigationProperties();
             HandleEntityDelete();
             return base.SaveChanges();
         }
@@ -75,7 +75,7 @@ namespace FrogExhibitionDAL.Database
             entry.State = EntityState.Deleted;
         }
 
-        private void ProcessEntities()
+        private void ProcessEntityNavigationProperties()
         {
             foreach (var entry in ChangeTracker.Entries().ToList())
             {
@@ -118,7 +118,7 @@ namespace FrogExhibitionDAL.Database
 
         private async Task ProcessEntitiesAsync()
         {
-            foreach (var entry in ChangeTracker.Entries().ToList())
+            foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Deleted).ToList())
             {
                 var navigations = new List<NavigationEntry>();
                 foreach (var navigation in entry.Navigations)

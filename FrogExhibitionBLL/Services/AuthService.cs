@@ -72,6 +72,7 @@ namespace FrogExhibitionBLL.Services
         public async Task<bool> RegisterUserAsync(ApplicationUserDtoForLogin user)
         {
             var existingUser = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
+
             if (existingUser != null)
             {
                 throw new DbUpdateException("User with the same email alredy exists");

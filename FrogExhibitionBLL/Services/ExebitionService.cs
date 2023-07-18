@@ -67,6 +67,7 @@ namespace FrogExhibitionBLL.Services
         public async Task<ExhibitionDetailViewModel> GetExhibitionAsync(Guid id)
         {
             var exebition = await _unitOfWork.Exhibitions.GetAsync(id);
+
             if (exebition == null)
             {
                 throw new NotFoundException("Entity not found");
@@ -161,13 +162,7 @@ namespace FrogExhibitionBLL.Services
         public async Task<IEnumerable<FrogRatingViewModel>> GetBestFrogsHistoryAsync()
         {
             var exhibitions = (await _unitOfWork.Exhibitions.GetAllAsync()).ToList();
-            List<FrogRatingViewModel> res = new();
-            foreach (var exhibition in exhibitions)
-            {
-                res.Add((await GetRatingAsync(exhibition.Id)).FirstOrDefault());
-            }
-            
-            return res.ToList();
+            return exhibitions.Select(async e => (await GetRatingAsync(e.Id)).FirstOrDefault()).Select(o => o.Result);
         }
 
         public async Task<IEnumerable<ExhibitionGeneralViewModel>> GetAllExhibitionsAsync(string sortParams)

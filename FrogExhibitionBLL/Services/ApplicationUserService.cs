@@ -68,71 +68,6 @@ namespace FrogExhibitionBLL.Services
 
         public async Task UpdateApplicationUserAsync(ApplicationUserDtoForUpdate applicationUser)
         {
-            //try
-            //{
-            //    var currentUserEmail = _userProvider.GetUserEmail();
-            //    var currentUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == currentUserEmail);
-            //    if (currentUser.Id == applicationUser.Id.ToString() &&
-            //        !(await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole) ||
-            //            await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole)))
-            //    {
-            //        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
-            //        if (user == null)
-            //        {
-            //            throw new NotFoundException("Entity not found");
-            //        }
-            //        user.PhoneNumber = applicationUser.PhoneNumber;
-            //        user.UserName = applicationUser.UserName;
-            //        user.Email = applicationUser.Email;
-            //        var result = await _userManager.UpdateAsync(user);
-            //        await _unitOfWork.SaveAsync();
-            //    }
-            //    else if (await _userManager.IsInRoleAsync(currentUser, RoleConstants.AdminRole) ||
-            //        await _userManager.IsInRoleAsync(currentUser, RoleConstants.UserAdminRole))
-            //    {
-            //        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
-            //        if (user == null)
-            //        {
-            //            throw new NotFoundException("Entity not found");
-            //        }
-            //        user.PhoneNumber = applicationUser.PhoneNumber;
-            //        user.UserName = applicationUser.UserName;
-            //        user.Email = applicationUser.Email;
-            //            UserKnowledgeLevel knowledgeLevel;
-            //            if (Enum.TryParse(applicationUser.KnowledgeLevel, out knowledgeLevel))
-            //            {
-            //                user.KnowledgeLevel = knowledgeLevel;
-            //            }
-            //            else
-            //            {
-            //                throw new BadRequestException("Knowledge level is invalid");
-            //            }
-            //        var result = await _userManager.UpdateAsync(user);
-            //        await _unitOfWork.SaveAsync();
-            //    }
-            //    else
-            //    {
-            //        throw new BadRequestException("Access denied");
-            //    }
-
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!await _userManager.Users.AnyAsync(u => u.Id == applicationUser.Id))
-            //    {
-            //        throw new NotFoundException("Entity not found due to possible concurrency");
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.LogError(ex.Message, applicationUser);
-            //    throw;
-            //};
-
             try
             {
                 var currentUserEmail = _userProvider.GetUserEmail();
@@ -150,13 +85,13 @@ namespace FrogExhibitionBLL.Services
                     user.UserName = applicationUser.UserName;
                     user.Email = applicationUser.Email;
                     UserKnowledgeLevel knowledgeLevel;
-
                     if(applicationUser.KnowledgeLevel != null)
                     {
                         if (!Enum.TryParse(applicationUser.KnowledgeLevel, out knowledgeLevel))
                         {
                             throw new BadRequestException("Knowledge level is invalid");
                         }
+
                         user.KnowledgeLevel = knowledgeLevel;
                     }
 

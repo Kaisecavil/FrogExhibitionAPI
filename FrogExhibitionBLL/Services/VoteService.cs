@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FrogExhibitionBLL.Constants;
 using FrogExhibitionBLL.DTO.VoteDtos;
 using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IProvider;
@@ -44,7 +45,8 @@ namespace FrogExhibitionBLL.Services
                     .Where(v => v.ApplicationUserId == currentUserId
                     && v.FrogOnExhibitionId == vote.FrogOnExhibitionId)
                     .Count();
-                if (userVotesOnExhibitionCount >= 3)
+
+                if (userVotesOnExhibitionCount >= ConstraintValueConstants.MaxQuantityOfVotesPerUserAtExhibition)
                 {
                     throw new DbUpdateException("This user has cast all of his available votes on this exebiton");
                 }
@@ -106,7 +108,8 @@ namespace FrogExhibitionBLL.Services
                     .Where(v => v.ApplicationUserId == currentUserId
                     && v.FrogOnExhibitionId == vote.FrogOnExhibitionId)
                     .Count();
-                if (userVotesOnExhibitionCount >= 3)
+
+                if (userVotesOnExhibitionCount >= ConstraintValueConstants.MaxQuantityOfVotesPerUserAtExhibition)
                 {
                     throw new DbUpdateException("This user has cast all of his available votes on this exebiton");
                 }

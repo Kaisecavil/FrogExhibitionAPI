@@ -9,6 +9,7 @@ namespace FrogExhibitionBLL.Interfaces.IHelper
         string GetUserReportFilePath(string userId);
         string GetUniqueFileName(string fileName);
         Task<string> SavePhotoAsync(IFormFile file);
+        Task<string> SavePhotoAsync(IFormFile file, string directoryPath);
         Task<FileContentResult> GetFileContentResultAsync(string filePath, string contentType, bool deleteFileAfter = false);
     }
 }

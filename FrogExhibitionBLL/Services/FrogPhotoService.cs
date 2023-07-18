@@ -1,4 +1,5 @@
-﻿using FrogExhibitionBLL.Interfaces.IService;
+﻿using FrogExhibitionBLL.Interfaces.IHelper;
+using FrogExhibitionBLL.Interfaces.IService;
 using FrogExhibitionDAL.Interfaces;
 using FrogExhibitionDAL.Models;
 using Microsoft.Extensions.Logging;
@@ -9,12 +10,15 @@ namespace FrogExhibitionBLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<FrogPhotoService> _logger;
+        private readonly IFileHelper _fileHelper;
 
         public FrogPhotoService(IUnitOfWork unitOfWork,
-            ILogger<FrogPhotoService> logger)
+            ILogger<FrogPhotoService> logger,
+            IFileHelper fileHelper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _fileHelper = fileHelper;
         }
 
         public IEnumerable<string> GetFrogPhotoPaths(Guid frogId)
@@ -30,7 +34,6 @@ namespace FrogExhibitionBLL.Services
             try
             {
                 await _unitOfWork.FrogPhotos.CreateAsync(frogPhoto);
-                //await _unitOfWork.SaveAsync();
             }
             catch (Exception ex)
             {

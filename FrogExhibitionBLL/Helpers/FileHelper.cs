@@ -1,4 +1,5 @@
-﻿using FrogExhibitionBLL.Exceptions;
+﻿using FrogExhibitionBLL.Constants;
+using FrogExhibitionBLL.Exceptions;
 using FrogExhibitionBLL.Interfaces.IHelper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +15,6 @@ namespace FrogExhibitionBLL.Helpers
         {
             _environment = environment;
         }
-
         /// <summary>
         /// Takes file name and concat it with 4 symbols from generated Guid
         /// </summary>
@@ -22,10 +22,10 @@ namespace FrogExhibitionBLL.Helpers
         /// <returns>Unique file name</returns>
         public string GetUniqueFileName(string fileName)
         {
-     
+
             fileName = Path.GetFileName(fileName);
             return string.Concat(Path.GetFileNameWithoutExtension(fileName),
-                "_",
+                FileRelatedConstants.WordSeparator,
                 Guid.NewGuid().ToString().AsSpan(0, 4),
                 Path.GetExtension(fileName));
 
@@ -38,26 +38,30 @@ namespace FrogExhibitionBLL.Helpers
         /// <returns></returns>
         public string GetExhibitionReportFilePath(string exhibitionName)
         {
-            return string.Concat(
+            return Path.Combine(
                 _environment.WebRootPath,
-                "\\reports\\",
-                "\\exhibitionReports\\",
-                exhibitionName.Replace(" ", "_"),
-                "_",
-                DateTime.Now.ToShortDateString().Replace(".", "_"),
-                ".xlsx");
+                FileRelatedConstants.ReportsFolderName,
+                FileRelatedConstants.ExhibitionReportsFolderName,
+                string.Concat(
+                    exhibitionName.Replace(" ", FileRelatedConstants.WordSeparator),
+                    FileRelatedConstants.WordSeparator,
+                    DateTime.Now.ToShortDateString().Replace(".", FileRelatedConstants.WordSeparator),
+                    FileRelatedConstants.ReportFileExtension)
+                );
         }
 
         public string GetUserReportFilePath(string userName)
         {
-            return string.Concat(
+            return Path.Combine(
                 _environment.WebRootPath,
-                "\\reports",
-                "\\userReports\\",
-                userName.Replace(" ", "_"),
-                "_",
-                DateTime.Now.ToShortDateString().Replace(".", "_"),
-                ".xlsx");
+                FileRelatedConstants.ReportsFolderName,
+                FileRelatedConstants.UserReportsFolderName,
+                string.Concat(
+                    userName.Replace(" ", FileRelatedConstants.WordSeparator),
+                    FileRelatedConstants.WordSeparator,
+                    DateTime.Now.ToShortDateString().Replace(".", FileRelatedConstants.WordSeparator),
+                    FileRelatedConstants.ReportFileExtension)
+                );
         }
 
         /// <summary>
@@ -67,9 +71,10 @@ namespace FrogExhibitionBLL.Helpers
         /// <returns>Path to the saved file</returns>
         public async Task<string> SavePhotoAsync(IFormFile file)
         {
-            var uploads = Path.Combine(_environment.WebRootPath, "images");
+            var uploads = Path.Combine(_environment.WebRootPath, FileRelatedConstants.ImagesFolderName);
             return await SavePhotoAsync(file, uploads);
         }
+
         /// <summary>
         /// Saves file with unique name in specified directory
         /// </summary>

@@ -10,45 +10,8 @@ namespace FrogExhibitionBLL.Helpers
             var excelApp = new Application();
             var workbook = excelApp.Workbooks.Add();
             var worksheet = workbook.Worksheets[1] as Worksheet;
-
-
-
             WriteDataHeaders<T>(worksheet, 1, tableHeader);
-            //// Write headers using property names of the first object
-            //var properties = objects.Count > 0
-            //    ? typeof(T).GetProperties()
-            //    : null;
-
-
-            //if (properties != null)
-            //{
-            //    worksheet.Cells[1, 1] = tableHeader;
-            //    for (int columnIndex = 0; columnIndex < properties.Length; columnIndex++)
-            //    {
-            //        var property = properties[columnIndex];
-            //        var header = ReplaceCapitalLetters(property.Name);
-            //        worksheet.Cells[2, columnIndex + 1] = header;
-
-            //        var columnRange = worksheet.Columns[columnIndex + 1];
-            //        columnRange.AutoFit();
-            //    }
-            //}
-
-
-            WriteDataRows(worksheet, objects, 3, 1);
-            //// Write data rows
-            //for (int rowIndex = 0; rowIndex < objects.Count; rowIndex++)
-            //{
-            //    var currentObject = objects[rowIndex];
-            //    //properties = currentObject.GetType().GetProperties();
-
-            //    for (int columnIndex = 0; columnIndex < properties.Length; columnIndex++)
-            //    {
-            //        var property = properties[columnIndex];
-            //        var value = property.GetValue(currentObject);
-            //        worksheet.Cells[rowIndex + 3, columnIndex + 1] = value?.ToString();
-            //    }
-            //}
+            WriteDataRows(worksheet, objects, 3, 1); 
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             workbook.SaveAs(filePath);
             workbook.Close();
@@ -72,39 +35,9 @@ namespace FrogExhibitionBLL.Helpers
             if (printColumnNamesAgain)
             {
                 WriteDataHeaders<T>(worksheet, lastRow - 1, tableHeader);
-                //var properties = objects.Count > 0
-                //    ? objects[0].GetType().GetProperties()
-                //    : null;
-
-                //if (properties != null)
-                //{
-                //    worksheet.Cells[lastRow - 2, 1] = tableHeader;
-                //    for (int columnIndex = 0; columnIndex < properties.Length; columnIndex++)
-                //    {
-                //        var property = properties[columnIndex];
-                //        var header = ReplaceCapitalLetters(property.Name);
-                //        worksheet.Cells[lastRow - 1, columnIndex + 1] = header;
-
-                //        var columnRange = worksheet.Columns[columnIndex + 1];
-                //        columnRange.AutoFit();
-                //    }
-                //}
             }
 
             WriteDataRows(worksheet, objects, lastRow, 1);
-            //// Write data rows
-            //for (int rowIndex = 0; rowIndex < objects.Count; rowIndex++)
-            //{
-            //    var currentObject = objects[rowIndex];
-            //    var properties = currentObject.GetType().GetProperties();
-
-            //    for (int columnIndex = 0; columnIndex < properties.Length; columnIndex++)
-            //    {
-            //        var property = properties[columnIndex];
-            //        var value = property.GetValue(currentObject);
-            //        worksheet.Cells[lastRow + rowIndex, columnIndex + 1] = value;
-            //    }
-            //}
 
             workbook.Save();
             workbook.Close();
@@ -149,8 +82,6 @@ namespace FrogExhibitionBLL.Helpers
             }
 
         }
-
-       
 
         private string ReplaceCapitalLetters(string input)
         {
